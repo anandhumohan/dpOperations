@@ -18,6 +18,7 @@ public class RegionAPI {
 	@GET
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response regionWiseStores(@PathParam("region") String region) {
+		System.out.println("reached here");
 		Map<String, StoreLocation> storeLocations = new RegionHelper().region(region);
 		String storeJson = new Gson().toJson(storeLocations);
 		return Response.ok(storeJson, MediaType.APPLICATION_JSON).build();

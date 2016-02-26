@@ -16,5 +16,7 @@ public interface OrderDetailsDAO {
 	
 	PriceDetails getPriceDetails(String orderId);
 	
+	ArrayList<String> getOrderListFromDpId(String dpId);
+	
 	
 }

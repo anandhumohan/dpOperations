@@ -75,4 +75,15 @@ public class OrderDetailsDaoImpl implements OrderDetailsDAO {
 
 	}
 
+	@Override
+	public ArrayList<String> getOrderListFromDpId(String dpId) {
+		Criteria criteria = template.getSession().createCriteria(OrderDetails.class);
+		criteria.add(Restrictions.eq("dpId", dpId));
+		criteria.setProjection(Projections.property("basePrice"));
+		criteria.setProjection(Projections.property("finalPrice"));
+		ArrayList<String> DPList = (ArrayList<String>) getTemplate().get(criteria);
+		return DPList;
+
+	}
+
 }
