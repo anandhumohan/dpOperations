@@ -30,7 +30,7 @@ public class HibernateTemplate {
 			System.out.println("JDBC Connection Exception   " + e.getStackTrace());
 
 			factory.close();
-			factory = new Configuration().configure().buildSessionFactory();
+			factory = new Configuration().configure("hibernate.cfg.xml").buildSessionFactory();
 			session = factory.openSession();
 			txn = session.beginTransaction();
 

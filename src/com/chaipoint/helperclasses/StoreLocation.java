@@ -1,25 +1,25 @@
 package com.chaipoint.helperclasses;
 
 public class StoreLocation {
-	private int storeId;
-	private String storeName;
+	private int id;
+	private String name;
 	private double latitude;
 	private double longitude;
 
-	public int getStoreId() {
-		return storeId;
+	public int getId() {
+		return id;
 	}
 
-	public void setStoreId(int storeId) {
-		this.storeId = storeId;
+	public void setId(int id) {
+		this.id = id;
 	}
 
-	public String getStoreName() {
-		return storeName;
+	public String getName() {
+		return name;
 	}
 
-	public void setStoreName(String storeName) {
-		this.storeName = storeName;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public double getLatitude() {

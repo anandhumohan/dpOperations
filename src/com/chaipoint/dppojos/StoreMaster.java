@@ -1,8 +1,6 @@
 package com.chaipoint.dppojos;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,10 +10,8 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.Type;
 
-import com.google.gson.Gson;
-
 @Entity
-@Table(name = "STORE_MASTER")
+@Table(name = "store_master")
 public class StoreMaster {
 
 	@Id
@@ -23,50 +19,32 @@ public class StoreMaster {
 	@Column(name = "ID")
 	private int id;
 
-	@Column(name = "STORE_ID", unique = true)
-	private String storeId;
+	@Column(name = "CODE", unique = true)
+	private String code;
 
-	@Column(name = "STORE_NAME", unique = true)
-	private String storeName;
+	@Column(name = "NAME", unique = true)
+	private String name;
 
-	@Column(name = "STORE_CITY")
-	private String storeCity;
+	@Column(name = "TYPE")
+	private String type;
 
-	@Column(name = "LATITUDE")
-	private double storeLatitude;
+	@Column(name = "TAX_RATE")
+	private int taxRate;
 
-	@Column(name = "LONGITUDE")
-	private double storeLongitude;
-
-	@Column(name = "RADIUS")
-	private double deliveryRadius;
-
-	@Column(name = "POLYGONS", length = 1500)
-	private String polygons;
-
-	@Column(name = "POLYGONS_ACTIVE")
-	private int polygonActive;
-
-	@Column(name = "STORE_MANAGER_ID")
-	private String storeManager;
+	@Column(name = "SERVICE_TAX_RATE")
+	private int serviceTaxRate;
 
 	@Column(name = "ADDRESS")
-	private String storeAddress;
+	private String address;
 
-	@Column(name = "IS_ACTIVE")
-	private boolean isActive;
+	@Column(name = "PHONE_1")
+	private String phone1;
 
-	@Column(name = "TOTAL_EMPLOYEE")
-	private int totalEmployee;
+	@Column(name = "PHONE_2")
+	private int phone2;
 
-	@Column(name = "WEEKDAY_EMPLOYEE")
-	private int weekdaysEmployee;
-
-	@Column(name = "SATURDAY_EMPLOYEE")
-	private int saturdayEmployee;
-
-	@Column(name = "SUNDAY_EMPLOYEE")
-	private int sundayEmployee;
+	@Column(name = "LOCATION_ID")
+	private int locationId;
 
 	@Column(name = "OPENING_TIME")
 	@Type(type = "time")
@@ -76,32 +54,50 @@ public class StoreMaster {
 	@Type(type = "time")
 	private Date closingTime;
 
-	@Column(name = "WEEKOFF")
-	private String weekOff;
+	@Column(name = "WEEKLY_OFF")
+	private boolean weeklyOff;
 
-	@Column(name = "STORE_PICTURE_LOCATION", length = 1000)
-	private String storePictureLocation;
+	@Column(name = "PHOTO")
+	private String photo;
 
-	@Column(name = "STORE_DELIVERY_PARTNER")
-	private String storeDeliveryPartner;
+	@Column(name = "LATITUDE")
+	private double latitude;
 
-	@Column(name = "IS_AC_STORE")
-	private boolean isAcStore;
+	@Column(name = "LONGITUDE")
+	private double longitude;
 
-	@Column(name = "STORE_TYPE")
-	private String storetype;
+	@Column(name = "SMS")
+	private boolean sms;
 
-	@Column(name = "ORDER_ACCEPTED_SOURCE")
-	private String orderAcceptedSource;
+	@Column(name = "STORE_TIME")
+	private int storeTime;
 
-	@Column(name = "AUTO_INDENT")
-	private boolean autoIndent;
+	@Column(name = "CREATED_TIME")
+	private Date createdTime;
 
-	@Column(name = "IS_24_HOUR_OPEN")
-	private boolean is24HourStore;
+	@Column(name = "CREATED_BY")
+	private String createdBy;
 
-	@Column(name = "STORE_CONTACT_NUMBERS")
-	private String storeContactNumber;
+	@Column(name = "UPDATED_TIME")
+	private Date updatedTime;
+
+	@Column(name = "UPDATED_BY")
+	private String updatedBy;
+
+	@Column(name = "ACTIVE")
+	private boolean active;
+
+	@Column(name = "FOE_ALLOWED")
+	private boolean forAllowed;
+
+	@Column(name = "WEEKDAYS_MANHOURS")
+	private int weekdaysManhours;
+
+	@Column(name = "SATURDAY_MANHOURS")
+	private int saturdayManhours;
+
+	@Column(name = "SUNDAY_MANHOURS")
+	private int sundayManhours;
 
 	@Column(name = "TIN_NO")
 	private String tinNo;
@@ -124,123 +120,99 @@ public class StoreMaster {
 	@Column(name = "PPA_TID")
 	private String ppaTid;
 
-	@Column(name = "STORE_TAXES")
-	private String storeTaxes;
+	@Column(name = "STORE_MESSAGE")
+	private String storeMessage;
 
-	public String getStoreId() {
-		return storeId;
+	@Column(name = "BILLING_TYPE")
+	private String billingType;
+
+	@Column(name = "IS_PT")
+	private String isPt;
+
+	@Column(name = "IS_AC")
+	private boolean isAc;
+
+	@Column(name = "WAREHOUSE_ID")
+	private int warehouseId;
+
+	public int getId() {
+		return id;
 	}
 
 	public void setId(int id) {
 		this.id = id;
 	}
 
-	public void setStoreId(String storeId) {
-		this.storeId = storeId;
+	public String getCode() {
+		return code;
 	}
 
-	public String getStoreName() {
-		return storeName;
+	public void setCode(String code) {
+		this.code = code;
 	}
 
-	public void setStoreName(String storeName) {
-		this.storeName = storeName;
+	public String getName() {
+		return name;
 	}
 
-	public String getStoreCity() {
-		return storeCity;
+	public void setName(String name) {
+		this.name = name;
 	}
 
-	public void setStoreCity(String storeCity) {
-		this.storeCity = storeCity;
+	public String getType() {
+		return type;
 	}
 
-	public double getStoreLatitude() {
-		return storeLatitude;
+	public void setType(String type) {
+		this.type = type;
 	}
 
-	public void setStoreLatitude(double storeLatitude) {
-		this.storeLatitude = storeLatitude;
+	public int getTaxRate() {
+		return taxRate;
 	}
 
-	public double getStoreLongitude() {
-		return storeLongitude;
+	public void setTaxRate(int taxRate) {
+		this.taxRate = taxRate;
 	}
 
-	public void setStoreLongitude(double storeLongitude) {
-		this.storeLongitude = storeLongitude;
+	public int getServiceTaxRate() {
+		return serviceTaxRate;
 	}
 
-	public double getDeliveryRadius() {
-		return deliveryRadius;
+	public void setServiceTaxRate(int serviceTaxRate) {
+		this.serviceTaxRate = serviceTaxRate;
 	}
 
-	public void setDeliveryRadius(double deliveryRadius) {
-		this.deliveryRadius = deliveryRadius;
+	public String getAddress() {
+		return address;
 	}
 
-	public ArrayList<ArrayList<String>> getPolygons() {
-		return new Gson().fromJson(polygons, ArrayList.class);
+	public void setAddress(String address) {
+		this.address = address;
 	}
 
-	public void setPolygons(ArrayList<ArrayList<String>> polygons) {
-		this.polygons = new Gson().toJson(polygons);
+	public String getPhone1() {
+		return phone1;
 	}
 
-	public String getStoreManager() {
-		return storeManager;
+	public void setPhone1(String phone1) {
+		this.phone1 = phone1;
 	}
 
-	public void setStoreManager(String storeManager) {
-		this.storeManager = storeManager;
+	public int getPhone2() {
+		return phone2;
 	}
 
-	public String getStoreAddress() {
-		return storeAddress;
+	public void setPhone2(int phone2) {
+		this.phone2 = phone2;
 	}
 
-	public void setStoreAddress(String storeAddress) {
-		this.storeAddress = storeAddress;
+	public int getLocationId() {
+		return locationId;
 	}
 
-	public boolean getIsActive() {
-		return isActive;
-	}
-
-	public void setIsActive(boolean isActive) {
-		this.isActive = isActive;
-	}
-
-	public int getTotalEmployee() {
-		return totalEmployee;
-	}
-
-	public void setTotalEmployee(int totalEmployee) {
-		this.totalEmployee = totalEmployee;
-	}
-
-	public int getWeekdaysEmployee() {
-		return weekdaysEmployee;
-	}
-
-	public void setWeekdaysEmployee(int weekdaysEmployee) {
-		this.weekdaysEmployee = weekdaysEmployee;
-	}
-
-	public int getSaturdayEmployee() {
-		return saturdayEmployee;
-	}
-
-	public void setSaturdayEmployee(int saturdayEmployee) {
-		this.saturdayEmployee = saturdayEmployee;
-	}
-
-	public int getSundayEmployee() {
-		return sundayEmployee;
-	}
-
-	public void setSundayEmployee(int sundayEmployee) {
-		this.sundayEmployee = sundayEmployee;
+	public void setLocationId(int locationId) {
+		this.locationId = locationId;
 	}
 
 	public Date getOpeningTime() {
@@ -259,76 +231,124 @@ public class StoreMaster {
 		this.closingTime = closingTime;
 	}
 
-	public String getWeekOff() {
-		return weekOff;
+	public boolean isWeeklyOff() {
+		return weeklyOff;
 	}
 
-	public void setWeekOff(String weekOff) {
-		this.weekOff = weekOff;
+	public void setWeeklyOff(boolean weeklyOff) {
+		this.weeklyOff = weeklyOff;
 	}
 
-	public String getStorePictureLocation() {
-		return storePictureLocation;
+	public String getPhoto() {
+		return photo;
 	}
 
-	public void setStorePictureLocation(String storePictureLocation) {
-		this.storePictureLocation = storePictureLocation;
+	public void setPhoto(String photo) {
+		this.photo = photo;
 	}
 
-	public ArrayList<String> getStoreDeliveryPartner() {
-		return new Gson().fromJson(storeDeliveryPartner, ArrayList.class);
+	public double getLatitude() {
+		return latitude;
 	}
 
-	public void setStoreDeliveryPartner(ArrayList<String> storeDeliveryPartner) {
-		this.storeDeliveryPartner = new Gson().toJson(storeDeliveryPartner);
+	public void setLatitude(double latitude) {
+		this.latitude = latitude;
 	}
 
-	public boolean isAcStore() {
-		return isAcStore;
+	public double getLongitude() {
+		return longitude;
 	}
 
-	public void setAcStore(boolean isAcStore) {
-		this.isAcStore = isAcStore;
+	public void setLongitude(double longitude) {
+		this.longitude = longitude;
 	}
 
-	public String getStoretype() {
-		return storetype;
+	public boolean isSms() {
+		return sms;
 	}
 
-	public void setStoretype(String storetype) {
-		this.storetype = storetype;
+	public void setSms(boolean sms) {
+		this.sms = sms;
 	}
 
-	public ArrayList<String> getOrderAcceptedSource() {
-		return new Gson().fromJson(orderAcceptedSource, ArrayList.class);
+	public int getStoreTime() {
+		return storeTime;
 	}
 
-	public void setOrderAcceptedSource(ArrayList<String> orderAcceptedSource) {
-		this.orderAcceptedSource = new Gson().toJson(orderAcceptedSource);
+	public void setStoreTime(int storeTime) {
+		this.storeTime = storeTime;
 	}
 
-	public boolean isAutoIndent() {
-		return autoIndent;
+	public Date getCreatedTime() {
+		return createdTime;
 	}
 
-	public void setAutoIndent(boolean autoIndent) {
-		this.autoIndent = autoIndent;
+	public void setCreatedTime(Date createdTime) {
+		this.createdTime = createdTime;
 	}
 
-	public boolean isIs24HourStore() {
-		return is24HourStore;
+	public String getCreatedBy() {
+		return createdBy;
 	}
 
-	public void setIs24HourStore(boolean is24HourStore) {
-		this.is24HourStore = is24HourStore;
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
 	}
 
-	public String getStoreContactNumber() {
-		return storeContactNumber;
+	public Date getUpdatedTime() {
+		return updatedTime;
 	}
 
-	public void setStoreContactNumber(String storeContactNumber) {
-		this.storeContactNumber = storeContactNumber;
+	public void setUpdatedTime(Date updatedTime) {
+		this.updatedTime = updatedTime;
+	}
+
+	public String getUpdatedBy() {
+		return updatedBy;
+	}
+
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
+	}
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+
+	public boolean isForAllowed() {
+		return forAllowed;
+	}
+
+	public void setForAllowed(boolean forAllowed) {
+		this.forAllowed = forAllowed;
+	}
+
+	public int getWeekdaysManhours() {
+		return weekdaysManhours;
+	}
+
+	public void setWeekdaysManhours(int weekdaysManhours) {
+		this.weekdaysManhours = weekdaysManhours;
+	}
+
+	public int getSaturdayManhours() {
+		return saturdayManhours;
+	}
+
+	public void setSaturdayManhours(int saturdayManhours) {
+		this.saturdayManhours = saturdayManhours;
+	}
+
+	public int getSundayManhours() {
+		return sundayManhours;
+	}
+
+	public void setSundayManhours(int sundayManhours) {
+		this.sundayManhours = sundayManhours;
 	}
 
 	public String getTinNo() {
@@ -387,24 +407,44 @@ public class StoreMaster {
 		this.ppaTid = ppaTid;
 	}
 
-	// public Map<String, TaxTypes> getStoreTaxes() {
-	// return new Gson().fromJson(storeTaxes, Map.class);
-	// }
-
-	// public void setStoreTaxes(Map<String, TaxTypes> storeTaxes) {
-	// this.storeTaxes = new Gson().toJson(storeTaxes);
-	// }
-
-	public int getId() {
-		return id;
+	public String getStoreMessage() {
+		return storeMessage;
 	}
 
-	public int getPolygonActive() {
-		return polygonActive;
+	public void setStoreMessage(String storeMessage) {
+		this.storeMessage = storeMessage;
 	}
 
-	public void setPolygonActive(int polygonActive) {
-		this.polygonActive = polygonActive;
+	public String getBillingType() {
+		return billingType;
+	}
+
+	public void setBillingType(String billingType) {
+		this.billingType = billingType;
+	}
+
+	public String getIsPt() {
+		return isPt;
+	}
+
+	public void setIsPt(String isPt) {
+		this.isPt = isPt;
+	}
+
+	public boolean isAc() {
+		return isAc;
+	}
+
+	public void setAc(boolean isAc) {
+		this.isAc = isAc;
+	}
+
+	public int getWarehouseId() {
+		return warehouseId;
+	}
+
+	public void setWarehouseId(int warehouseId) {
+		this.warehouseId = warehouseId;
 	}
 
 }

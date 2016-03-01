@@ -29,7 +29,7 @@ public class RegionAPI {
 	@Path("/place/{id}")
 	@GET
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response regionWiseStores(@PathParam("region") String id) {
+	public Response regionWiseStores(@PathParam("id") String id) {
 		System.out.println("reached here");
 		Map<Integer, StoreLocation> storeLocations = new RegionHelper().stores(id);
 		String storeJson = new Gson().toJson(storeLocations);

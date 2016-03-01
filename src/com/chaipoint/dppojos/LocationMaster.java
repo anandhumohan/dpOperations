@@ -12,19 +12,19 @@ public class LocationMaster {
 
 	@Id
 	@GeneratedValue
-	@Column(name = "id")
+	@Column(name = "ID")
 	private int id;
 
-	@Column(name = "name")
+	@Column(name = "NAME")
 	private String name;
 
-	@Column(name = "city")
+	@Column(name = "CITY")
 	private String city;
 
-	@Column(name = "state")
+	@Column(name = "STATE")
 	private String state;
 
-	@Column(name = "zone")
+	@Column(name = "ZONE")
 	private String zone;
 
 	public int getId() {
