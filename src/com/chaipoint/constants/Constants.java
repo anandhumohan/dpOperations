@@ -27,7 +27,7 @@ public class Constants {
 
 	//
 
-	public static String sucsess = "SUCSESS";
+	public static String success = "SUCCESS";
 	public static String error = "ERROR";
 
 }

@@ -12,13 +12,11 @@ import org.hibernate.criterion.Restrictions;
 import com.chaipoint.constants.Constants;
 import com.chaipoint.dphelper.OrderDetailsDaoImpl;
 import com.chaipoint.helperclasses.AddressInfo;
-//import com.chaipoint.deliverypartner.DPselector;
+
 import com.chaipoint.helperclasses.DpStatus;
 import com.chaipoint.helperclasses.OrderDetails;
 import com.chaipoint.helperclasses.OrderStatus;
 import com.chaipoint.hibernatehelper.HibernateTemplate;
-
-//import com.chaipoint.deliverypartner.DPselector;
 
 public class NinjaOperations {
 
@@ -47,15 +45,6 @@ public class NinjaOperations {
 	}
 
 	public Map<String, ArrayList<OrderDetails>> storeOrderDetails(String storeId) {
-
-		/*
-		 * 
-		 * Map<String, ArrayList<String>> storeOrdersMap = new HashMap<String,
-		 * ArrayList<String>>(); for (String storeId : storeList) {
-		 * ArrayList<String> orderIds = new ArrayList<String>(); orderIds =
-		 * orderDetailsDaoImpl.getOrderIdsfromStoreId(storeId);
-		 * storeOrdersMap.put(storeId, orderIds); }
-		 */
 
 		Map<String, ArrayList<OrderDetails>> orderDetails = new HashMap<String, ArrayList<OrderDetails>>();
 
@@ -90,28 +79,6 @@ public class NinjaOperations {
 		return orderList;
 	}
 
-	public HibernateTemplate getHibernatetemplate() {
-		if (template == null) {
-			template = new HibernateTemplate();
-		}
-		return template;
-	}
-
-	public ArrayList<String> getOrderCounts(ArrayList<String> storeList, String orderStatus) {
-
-		// change OrderDetails to cpos order class
-		ArrayList<String> orderList = new ArrayList<String>();
-		for (String storeId : storeList) {
-			Criteria criteria = getHibernatetemplate().getSession().createCriteria(OrderDetails.class);
-			criteria.add(Restrictions.eq("status", orderStatus));
-			criteria.add(Restrictions.eq("storeid", storeId));
-			criteria.setProjection(Projections.property("orderId"));
-			ArrayList<String> orderDetails = (ArrayList<String>) getHibernatetemplate().get(criteria);
-			orderList.addAll(orderDetails);
-		}
-		return orderList;
-	}
-
 	public ArrayList<OrderDetails> getOrderDetails(ArrayList<String> orderList) {
 
 		ArrayList<OrderDetails> orderDetailsList = new ArrayList<OrderDetails>();
@@ -128,52 +95,6 @@ public class NinjaOperations {
 
 		return orderDetailsList;
 	}
-
-	/*
-	 * public String confirmState(String orderId, String state) {
-	 * 
-	 * String status = ""; if (!orderId.equals(null) &&
-	 * state.equals("CONFIRMED")) {
-	 * 
-	 * // send order status for tracking status = "OK"; } return status; }
-	 * 
-	 * public String readyState(String orderId, String state) {
-	 * 
-	 * String storeId = ""; String status = ""; if (!orderId.equals(null) &&
-	 * state.equals("READY")) { String dpId = getAtStoreDP(storeId); if (dpId ==
-	 * null) { ArrayList<String> availDp = new ArrayList<String>(); availDp =
-	 * getAvailableDp(storeId); // push notification to all available availDp
-	 * status = "OK"; } else { // give order details to DpId }
-	 * 
-	 * // send order status
-	 * 
-	 * } return status; }
-	 * 
-	 * public String reassignState(String orderId, String state, String oldDPId,
-	 * String newDPId) {
-	 * 
-	 * String status = ""; if (!orderId.equals(null) &&
-	 * state.equals("REASSIGN")) {
-	 * 
-	 * // Send order status for tracking, Generate alert for stakeholders status
-	 * = "OK"; } return status; }
-	 * 
-	 * public String transferState(String orderId, String state, String
-	 * newStoreId, String transferReason) {
-	 * 
-	 * String status = ""; if (!orderId.equals(null) &&
-	 * state.equals("TRANSFER")) { // Send order status for tracking, Generate
-	 * alert for stakeholders status = "OK"; } return status; }
-	 * 
-	 * public String cancelState(String orderId, String state, String
-	 * cancelReason) {
-	 * 
-	 * String status = ""; if (!orderId.equals(null) &&
-	 * state.equals("CANCELLED")) { // Send order status for tracking, Generate
-	 * alert for stakeholders status = "OK"; } return status; }
-	 * 
-	 * 
-	 */
 
 	public String getAtStoreDP(String storeId) {
 
@@ -225,6 +146,26 @@ public class NinjaOperations {
 
 		// change the status of the order new to confirmed in db
 		return null;
+	}
+
+	public Map<String, Integer> getAllCounts(String state, String token) {
+
+		Map<String, Integer> stateCount = new HashMap<String, Integer>();
+		Criteria criteria = getHibernatetemplate().getSession().createCriteria(OrderDetails.class);
+		criteria.add(Restrictions.eq("status", state));
+		criteria.setProjection(Projections.property("orderid"));
+		ArrayList<String> count = (ArrayList<String>) template.get(criteria);
+
+		stateCount.put(state, count.size());
+		return stateCount;
+
+	}
+
+	public HibernateTemplate getHibernatetemplate() {
+		if (template == null) {
+			template = new HibernateTemplate();
+		}
+		return template;
 	}
 
 }

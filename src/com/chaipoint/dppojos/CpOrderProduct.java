@@ -34,6 +34,7 @@ public class CpOrderProduct {
 	public void setId(int id) {
 		this.id = id;
 	}
+	
 
 	public int getOrderId() {
 		return orderId;

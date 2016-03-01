@@ -70,10 +70,11 @@ public class DpOperations {
 	public String DpOutForDelivery(String mtfId, String storeId) {
 
 		String status = "";
+		String DPId = mtfId;
 		status = dpStatus.get(DPId);
 		status.setStatus(Constants.dp_Status_available);
 		dpStatus.put(DPId, status);
-	
+
 		// orderStatus = state;
 		// send order status for tracking
 		return status;
@@ -83,12 +84,11 @@ public class DpOperations {
 	public String DpReturnToStore(String mtfId, String storeId) {
 		String orderId = "";
 		String state = "";
-		String dpId = mtfId;
+		String DPId = mtfId;
 		status = dpStatus.get(DPId);
 		status.setStatus(Constants.dp_Status_available);
 		dpStatus.put(DPId, status);
-	
-		
+
 		return null;
 	}
 

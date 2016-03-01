@@ -40,6 +40,7 @@ public class HibernateTemplate {
 
 	public HibernateTemplate() {
 		if (factory == null || !factory.isClosed()) {
+			System.out.println("hibernate constructor");
 			factory = new Configuration().configure("hibernate.cfg.xml").buildSessionFactory();
 
 		}
@@ -103,6 +104,21 @@ public class HibernateTemplate {
 		}
 
 		return responseEntity;
+	}
+
+	public String update(Object obj) {
+		String response = "Success";
+		getSession();
+		try {
+			session.update(obj);
+			postAction();
+		} catch (Exception ex) {
+			logger.error("Exception while update with Error : " + ex);
+			response = "Error";
+		} finally {
+			postSession();
+		}
+		return response;
 	}
 
 }

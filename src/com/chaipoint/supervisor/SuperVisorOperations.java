@@ -61,13 +61,6 @@ public class SuperVisorOperations {
 		return orderList;
 	}
 
-	public HibernateTemplate getHibernatetemplate() {
-		if (template == null) {
-			template = new HibernateTemplate();
-		}
-		return template;
-	}
-
 	public ArrayList<String> getOrderCounts(ArrayList<String> storeList, String orderStatus) {
 
 		// change OrderDetails to cpos order class
@@ -93,12 +86,18 @@ public class SuperVisorOperations {
 			orderDetails.setAddress_info(addressInfo);
 			orderDetails.setOrder_details(orderDetailsDaoImpl.getItemdetails(orderId));
 			orderDetails.setPrice_details(orderDetailsDaoImpl.getPriceDetails(orderId));
-			
-			
-			orderDetailsList .add(orderDetails);
+
+			orderDetailsList.add(orderDetails);
 		}
 
-		return orderDetailsList ;
+		return orderDetailsList;
+	}
+
+	public HibernateTemplate getHibernatetemplate() {
+		if (template == null) {
+			template = new HibernateTemplate();
+		}
+		return template;
 	}
 
 }

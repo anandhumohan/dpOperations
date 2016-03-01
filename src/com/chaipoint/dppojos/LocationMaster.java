@@ -7,24 +7,24 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "LOCATION_MASTER")
+@Table(name = "location_master")
 public class LocationMaster {
 
 	@Id
 	@GeneratedValue
-	@Column(name = "ID")
+	@Column(name = "id")
 	private int id;
 
-	@Column(name = "NAME")
+	@Column(name = "name")
 	private String name;
 
-	@Column(name = "CITY")
+	@Column(name = "city")
 	private String city;
 
-	@Column(name = "STATE")
+	@Column(name = "state")
 	private String state;
 
-	@Column(name = "ZONE")
+	@Column(name = "zone")
 	private String zone;
 
 	public int getId() {

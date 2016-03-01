@@ -14,16 +14,27 @@ import com.chaipoint.helperclasses.StoreLocation;
 import com.google.gson.Gson;
 @Path("/region")
 public class RegionAPI {
-	@Path("/place/{region}")
+	@Path("/place")
 	@GET
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response regionWiseStores(@PathParam("region") String region) {
+	public Response getAllRegions() {
 		System.out.println("reached here");
-		Map<String, StoreLocation> storeLocations = new RegionHelper().region(region);
-		String storeJson = new Gson().toJson(storeLocations);
+		Map<String, String> regionToRegionId= new RegionHelper().regions();
+		String storeJson = new Gson().toJson(regionToRegionId);
 		return Response.ok(storeJson, MediaType.APPLICATION_JSON).build();
 
 	}
 
+	
+	@Path("/place/{id}")
+	@GET
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response regionWiseStores(@PathParam("region") String id) {
+		System.out.println("reached here");
+		Map<Integer, StoreLocation> storeLocations = new RegionHelper().stores(id);
+		String storeJson = new Gson().toJson(storeLocations);
+		return Response.ok(storeJson, MediaType.APPLICATION_JSON).build();
+
+	}
 
 }
