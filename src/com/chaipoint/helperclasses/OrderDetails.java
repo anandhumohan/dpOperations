@@ -4,43 +4,59 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OrderDetails {
-	private String orderId;
-	private ArrayList<ItemsDetail> order_details;
-	private PriceDetails price_details;
-	private AddressInfo address_info;
+	private int orderId;
+	private String storeName;
+	private AddressInfo customerDetails;
+	private ArrayList<ItemsDetails> orderDetails;
+	private PaymentDetails paymentDetails;
+	private Pricing pricing;
 
-	public String getOrderId() {
+	public int getOrderId() {
 		return orderId;
 	}
 
-	public void setOrderId(String orderId) {
+	public void setOrderId(int orderId) {
 		this.orderId = orderId;
 	}
 
-	
-
-	public ArrayList<ItemsDetail> getOrder_details() {
-		return order_details;
+	public String getStoreName() {
+		return storeName;
 	}
 
-	public void setOrder_details(ArrayList<ItemsDetail> order_details) {
-		this.order_details = order_details;
+	public void setStoreName(String storeName) {
+		this.storeName = storeName;
 	}
 
-	public PriceDetails getPrice_details() {
-		return price_details;
+	public AddressInfo getCustomerDetails() {
+		return customerDetails;
 	}
 
-	public void setPrice_details(PriceDetails price_details) {
-		this.price_details = price_details;
+	public void setCustomerDetails(AddressInfo customerDetails) {
+		this.customerDetails = customerDetails;
 	}
 
-	public AddressInfo getAddress_info() {
-		return address_info;
+	public ArrayList<ItemsDetails> getOrderDetails() {
+		return orderDetails;
 	}
 
-	public void setAddress_info(AddressInfo address_info) {
-		this.address_info = address_info;
+	public void setOrderDetails(ArrayList<ItemsDetails> orderDetails) {
+		this.orderDetails = orderDetails;
+	}
+
+	public PaymentDetails getPaymentDetails() {
+		return paymentDetails;
+	}
+
+	public void setPaymentDetails(PaymentDetails paymentDetails) {
+		this.paymentDetails = paymentDetails;
+	}
+
+	public Pricing getPricing() {
+		return pricing;
+	}
+
+	public void setPricing(Pricing pricing) {
+		this.pricing = pricing;
 	}
 
 }

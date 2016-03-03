@@ -22,6 +22,8 @@ import com.chaipoint.helperclasses.CpOrder;
 import com.chaipoint.helperclasses.DpStatus;
 import com.chaipoint.helperclasses.OrderDetails;
 import com.chaipoint.helperclasses.OrderStatus;
+import com.chaipoint.helperclasses.PaymentDetails;
+import com.chaipoint.helperclasses.Pricing;
 import com.chaipoint.hibernatehelper.HibernateOperations;
 import com.chaipoint.hibernatehelper.HibernateTemplate;
 
@@ -54,57 +56,49 @@ public class NinjaOperations {
 	public Map<String, ArrayList<OrderDetails>> storeOrderDetails(String storeId) {
 
 		Map<String, ArrayList<OrderDetails>> orderDetails = new HashMap<String, ArrayList<OrderDetails>>();
+		ArrayList<String> statusList = getAllStatus();
 
-		ArrayList<OrderDetails> newOrderList = getOrderList(storeId, constants.Order_Status_new);
-		orderDetails.put(constants.Order_Status_new, newOrderList);
-		ArrayList<OrderDetails> confirmOrderList = getOrderList(storeId, constants.Order_Status_confirmed);
-		orderDetails.put(constants.Order_Status_confirmed, confirmOrderList);
-		ArrayList<OrderDetails> readyOrderList = getOrderList(storeId, constants.Order_Status_ready);
-		orderDetails.put(constants.Order_Status_ready, readyOrderList);
-		ArrayList<OrderDetails> dispatchedOrderList = getOrderList(storeId, constants.Order_Status_dispatched);
-		orderDetails.put(constants.Order_Status_dispatched, dispatchedOrderList);
-		ArrayList<OrderDetails> deliveredOrderList = getOrderList(storeId, constants.Order_Status_delivered);
-		orderDetails.put(constants.Order_Status_delivered, deliveredOrderList);
-		ArrayList<OrderDetails> cancelledOrderList = getOrderList(storeId, constants.Order_Status_cancelled);
-		orderDetails.put(constants.Order_Status_cancelled, deliveredOrderList);
+		for (String status : statusList) {
+			ArrayList<OrderDetails> orderList = getOrderList(storeId, status);
+			orderDetails.put(status, orderList);
+		}
 		return orderDetails;
 	}
 
 	private ArrayList<OrderDetails> getOrderList(String storeId, String status) {
-
-		ArrayList<OrderDetails> orderList = new ArrayList<OrderDetails>();
-
-		OrderDetails orderDetails = new OrderDetails();
-		// AddressInfo addressInfo =
-		// orderDetailsDaoImpl.getCustomerDeliveryAddress(orderId);
-		Criteria criteria = getHibernatetemplate().getSession().createCriteria(OrderDetails.class);
-		criteria.add(Restrictions.eq("storeId", storeId));
-		criteria.add(Restrictions.eq("status", status));
-		orderDetails = (OrderDetails) template.get(criteria);
-		orderList.add(orderDetails);
-
-		return orderList;
-	}
-
-	public ArrayList<OrderDetails> getOrderDetails(ArrayList<String> orderList) {
-
+		
 		ArrayList<OrderDetails> orderDetailsList = new ArrayList<OrderDetails>();
-		for (String orderId : orderList) {
+		ArrayList<Integer> orderIdList = orderDetailsDaoImpl.getAllOrderId(storeId);
+		
+		for(int orderList : orderIdList ){
 			OrderDetails orderDetails = new OrderDetails();
-			orderDetails.setOrderId(orderId);
-			AddressInfo addressInfo = orderDetailsDaoImpl.getCustomerDeliveryAddress(orderId);
-			orderDetails.setAddress_info(addressInfo);
-			orderDetails.setOrder_details(orderDetailsDaoImpl.getItemdetails(orderId));
-			orderDetails.setPrice_details(orderDetailsDaoImpl.getPriceDetails(orderId));
-
+			orderDetails.setOrderId(orderList);
+			orderDetails.setStoreName(orderDetailsDaoImpl.getstoreName(storeId));
+			orderDetails.setOrderDetails(orderDetailsDaoImpl.getOrderDeatils(orderList));
+			orderDetails.setCustomerDetails(orderDetailsDaoImpl.getAddressdetails(orderList));
+			CpOrders orders = orderDetailsDaoImpl.getOrderdetails(orderList);
+			PaymentDetails paymentDetails = new PaymentDetails();
+			paymentDetails.setChannel(orders.getChannel());
+			paymentDetails.setPaymentType(orders.getPaymentMethod());
+			orderDetails.setPaymentDetails(paymentDetails);
+			
+			Pricing pricing = new Pricing();
+			pricing.setCouponApplied(orders.getCouponCode());
+			pricing.setDiscountAmount(orders.getDiscount());
+			pricing.setTotalPrice(orders.getTotalAmount());
+			pricing.setFinalPayableCost(orders.getTotalAmount());
+			pricing.setDeliveryCharges(orders.getDeliveryCharge());
+			orderDetails.setPricing(pricing);
+			
 			orderDetailsList.add(orderDetails);
+			
 		}
 
 		return orderDetailsList;
 	}
 
 
-//getting all available at store dps
+	// getting all available at store dps
 	public ArrayList<String> getAvailableDp(String storeId) {
 
 		ArrayList<String> dps = new ArrayList<>(DPQueues.get(storeId));
@@ -121,7 +115,6 @@ public class NinjaOperations {
 
 	// count of each status of current date
 	public Map<String, Integer> getAllCounts() {
-		
 
 		ArrayList<String> statusList = getAllStatus();
 		Map<String, Integer> stateCount = new HashMap<String, Integer>();

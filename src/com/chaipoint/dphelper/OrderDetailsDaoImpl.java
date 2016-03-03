@@ -6,28 +6,18 @@ import org.hibernate.Criteria;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
+import com.chaipoint.dppojos.CpOrderAddress;
+import com.chaipoint.dppojos.CpOrderProduct;
+import com.chaipoint.dppojos.CpOrders;
+import com.chaipoint.dppojos.StoreMaster;
 import com.chaipoint.helperclasses.AddressInfo;
 import com.chaipoint.helperclasses.ItemMaster;
-import com.chaipoint.helperclasses.ItemsDetail;
-import com.chaipoint.helperclasses.OrderDetails;
-import com.chaipoint.helperclasses.PriceDetails;
-import com.chaipoint.hibernatehelper.HibernateTemplate;
+import com.chaipoint.helperclasses.ItemsDetails;
+import com.chaipoint.hibernatehelper.HibernateOperations;
+
 
 public class OrderDetailsDaoImpl implements OrderDetailsDAO {
-	HibernateTemplate template = null;
-
-	@Override
-	public ArrayList<ItemsDetail> getItemdetails(String orderId) {
-		Criteria criteria = template.getSession().createCriteria(AddressInfo.class);
-		criteria.add(Restrictions.eq("orderId", orderId));
-		ArrayList<ItemsDetail> ItemList = (ArrayList<ItemsDetail>) getTemplate().get(criteria);
-
-		for (ItemsDetail details : ItemList) {
-			details.setItem_name(getProductNameFromId(details.getItem_id()));
-		}
-		return ItemList;
-
-	}
+	HibernateOperations template = null;
 
 	@Override
 	public AddressInfo getCustomerDeliveryAddress(String orderId) {
@@ -48,12 +38,6 @@ public class OrderDetailsDaoImpl implements OrderDetailsDAO {
 		return DPList.get(0);
 	}
 
-	public HibernateTemplate getTemplate() {
-		if (template == null) {
-			template = new HibernateTemplate();
-		}
-		return template;
-	}
 
 	public ArrayList<String> getOrderIdsfromStoreId(String storeId) {
 		Criteria criteria = template.getSession().createCriteria(ItemMaster.class);
@@ -64,26 +48,89 @@ public class OrderDetailsDaoImpl implements OrderDetailsDAO {
 	}
 
 	@Override
-	public PriceDetails getPriceDetails(String orderId) {
-
-		Criteria criteria = template.getSession().createCriteria(OrderDetails.class);
-		criteria.add(Restrictions.eq("orderId", orderId));
-		criteria.setProjection(Projections.property("basePrice"));
-		criteria.setProjection(Projections.property("finalPrice"));
-		ArrayList<PriceDetails> DPList = (ArrayList<PriceDetails>) getTemplate().get(criteria);
-		return DPList.get(0);
+	public ArrayList<CpOrders> getOrderDetailsFromOrderId(int storeId) {
+		// ArrayList<CpOrders> orderList = new ArrayList<CpOrders>();
+		Criteria criteria = template.getSession().createCriteria(CpOrders.class);
+		criteria.add(Restrictions.eq("storeId", storeId));
+		ArrayList<CpOrders> orderList = (ArrayList<CpOrders>) getTemplate().get(criteria);
+		return orderList;
 
 	}
 
 	@Override
-	public ArrayList<String> getOrderListFromDpId(String dpId) {
-		Criteria criteria = template.getSession().createCriteria(OrderDetails.class);
-		criteria.add(Restrictions.eq("dpId", dpId));
-		criteria.setProjection(Projections.property("basePrice"));
-		criteria.setProjection(Projections.property("finalPrice"));
-		ArrayList<String> DPList = (ArrayList<String>) getTemplate().get(criteria);
-		return DPList;
+	public ArrayList<Integer> getAllOrderId(String storeId) {
+		Criteria criteria = template.getSession().createCriteria(CpOrders.class);
+		criteria.add(Restrictions.eq("storeId", storeId));
+		criteria.setProjection(Projections.property("orderId"));
+		ArrayList<Integer> orderList = (ArrayList<Integer>) getTemplate().get(criteria);
+		return orderList;
 
 	}
+
+	@Override
+	public String getstoreName(String storeId) {
+		Criteria criteria = template.getSession().createCriteria(StoreMaster.class);
+		criteria.add(Restrictions.eq("storeId", storeId));
+		criteria.setProjection(Projections.property("name"));
+		ArrayList<String> storeName = (ArrayList<String>) getTemplate().get(criteria);
+		return storeName.get(0);
+	}
+
+	@Override
+	public ArrayList<ItemsDetails> getOrderDeatils(int orderId) {
+		int i = 0;
+		ArrayList<ItemsDetails> Items = new ArrayList<ItemsDetails>();
+		Criteria criteria = template.getSession().createCriteria(CpOrderProduct.class);
+		criteria.add(Restrictions.eq("orderId", orderId));
+		ArrayList<CpOrderProduct> itemList = (ArrayList<CpOrderProduct>) getTemplate().get(criteria);
+		for (CpOrderProduct details : itemList) {
+			ItemsDetails item = new ItemsDetails();
+			item.setSerialNo(i++);
+			item.setItemName(getProductName(details.getId()));
+			item.setItemUnitCount(details.getQty());
+			item.setItemUnitPrice(details.getCost());
+			item.setItemTotalPrice(details.getTotal_product_cost());
+		}
+
+		return Items;
+	}
+
+	public String getProductName(int id) {
+		Criteria criteria = template.getSession().createCriteria(ProductMaster.class);
+		criteria.add(Restrictions.eq("id", id));
+		criteria.setProjection(Projections.property("name"));
+		ArrayList<String> itemList = (ArrayList<String>) getTemplate().get(criteria);
+
+		return itemList.get(0);
+
+	}
+	
+	HibernateOperations getTemplate(){
+		if(template  == null){
+			template = new HibernateOperations();
+		}
+		return template;
+		
+	}
+
+	public AddressInfo getAddressdetails(int orderList) {
+		
+		Criteria criteria = template.getSession().createCriteria(CpOrderAddress.class);
+		criteria.add(Restrictions.eq("id", orderList));
+		ArrayList<AddressInfo> address = (ArrayList<AddressInfo>) getTemplate().get(criteria);
+
+		return address.get(0);
+	}
+
+	public CpOrders getOrderdetails(int orderList) {
+		
+		CpOrders cpOrders = new CpOrders();
+		Criteria criteria = template.getSession().createCriteria(CpOrders.class);
+		criteria.add(Restrictions.eq("id", orderList));
+		ArrayList<CpOrders> address = (ArrayList<CpOrders>) getTemplate().get(criteria);
+
+		return address.get(0);
+	}
+	
 
 }

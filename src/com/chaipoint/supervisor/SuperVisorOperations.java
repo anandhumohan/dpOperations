@@ -83,9 +83,9 @@ public class SuperVisorOperations {
 			OrderDetails orderDetails = new OrderDetails();
 			orderDetails.setOrderId(orderId);
 			AddressInfo addressInfo = orderDetailsDaoImpl.getCustomerDeliveryAddress(orderId);
-			orderDetails.setAddress_info(addressInfo);
-			orderDetails.setOrder_details(orderDetailsDaoImpl.getItemdetails(orderId));
-			orderDetails.setPrice_details(orderDetailsDaoImpl.getPriceDetails(orderId));
+	//		orderDetails.setAddress_info(addressInfo);
+	//		orderDetails.setOrder_details(orderDetailsDaoImpl.getItemdetails(orderId));
+	//		orderDetails.setPrice_details(orderDetailsDaoImpl.getPriceDetails(orderId));
 
 			orderDetailsList.add(orderDetails);
 		}
