@@ -15,16 +15,15 @@ import com.chaipoint.helperclasses.OrderDetails;
 import com.chaipoint.ninja.NinjaOperations;
 import com.google.gson.Gson;
 
-@Path("/ninja")
+@Path("/ninjascreen")
 public class NinjaAPI {
 
 	@Path("/default/{storeId}")
 	@GET
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response newState(@PathParam("storeId") String storeId) {
-		String orderState = "NEW";
-
-		Map<String, ArrayList<OrderDetails>> orderDetais = new NinjaOperations().storeOrderDetails(storeId);
+		String status = "New";
+		Map<String, ArrayList<OrderDetails>> orderDetais = new NinjaOperations().getOrderDetails(storeId, status);
 		return Response.ok(orderDetais, MediaType.TEXT_PLAIN).build();
 
 	}

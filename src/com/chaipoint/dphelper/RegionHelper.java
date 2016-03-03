@@ -16,12 +16,13 @@ import com.chaipoint.dppojos.LocationMaster;
 import com.chaipoint.dppojos.StoreMaster;
 import com.chaipoint.helperclasses.RegionId;
 import com.chaipoint.helperclasses.StoreLocation;
+import com.chaipoint.hibernatehelper.HibernateOperations;
 import com.chaipoint.hibernatehelper.HibernateTemplate;
 
 public class RegionHelper {
-	HibernateTemplate template = null;
+	HibernateOperations template = null;
 
-	public Map<Integer, StoreLocation> stores(String regionId) {
+	public Map<Integer, StoreLocation> getStores(String regionId) {
 		int locationId = Integer.parseInt(regionId);
 		Map<Integer, StoreLocation> storeLocations = new LinkedHashMap<Integer, StoreLocation>();
 		Criteria criteria = getTemplate().getSession().createCriteria(StoreMaster.class);
@@ -50,7 +51,7 @@ public class RegionHelper {
 		return storeLocations;
 	}
 
-	public Map<String, String> regions() {
+	public Map<String, String> getRegions() {
 
 		Map<String, String> regionMap = new HashMap<String, String>();
 		Criteria criteria = getTemplate().getSession().createCriteria(LocationMaster.class);
@@ -73,9 +74,9 @@ public class RegionHelper {
 
 	}
 
-	public HibernateTemplate getTemplate() {
+	public HibernateOperations getTemplate() {
 		if (template == null) {
-			template = new HibernateTemplate();
+			template = new HibernateOperations();
 		}
 		return template;
 	}

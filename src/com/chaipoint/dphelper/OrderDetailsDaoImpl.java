@@ -15,7 +15,6 @@ import com.chaipoint.helperclasses.ItemMaster;
 import com.chaipoint.helperclasses.ItemsDetails;
 import com.chaipoint.hibernatehelper.HibernateOperations;
 
-
 public class OrderDetailsDaoImpl implements OrderDetailsDAO {
 	HibernateOperations template = null;
 
@@ -37,7 +36,6 @@ public class OrderDetailsDaoImpl implements OrderDetailsDAO {
 		ArrayList<String> DPList = (ArrayList<String>) getTemplate().get(criteria);
 		return DPList.get(0);
 	}
-
 
 	public ArrayList<String> getOrderIdsfromStoreId(String storeId) {
 		Criteria criteria = template.getSession().createCriteria(ItemMaster.class);
@@ -104,17 +102,17 @@ public class OrderDetailsDaoImpl implements OrderDetailsDAO {
 		return itemList.get(0);
 
 	}
-	
-	HibernateOperations getTemplate(){
-		if(template  == null){
+
+	HibernateOperations getTemplate() {
+		if (template == null) {
 			template = new HibernateOperations();
 		}
 		return template;
-		
+
 	}
 
 	public AddressInfo getAddressdetails(int orderList) {
-		
+
 		Criteria criteria = template.getSession().createCriteria(CpOrderAddress.class);
 		criteria.add(Restrictions.eq("id", orderList));
 		ArrayList<AddressInfo> address = (ArrayList<AddressInfo>) getTemplate().get(criteria);
@@ -123,7 +121,7 @@ public class OrderDetailsDaoImpl implements OrderDetailsDAO {
 	}
 
 	public CpOrders getOrderdetails(int orderList) {
-		
+
 		CpOrders cpOrders = new CpOrders();
 		Criteria criteria = template.getSession().createCriteria(CpOrders.class);
 		criteria.add(Restrictions.eq("id", orderList));
@@ -131,6 +129,15 @@ public class OrderDetailsDaoImpl implements OrderDetailsDAO {
 
 		return address.get(0);
 	}
-	
+
+	public ArrayList<Integer> getAllOrderIds(ArrayList<String> storeIds) {
+		Criteria criteria = template.getSession().createCriteria(CpOrders.class);
+		for (String storeId : storeIds) {
+			criteria.add(Restrictions.eq("storeId", storeId));
+		}
+		criteria.setProjection(Projections.property("orderId"));
+		ArrayList<Integer> orderList = (ArrayList<Integer>) getTemplate().get(criteria);
+		return orderList;
+	}
 
 }

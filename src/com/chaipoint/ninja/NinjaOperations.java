@@ -41,27 +41,20 @@ public class NinjaOperations {
 	HibernateOperations template = null;
 	public static OrderDetailsDaoImpl orderDetailsDaoImpl = new OrderDetailsDaoImpl();
 
-	public OrderDetails newState(String orderId, String state) {
+	
 
-		String ordeDetails = "";
-		OrderDetails details = new OrderDetails();
-		if (!orderId.equals(null) && state.equals("NEW")) {
-			// get order details
-
-		}
-
-		return details;
-	}
-
-	public Map<String, ArrayList<OrderDetails>> storeOrderDetails(String storeId) {
+	public Map<String, ArrayList<OrderDetails>> getOrderDetails(String storeId, String status) {
 
 		Map<String, ArrayList<OrderDetails>> orderDetails = new HashMap<String, ArrayList<OrderDetails>>();
-		ArrayList<String> statusList = getAllStatus();
+		ArrayList<OrderDetails> orderList = getOrderList(storeId, status);
+		orderDetails.put(status, orderList);
 
-		for (String status : statusList) {
-			ArrayList<OrderDetails> orderList = getOrderList(storeId, status);
-			orderDetails.put(status, orderList);
-		}
+	//	ArrayList<String> statusList = getAllStatus();
+
+	//	for (String status : statusList) {
+	//		ArrayList<OrderDetails> orderList = getOrderList(storeId, status);
+	//		orderDetails.put(status, orderList);
+	//	}
 		return orderDetails;
 	}
 
