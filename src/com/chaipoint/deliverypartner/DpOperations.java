@@ -64,16 +64,16 @@ public class DpOperations {
 		dpStatus.put(DPId, status);
 		DPQueues.put(storeId, queue);
 
-		return Constants.sucsess;
+		return Constants.success;
 	}
 
 	public String DpOutForDelivery(String mtfId, String storeId) {
 
 		String status = "";
 		String DPId = mtfId;
-		status = dpStatus.get(DPId);
-		status.setStatus(Constants.dp_Status_available);
-		dpStatus.put(DPId, status);
+	//	status = dpStatus.get(DPId);
+	//	status.setStatus(Constants.dp_Status_available);
+	//	dpStatus.put(DPId, status);
 
 		// orderStatus = state;
 		// send order status for tracking

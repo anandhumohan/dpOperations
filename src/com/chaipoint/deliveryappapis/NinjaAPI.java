@@ -7,14 +7,17 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.chaipoint.helperclasses.OrderDetails;
 import com.chaipoint.ninja.NinjaOperations;
+import com.google.gson.Gson;
 
 @Path("/ninja")
 public class NinjaAPI {
+
 	@Path("/default/{storeId}")
 	@GET
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -29,11 +32,30 @@ public class NinjaAPI {
 	@Path("/count")
 	@GET
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response OrderStatuscount(String data) {
-		String state = "";
-		String token = "";
-		Map<String, Integer> orderDetais = new NinjaOperations().getAllCounts(state, token);
-		return Response.ok(orderDetais, MediaType.TEXT_PLAIN).build();
+	public Response OrderStatuscount() {
+
+		Map<String, Integer> orderDetais = new NinjaOperations().getAllCounts();
+		return Response.ok(new Gson().toJson(orderDetais), MediaType.TEXT_PLAIN_TYPE).build();
+
+	}
+
+	@Path("/update")
+	@GET
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response OrderStatusUpdate(@QueryParam("orderId") int orderId, @QueryParam("status") String status) {
+
+		String code = new NinjaOperations().updateOrderStatus(orderId, status);
+		return Response.ok(code, MediaType.TEXT_PLAIN_TYPE).build();
+
+	}
+	
+	@Path("/cancel")
+	@GET
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response cancelReasonUpdate(@QueryParam("orderId") int orderId, @QueryParam("reason") String reason) {
+
+		String code = new NinjaOperations().saveCancelreason(orderId, reason);
+		return Response.ok(code, MediaType.TEXT_PLAIN_TYPE).build();
 
 	}
 

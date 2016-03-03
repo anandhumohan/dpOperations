@@ -28,8 +28,9 @@ public class ActionAPI {
 	public String storeReason(String storeId, String orderId, String reason) {
 
 		// update in cpos table with reason
-		String status = new NinjaOperations().saveCancelreason(orderId, reason);
+	//	String status = new NinjaOperations().saveCancelreason(orderId, reason);
 
+		String status = null;
 		return status;
 
 	}
@@ -39,35 +40,13 @@ public class ActionAPI {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public String confirmAction(String orderId) {
 
-		String status = new NinjaOperations().updateOrderStatus(orderId);
+	String status = null;
+		//	String status = new NinjaOperations().updateOrderStatus(orderId);
 		return status;
 
 	}
 
-	@Path("/transfer")
-	@GET
-	@Consumes(MediaType.APPLICATION_JSON)
-
-	public ArrayList<String> transferAction(String storeId) {
-		ArrayList<String> transList = new ArrayList<String>();
-		// will return all transferable store names
-		transList = new NinjaOperations().getAllTrasferStores(storeId);
-		return transList;
-
-	}
-
-	@Path("/transferdone")
-	@GET
-	@Consumes(MediaType.APPLICATION_JSON)
-
-	public String transferOrder(String storeId, String orderId) {
-
-		// will return all transferable store names
-		String status = new NinjaOperations().transferOrder(storeId, orderId);
-
-		return status;
-
-	}
+	
 
 	@Path("/ready")
 	@GET

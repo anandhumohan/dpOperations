@@ -1,5 +1,10 @@
 package com.chaipoint.ninja;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,11 +16,13 @@ import org.hibernate.criterion.Restrictions;
 
 import com.chaipoint.constants.Constants;
 import com.chaipoint.dphelper.OrderDetailsDaoImpl;
+import com.chaipoint.dppojos.CpOrders;
 import com.chaipoint.helperclasses.AddressInfo;
-
+import com.chaipoint.helperclasses.CpOrder;
 import com.chaipoint.helperclasses.DpStatus;
 import com.chaipoint.helperclasses.OrderDetails;
 import com.chaipoint.helperclasses.OrderStatus;
+import com.chaipoint.hibernatehelper.HibernateOperations;
 import com.chaipoint.hibernatehelper.HibernateTemplate;
 
 public class NinjaOperations {
@@ -29,7 +36,7 @@ public class NinjaOperations {
 	DpStatus status = null;
 	Queue<String> queue = null;
 	public static Constants constants = new Constants();
-	HibernateTemplate template = null;
+	HibernateOperations template = null;
 	public static OrderDetailsDaoImpl orderDetailsDaoImpl = new OrderDetailsDaoImpl();
 
 	public OrderDetails newState(String orderId, String state) {
@@ -96,15 +103,8 @@ public class NinjaOperations {
 		return orderDetailsList;
 	}
 
-	public String getAtStoreDP(String storeId) {
 
-		String dpId = "";
-		queue = DPQueues.get(storeId);
-		dpId = queue.poll();
-		return dpId;
-
-	}
-
+//getting all available at store dps
 	public ArrayList<String> getAvailableDp(String storeId) {
 
 		ArrayList<String> dps = new ArrayList<>(DPQueues.get(storeId));
@@ -119,53 +119,104 @@ public class NinjaOperations {
 		return availDp;
 	}
 
-	public String saveCancelreason(String orderId, String reason) {
-		Criteria criteria = getHibernatetemplate().getSession().createCriteria(OrderDetails.class);
-		criteria.add(Restrictions.eq("orderId", orderId));
-		ArrayList<OrderDetails> orderDetails = (ArrayList<OrderDetails>) template.get(criteria);
-		// write reason to cpos
-		orderDetails.get(0);
+	// count of each status of current date
+	public Map<String, Integer> getAllCounts() {
+		
 
-		return reason;
-
-	}
-
-	public ArrayList<String> getAllTrasferStores(String storeId) {
-		ArrayList<String> storeIds = new ArrayList<String>();
-		// get All Store transfer store ids
-		return null;
-	}
-
-	public String transferOrder(String storeId, String orderId) {
-		// Sending order to cpos
-
-		return null;
-	}
-
-	public String updateOrderStatus(String orderId) {
-
-		// change the status of the order new to confirmed in db
-		return null;
-	}
-
-	public Map<String, Integer> getAllCounts(String state, String token) {
-
+		ArrayList<String> statusList = getAllStatus();
 		Map<String, Integer> stateCount = new HashMap<String, Integer>();
-		Criteria criteria = getHibernatetemplate().getSession().createCriteria(OrderDetails.class);
-		criteria.add(Restrictions.eq("status", state));
-		criteria.setProjection(Projections.property("orderid"));
-		ArrayList<String> count = (ArrayList<String>) template.get(criteria);
+		for (String status : statusList) {
 
-		stateCount.put(state, count.size());
+			Criteria criteria = getHibernatetemplate().getSession().createCriteria(CpOrders.class);
+			criteria.add(Restrictions.eq("status", status));
+			criteria.setProjection(Projections.property("id"));
+			ArrayList<Integer> count = (ArrayList<Integer>) getHibernatetemplate().get(criteria);
+
+			stateCount.put(status, count.size());
+		}
 		return stateCount;
 
 	}
 
-	public HibernateTemplate getHibernatetemplate() {
+	public ArrayList<String> getAllStatus() {
+		ArrayList<String> statusList = new ArrayList<String>();
+
+		FileInputStream fis = null;
+		BufferedReader reader = null;
+
+		try {
+			fis = new FileInputStream("config");
+			reader = new BufferedReader(new InputStreamReader(fis));
+
+			System.out.println("Reading File line by line using BufferedReader");
+
+			String line = reader.readLine();
+			while (line != null) {
+				System.out.println(line);
+				statusList.add(line);
+				line = reader.readLine();
+			}
+
+		} catch (FileNotFoundException ex) {
+
+		} catch (IOException ex) {
+
+		} finally {
+			try {
+				reader.close();
+				fis.close();
+			} catch (IOException ex) {
+
+			}
+		}
+
+		return statusList;
+	}
+
+	// save the order cancel reason
+	public String saveCancelreason(int orderId, String reason) {
+		String code = "";
+		CpOrders cpOrders = new CpOrders();
+		Criteria criteria = getHibernatetemplate().getSession().createCriteria(CpOrders.class);
+		criteria.add(Restrictions.eq("id", orderId));
+		ArrayList<CpOrders> count = (ArrayList<CpOrders>) getHibernatetemplate().get(criteria);
+		cpOrders = count.get(0);
+		cpOrders.setCancelReason(reason);
+
+		if (Constants.success.equals(getHibernatetemplate().update(cpOrders))) {
+			code = Constants.success;
+		}
+
+		return code;
+
+	}
+
+	// change the status of the order new to confirmed in db
+	public String updateOrderStatus(int OrderId, String status) {
+		String code = "";
+		CpOrders cpOrders = new CpOrders();
+		Criteria criteria = getHibernatetemplate().getSession().createCriteria(CpOrders.class);
+		criteria.add(Restrictions.eq("id", OrderId));
+		ArrayList<CpOrders> count = (ArrayList<CpOrders>) getHibernatetemplate().get(criteria);
+		cpOrders = count.get(0);
+		cpOrders.setStatus(status);
+
+		if (Constants.success.equals(getHibernatetemplate().update(cpOrders))) {
+			code = Constants.success;
+		}
+
+		return code;
+	}
+
+	public HibernateOperations getHibernatetemplate() {
 		if (template == null) {
-			template = new HibernateTemplate();
+			template = new HibernateOperations();
 		}
 		return template;
 	}
+	/*
+	 * public HibernateTemplate getHibernatetemplate() { if (template == null) {
+	 * template = new HibernateTemplate(); } return template; }
+	 */
 
 }

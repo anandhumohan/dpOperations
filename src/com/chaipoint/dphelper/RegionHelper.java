@@ -2,9 +2,12 @@ package com.chaipoint.dphelper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -20,9 +23,10 @@ public class RegionHelper {
 
 	public Map<Integer, StoreLocation> stores(String regionId) {
 		int locationId = Integer.parseInt(regionId);
-		Map<Integer, StoreLocation> storeLocations = new HashMap<Integer, StoreLocation>();
+		Map<Integer, StoreLocation> storeLocations = new LinkedHashMap<Integer, StoreLocation>();
 		Criteria criteria = getTemplate().getSession().createCriteria(StoreMaster.class);
 		criteria.add(Restrictions.eq("locationId", locationId));
+		criteria.addOrder(Order.asc("name"));
 		// criteria.add(Restrictions.eq("active", true));
 		ProjectionList projectionList = Projections.projectionList();
 		projectionList.add(Projections.property("id"));
@@ -64,7 +68,8 @@ public class RegionHelper {
 			System.out.println(list[1]);
 
 		}
-		return regionMap;
+		Map<String, String> map = new TreeMap<String, String>(regionMap);
+		return map;
 
 	}
 

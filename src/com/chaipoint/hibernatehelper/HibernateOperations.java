@@ -148,7 +148,7 @@ public class HibernateOperations {
 	public Object get(Criteria cr) {
 		Object responseEntity = null;
 		getSession();
-		//cr.setCacheMode(CacheMode.GET);
+	//	cr.setCacheMode(CacheMode.GET);
 		try {
 			responseEntity = cr.list();
 			smsSent = false;

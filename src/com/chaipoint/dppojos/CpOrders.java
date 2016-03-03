@@ -9,7 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "CP_ORDERS")
+@Table(name = "cp_orders")
 public class CpOrders {
 
 	@Id
@@ -19,6 +19,9 @@ public class CpOrders {
 
 	@Column(name = "STATUS")
 	private String status;
+
+	@Column(name = "CANCEL_REASON")
+	private String cancelReason;
 
 	@Column(name = "CUSTOMER_ID")
 	private String customerId;
@@ -41,7 +44,7 @@ public class CpOrders {
 	@Column(name = "DELIVERY_CHARGE")
 	private double deliveryCharge;
 
-	@Column(name = "SERVICE_CHANRGE")
+	@Column(name = "SERVICE_CHARGE")
 	private double serviceCharge;
 
 	@Column(name = "VAT")
@@ -77,7 +80,7 @@ public class CpOrders {
 	@Column(name = "CREATED_DATE")
 	private String createdDate;
 
-	@Column(name = "UPADATED_BY")
+	@Column(name = "UPDATED_BY")
 	private int updatedBy;
 
 	@Column(name = "UPDATED_DATE")
@@ -109,6 +112,14 @@ public class CpOrders {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	public String getCancelReason() {
+		return cancelReason;
+	}
+
+	public void setCancelReason(String cancelReason) {
+		this.cancelReason = cancelReason;
 	}
 
 	public String getCustomerId() {
