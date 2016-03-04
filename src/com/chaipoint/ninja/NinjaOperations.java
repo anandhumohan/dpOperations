@@ -16,6 +16,7 @@ import org.hibernate.criterion.Restrictions;
 
 import com.chaipoint.constants.Constants;
 import com.chaipoint.dphelper.OrderDetailsDaoImpl;
+import com.chaipoint.dppojos.CpOrderAddress;
 import com.chaipoint.dppojos.CpOrders;
 import com.chaipoint.helperclasses.AddressInfo;
 import com.chaipoint.helperclasses.CpOrder;
@@ -41,40 +42,38 @@ public class NinjaOperations {
 	HibernateOperations template = null;
 	public static OrderDetailsDaoImpl orderDetailsDaoImpl = new OrderDetailsDaoImpl();
 
-	
-
-	public Map<String, ArrayList<OrderDetails>> getOrderDetails(String storeId, String status) {
+	public Map<String, ArrayList<OrderDetails>> getOrderDetails(int storeId, String status) {
 
 		Map<String, ArrayList<OrderDetails>> orderDetails = new HashMap<String, ArrayList<OrderDetails>>();
 		ArrayList<OrderDetails> orderList = getOrderList(storeId, status);
 		orderDetails.put(status, orderList);
 
-	//	ArrayList<String> statusList = getAllStatus();
+		// ArrayList<String> statusList = getAllStatus();
 
-	//	for (String status : statusList) {
-	//		ArrayList<OrderDetails> orderList = getOrderList(storeId, status);
-	//		orderDetails.put(status, orderList);
-	//	}
+		// for (String status : statusList) {
+		// ArrayList<OrderDetails> orderList = getOrderList(storeId, status);
+		// orderDetails.put(status, orderList);
+		// }
 		return orderDetails;
 	}
 
-	private ArrayList<OrderDetails> getOrderList(String storeId, String status) {
-		
+	private ArrayList<OrderDetails> getOrderList(int storeId, String status) {
+
 		ArrayList<OrderDetails> orderDetailsList = new ArrayList<OrderDetails>();
 		ArrayList<Integer> orderIdList = orderDetailsDaoImpl.getAllOrderId(storeId);
-		
-		for(int orderList : orderIdList ){
+
+		for (int orderList : orderIdList) {
 			OrderDetails orderDetails = new OrderDetails();
 			orderDetails.setOrderId(orderList);
 			orderDetails.setStoreName(orderDetailsDaoImpl.getstoreName(storeId));
 			orderDetails.setOrderDetails(orderDetailsDaoImpl.getOrderDeatils(orderList));
-			orderDetails.setCustomerDetails(orderDetailsDaoImpl.getAddressdetails(orderList));
+
 			CpOrders orders = orderDetailsDaoImpl.getOrderdetails(orderList);
 			PaymentDetails paymentDetails = new PaymentDetails();
 			paymentDetails.setChannel(orders.getChannel());
 			paymentDetails.setPaymentType(orders.getPaymentMethod());
 			orderDetails.setPaymentDetails(paymentDetails);
-			
+
 			Pricing pricing = new Pricing();
 			pricing.setCouponApplied(orders.getCouponCode());
 			pricing.setDiscountAmount(orders.getDiscount());
@@ -82,14 +81,21 @@ public class NinjaOperations {
 			pricing.setFinalPayableCost(orders.getTotalAmount());
 			pricing.setDeliveryCharges(orders.getDeliveryCharge());
 			orderDetails.setPricing(pricing);
-			
+
+			// orderDetails.setCustomerDetails(orderDetailsDaoImpl.getAddressdetails(orderList));
+			// orderDetails.setCustomerDetails(orderDetailsDaoImpl.getAddressdetailsFromId(orders.getCustomerId()));
+			CpOrderAddress orderAddress = orderDetailsDaoImpl.getAddressdetails(orderList);
+			AddressInfo addressInfo = new AddressInfo();
+			addressInfo.setName(orderAddress.getName());
+			addressInfo.setAddress_line_first(orderAddress.getAddress());
+			addressInfo.setLandmark(orderAddress.getLandmark());
+			addressInfo.setPhone(orderDetailsDaoImpl.getPhoneNumber(orderAddress.getId()));
 			orderDetailsList.add(orderDetails);
-			
+
 		}
 
 		return orderDetailsList;
 	}
-
 
 	// getting all available at store dps
 	public ArrayList<String> getAvailableDp(String storeId) {

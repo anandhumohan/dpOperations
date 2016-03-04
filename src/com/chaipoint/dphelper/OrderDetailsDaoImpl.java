@@ -9,6 +9,8 @@ import org.hibernate.criterion.Restrictions;
 import com.chaipoint.dppojos.CpOrderAddress;
 import com.chaipoint.dppojos.CpOrderProduct;
 import com.chaipoint.dppojos.CpOrders;
+import com.chaipoint.dppojos.CpRetailCustomer;
+import com.chaipoint.dppojos.ProductMaster;
 import com.chaipoint.dppojos.StoreMaster;
 import com.chaipoint.helperclasses.AddressInfo;
 import com.chaipoint.helperclasses.ItemMaster;
@@ -56,19 +58,19 @@ public class OrderDetailsDaoImpl implements OrderDetailsDAO {
 	}
 
 	@Override
-	public ArrayList<Integer> getAllOrderId(String storeId) {
-		Criteria criteria = template.getSession().createCriteria(CpOrders.class);
+	public ArrayList<Integer> getAllOrderId(int storeId) {
+		Criteria criteria = getTemplate().getSession().createCriteria(CpOrders.class);
 		criteria.add(Restrictions.eq("storeId", storeId));
-		criteria.setProjection(Projections.property("orderId"));
+		criteria.setProjection(Projections.property("id"));
 		ArrayList<Integer> orderList = (ArrayList<Integer>) getTemplate().get(criteria);
 		return orderList;
 
 	}
 
 	@Override
-	public String getstoreName(String storeId) {
-		Criteria criteria = template.getSession().createCriteria(StoreMaster.class);
-		criteria.add(Restrictions.eq("storeId", storeId));
+	public String getstoreName(int storeId) {
+		Criteria criteria = getTemplate().getSession().createCriteria(StoreMaster.class);
+		criteria.add(Restrictions.eq("id", storeId));
 		criteria.setProjection(Projections.property("name"));
 		ArrayList<String> storeName = (ArrayList<String>) getTemplate().get(criteria);
 		return storeName.get(0);
@@ -78,23 +80,24 @@ public class OrderDetailsDaoImpl implements OrderDetailsDAO {
 	public ArrayList<ItemsDetails> getOrderDeatils(int orderId) {
 		int i = 0;
 		ArrayList<ItemsDetails> Items = new ArrayList<ItemsDetails>();
-		Criteria criteria = template.getSession().createCriteria(CpOrderProduct.class);
+		Criteria criteria = getTemplate().getSession().createCriteria(CpOrderProduct.class);
 		criteria.add(Restrictions.eq("orderId", orderId));
 		ArrayList<CpOrderProduct> itemList = (ArrayList<CpOrderProduct>) getTemplate().get(criteria);
 		for (CpOrderProduct details : itemList) {
 			ItemsDetails item = new ItemsDetails();
 			item.setSerialNo(i++);
-			item.setItemName(getProductName(details.getId()));
+			item.setItemName(getProductName(details.getProductId()));
 			item.setItemUnitCount(details.getQty());
 			item.setItemUnitPrice(details.getCost());
 			item.setItemTotalPrice(details.getTotal_product_cost());
+			Items.add(item);
 		}
 
 		return Items;
 	}
-
+	@Override
 	public String getProductName(int id) {
-		Criteria criteria = template.getSession().createCriteria(ProductMaster.class);
+		Criteria criteria = getTemplate().getSession().createCriteria(ProductMaster.class);
 		criteria.add(Restrictions.eq("id", id));
 		criteria.setProjection(Projections.property("name"));
 		ArrayList<String> itemList = (ArrayList<String>) getTemplate().get(criteria);
@@ -111,18 +114,27 @@ public class OrderDetailsDaoImpl implements OrderDetailsDAO {
 
 	}
 
-	public AddressInfo getAddressdetails(int orderList) {
+	public CpOrderAddress getAddressdetails(int orderList) {
 
 		Criteria criteria = template.getSession().createCriteria(CpOrderAddress.class);
 		criteria.add(Restrictions.eq("id", orderList));
+		ArrayList<CpOrderAddress> address = (ArrayList<CpOrderAddress>) getTemplate().get(criteria);
+
+		return address.get(0);
+	}
+	
+	public AddressInfo getAddressdetailsFromId(String customerId) {
+
+		Criteria criteria = template.getSession().createCriteria(CpOrderAddress.class);
+		criteria.add(Restrictions.eq("id", customerId));
 		ArrayList<AddressInfo> address = (ArrayList<AddressInfo>) getTemplate().get(criteria);
 
 		return address.get(0);
 	}
 
 	public CpOrders getOrderdetails(int orderList) {
+		orderList = 1;
 
-		CpOrders cpOrders = new CpOrders();
 		Criteria criteria = template.getSession().createCriteria(CpOrders.class);
 		criteria.add(Restrictions.eq("id", orderList));
 		ArrayList<CpOrders> address = (ArrayList<CpOrders>) getTemplate().get(criteria);
@@ -138,6 +150,28 @@ public class OrderDetailsDaoImpl implements OrderDetailsDAO {
 		criteria.setProjection(Projections.property("orderId"));
 		ArrayList<Integer> orderList = (ArrayList<Integer>) getTemplate().get(criteria);
 		return orderList;
+	}
+
+	@Override
+	public ArrayList<Integer> getAllOrderId(String storeId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getstoreName(String storeId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public String getPhoneNumber(int id) {
+		Criteria criteria = template.getSession().createCriteria(CpRetailCustomer.class);
+		criteria.add(Restrictions.eq("id", id));
+		criteria.setProjection(Projections.property("phone"));
+		ArrayList<String> address = (ArrayList<String>) getTemplate().get(criteria);
+
+		return address.get(0);
+
 	}
 
 }

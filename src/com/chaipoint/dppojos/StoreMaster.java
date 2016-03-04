@@ -81,13 +81,13 @@ public class StoreMaster {
 	private Date createdTime;
 
 	@Column(name = "CREATED_BY")
-	private String createdBy;
+	private int createdBy;
 
 	@Column(name = "UPDATED_TIME")
 	private Date updatedTime;
 
 	@Column(name = "UPDATED_BY")
-	private String updatedBy;
+	private int updatedBy;
 
 	@Column(name = "ACTIVE")
 	private boolean active;
@@ -292,14 +292,6 @@ public class StoreMaster {
 		this.createdTime = createdTime;
 	}
 
-	public String getCreatedBy() {
-		return createdBy;
-	}
-
-	public void setCreatedBy(String createdBy) {
-		this.createdBy = createdBy;
-	}
-
 	public Date getUpdatedTime() {
 		return updatedTime;
 	}
@@ -308,11 +300,19 @@ public class StoreMaster {
 		this.updatedTime = updatedTime;
 	}
 
-	public String getUpdatedBy() {
+	public int getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(int createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public int getUpdatedBy() {
 		return updatedBy;
 	}
 
-	public void setUpdatedBy(String updatedBy) {
+	public void setUpdatedBy(int updatedBy) {
 		this.updatedBy = updatedBy;
 	}
 

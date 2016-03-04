@@ -18,10 +18,10 @@ import com.google.gson.Gson;
 @Path("/ninjascreen")
 public class NinjaAPI {
 
-	@Path("/default/{storeId}")
+	@Path("/orderdetails/{storeId}")
 	@GET
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response newState(@PathParam("storeId") String storeId) {
+	public Response newState(@PathParam("storeId") int storeId) {
 		String status = "New";
 		Map<String, ArrayList<OrderDetails>> orderDetais = new NinjaOperations().getOrderDetails(storeId, status);
 		return Response.ok(orderDetais, MediaType.TEXT_PLAIN).build();

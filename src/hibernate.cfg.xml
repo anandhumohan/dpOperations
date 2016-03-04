@@ -30,6 +30,9 @@
 		<mapping class="com.chaipoint.dppojos.LocationMaster" />
 		<mapping class="com.chaipoint.dppojos.CpOrderProduct" />
 		<mapping class="com.chaipoint.dppojos.StoreMaster" />
+		<mapping class="com.chaipoint.dppojos.ProductMaster" />
+		<mapping class="com.chaipoint.dppojos.CpRetailCustomer" />
+		
 
 
 

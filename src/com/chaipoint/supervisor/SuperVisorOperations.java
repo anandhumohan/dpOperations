@@ -45,9 +45,9 @@ private ArrayList<OrderDetails> getOrderList(ArrayList<String> storeIds, String 
 		orderDetails.setOrderId(orderList);
 
 		orderDetails.setOrderDetails(orderDetailsDaoImpl.getOrderDeatils(orderList));
-		orderDetails.setCustomerDetails(orderDetailsDaoImpl.getAddressdetails(orderList));
+		//orderDetails.setCustomerDetails(orderDetailsDaoImpl.getAddressdetails(orderList));
 		CpOrders orders = orderDetailsDaoImpl.getOrderdetails(orderList);
-		orderDetails.setStoreName(orderDetailsDaoImpl.getstoreName(orders.getStoreid()));
+		orderDetails.setStoreName(orderDetailsDaoImpl.getstoreName(orders.getStoreId()));
 		PaymentDetails paymentDetails = new PaymentDetails();
 		paymentDetails.setChannel(orders.getChannel());
 		paymentDetails.setPaymentType(orders.getPaymentMethod());

@@ -27,7 +27,7 @@ public class CpOrders {
 	private String customerId;
 
 	@Column(name = "STORE_ID")
-	private String storeid;
+	private int storeId;
 
 	@Column(name = "CHANNEL")
 	private int channel;
@@ -130,12 +130,13 @@ public class CpOrders {
 		this.customerId = customerId;
 	}
 
-	public String getStoreid() {
-		return storeid;
+
+	public int getStoreId() {
+		return storeId;
 	}
 
-	public void setStoreid(String storeid) {
-		this.storeid = storeid;
+	public void setStoreId(int storeId) {
+		this.storeId = storeId;
 	}
 
 	public int getChannel() {

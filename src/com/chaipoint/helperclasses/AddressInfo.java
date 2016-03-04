@@ -3,6 +3,7 @@ package com.chaipoint.helperclasses;
 public class AddressInfo {
 
 	private String name;
+	private String phone;
 	private String address_id;
 	private String city;
 	private String state;
@@ -13,6 +14,14 @@ public class AddressInfo {
 	private String address_type;
 	private String latitude;
 	private String longitude;
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
 
 	public String getName() {
 		return name;
