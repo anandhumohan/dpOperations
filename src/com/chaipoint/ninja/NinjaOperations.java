@@ -59,7 +59,7 @@ public class NinjaOperations {
 	private ArrayList<OrderDetails> getOrderList(int storeId, String status) {
 
 		ArrayList<OrderDetails> orderDetailsList = new ArrayList<OrderDetails>();
-		ArrayList<Integer> orderIdList = orderDetailsDaoImpl.getAllOrderId(storeId);
+		ArrayList<Integer> orderIdList = orderDetailsDaoImpl.getAllOrderId(storeId, status);
 
 		for (int orderList : orderIdList) {
 			OrderDetails orderDetails = new OrderDetails();
@@ -89,7 +89,7 @@ orderDetails.setDeliveredBy(orders.getDeliveryBoy());
 			addressInfo.setAddress_line_first(orderAddress.getAddress());
 			addressInfo.setLandmark(orderAddress.getLandmark());
 
-			addressInfo.setPhone(orderDetailsDaoImpl.getPhoneNumber(orderAddress.getId()));
+		//	addressInfo.setPhone(orderDetailsDaoImpl.getPhoneNumber(orderAddress.getId()));
 			orderDetails.setCustomerDetails(addressInfo);
 			orderDetailsList.add(orderDetails);
 

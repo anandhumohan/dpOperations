@@ -30,7 +30,8 @@ public class RegionHelper {
 		Map<Integer, StoreLocation> storeLocations = new LinkedHashMap<Integer, StoreLocation>();
 		Criteria criteria = getTemplate().getSession().createCriteria(StoreMaster.class);
 		criteria.add(Restrictions.eq("locationId", locationId));
-		criteria.addOrder(Order.asc("name"));
+		criteria.add(Restrictions.eq("active", 'Y'));
+	//	criteria.addOrder(Order.asc("name"));
 		// criteria.add(Restrictions.eq("active", true));
 		ProjectionList projectionList = Projections.projectionList();
 		projectionList.add(Projections.property("id"));
@@ -53,7 +54,8 @@ public class RegionHelper {
 
 		}
 
-		// return locations;
+		
+		
 
 		Comparator<StoreLocation> storeComparator = new Comparator<StoreLocation>() {
 
@@ -69,6 +71,7 @@ public class RegionHelper {
 			}
 		};
 		Collections.sort(locations, storeComparator);
+		
 		return locations;
 
 	}

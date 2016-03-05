@@ -90,7 +90,7 @@ public class StoreMaster {
 	private int updatedBy;
 
 	@Column(name = "ACTIVE")
-	private boolean active;
+	private char active;
 
 	@Column(name = "FOE_ALLOWED")
 	private boolean forAllowed;
@@ -316,11 +316,11 @@ public class StoreMaster {
 		this.updatedBy = updatedBy;
 	}
 
-	public boolean isActive() {
+	public char getActive() {
 		return active;
 	}
 
-	public void setActive(boolean active) {
+	public void setActive(char active) {
 		this.active = active;
 	}
 

@@ -16,7 +16,7 @@ public interface OrderDetailsDAO {
 	ArrayList<CpOrders> getOrderDetailsFromOrderId(int storeId);
 	
 	//finished
-	ArrayList<Integer> getAllOrderId(String storeId);
+	ArrayList<Integer> getAllOrderId(int storeId, String status);
 	//finished 
 	String getstoreName(String storeId);
 	//finished
@@ -24,7 +24,8 @@ public interface OrderDetailsDAO {
 	//finished
 	CpOrders getOrderdetails(int orderId);
 
-	ArrayList<Integer> getAllOrderId(int storeId);
+//	ArrayList<Integer> getAllOrderId(int storeId);
+
 
 	String getstoreName(int storeId);
 	String getProductName(int id);

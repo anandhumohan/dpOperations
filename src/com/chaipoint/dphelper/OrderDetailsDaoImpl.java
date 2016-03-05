@@ -1,6 +1,10 @@
 package com.chaipoint.dphelper;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Projections;
@@ -58,11 +62,36 @@ public class OrderDetailsDaoImpl implements OrderDetailsDAO {
 	}
 
 	@Override
-	public ArrayList<Integer> getAllOrderId(int storeId) {
+	public ArrayList<Integer> getAllOrderId(int storeId, String status) {
 		Criteria criteria = getTemplate().getSession().createCriteria(CpOrders.class);
 		criteria.add(Restrictions.eq("storeId", storeId));
+		criteria.add(Restrictions.eq("status", status));
+		
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+		String cunvertCurrentDate="2016-03-05";
+		Date date = new Date();
+		try {
+			date = df.parse(cunvertCurrentDate);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		criteria.add(Restrictions.eq("deliveryDate",date));
+		/*
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		Date date = new Date();
+		//System.out.println(dateFormat.format(date)); //2014/08/06 15:59:48
+//		date = dateFormat.parse(dateFormat.format(date));
+		try {
+			criteria.add(Restrictions.eq("deliveryDate", dateFormat.parse(dateFormat.format(date))));
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		*/
 		criteria.setProjection(Projections.property("id"));
 		ArrayList<Integer> orderList = (ArrayList<Integer>) getTemplate().get(criteria);
+		System.out.println(orderList);
 		return orderList;
 
 	}
@@ -73,6 +102,7 @@ public class OrderDetailsDaoImpl implements OrderDetailsDAO {
 		criteria.add(Restrictions.eq("id", storeId));
 		criteria.setProjection(Projections.property("name"));
 		ArrayList<String> storeName = (ArrayList<String>) getTemplate().get(criteria);
+		System.out.println(storeName.get(0));
 		return storeName.get(0);
 	}
 
@@ -92,7 +122,7 @@ public class OrderDetailsDaoImpl implements OrderDetailsDAO {
 			item.setItemTotalPrice(details.getTotal_product_cost());
 			Items.add(item);
 		}
-
+System.out.println(Items);
 		return Items;
 	}
 	@Override
@@ -119,7 +149,7 @@ public class OrderDetailsDaoImpl implements OrderDetailsDAO {
 		Criteria criteria = getTemplate().getSession().createCriteria(CpOrderAddress.class);
 		criteria.add(Restrictions.eq("orderId", orderList));
 		ArrayList<CpOrderAddress> address = (ArrayList<CpOrderAddress>) getTemplate().get(criteria);
-
+System.out.println(address.get(0));
 		return address.get(0);
 	}
 	
@@ -138,7 +168,7 @@ public class OrderDetailsDaoImpl implements OrderDetailsDAO {
 		Criteria criteria = template.getSession().createCriteria(CpOrders.class);
 		criteria.add(Restrictions.eq("id", orderList));
 		ArrayList<CpOrders> address = (ArrayList<CpOrders>) getTemplate().get(criteria);
-
+System.out.println(address.get(0));
 		return address.get(0);
 	}
 
@@ -153,12 +183,6 @@ public class OrderDetailsDaoImpl implements OrderDetailsDAO {
 	}
 
 	@Override
-	public ArrayList<Integer> getAllOrderId(String storeId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public String getstoreName(String storeId) {
 		// TODO Auto-generated method stub
 		return null;
@@ -169,8 +193,8 @@ public class OrderDetailsDaoImpl implements OrderDetailsDAO {
 		criteria.add(Restrictions.eq("id", id));
 		criteria.setProjection(Projections.property("phone"));
 		ArrayList<String> phone = (ArrayList<String>) getTemplate().get(criteria);
-
-		return phone .get(0);
+System.out.println(phone.get(0));
+		return phone.get(0);
 
 	}
 

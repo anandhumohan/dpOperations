@@ -7,6 +7,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -36,13 +37,13 @@ public class loginAPI {
 	}
 
 	
-	@Path("/getallstores/{id}")
+	@Path("/getallstores")
 	@GET
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response regionWiseStores(@PathParam("id") String id) {
+	public Response regionWiseStores(@QueryParam("regionId") String regionId) {
 		System.out.println("reached here");
 		RootStores rootStores = new RootStores();
-		ArrayList<StoreLocation> storeLocations = new RegionHelper().getStores(id);
+		ArrayList<StoreLocation> storeLocations = new RegionHelper().getStores(regionId);
 		rootStores.setStores(storeLocations);
 		String storeJson = new Gson().toJson(rootStores);
 		return Response.ok(storeJson, MediaType.APPLICATION_JSON).build();
