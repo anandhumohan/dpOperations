@@ -12,62 +12,61 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.chaipoint.deliverypartner.DpOperations;
+import com.chaipoint.helperclasses.OrderDetails;
 import com.google.gson.Gson;
 
 @Path("/dp")
 public class DeliveryPartnerAPI {
-	@Path("/default")
-	@POST
-	@Consumes(MediaType.APPLICATION_JSON)
-	public Response setDpAfterLogin(String storeId, String mtfId) {
-
-		// String DPId = new DPselector().setCofirmOrder(details.getStoreId(),
-		// ids);
-
-		String DPId = new DpOperations().initialOperations(storeId, mtfId);
-
-		return Response.ok(DPId, MediaType.TEXT_PLAIN).build();
-
-	}
-	
-	//5 buttons in dp page
-
-	@Path("/confirmed")
+	// this is for status tab
+	@Path("/atstorebutton")
 	@GET
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response confirmedAction(String storeId) {
+	public Response dpStatusTab(String storeId, String mtfId) {
 
-		ArrayList<String> orderList = new DpOperations().confirmActionDisplay(storeId);
-		return Response.ok(orderList, MediaType.TEXT_PLAIN).build();
-
-	}
-
-	@Path("/ready")
-	@GET
-	@Consumes(MediaType.APPLICATION_JSON)
-	public Response readyAction(String storeId) {
-
-		ArrayList<String> orderList = new DpOperations().readyActionDisplay(storeId);
-		return Response.ok(orderList, MediaType.TEXT_PLAIN).build();
+		String status = new DpOperations().DpAvailbleAtStore(storeId, mtfId);
+		return Response.ok(status, MediaType.TEXT_PLAIN).build();
 
 	}
 
+	// for dispatched tab
 	@Path("/dispatched")
 	@GET
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response dispatchedAction(String storeId, String mtfId) {
+	public Response dispatchedTabAction(int storeId, String mtfId) {
 
-		ArrayList<String> orderList = new DpOperations().readyActionDisplay(storeId, mtfId);
+		Map<String, ArrayList<OrderDetails>> orderList = new DpOperations().getAllDispatchedOrder(storeId);
 		return Response.ok(orderList, MediaType.TEXT_PLAIN).build();
 
 	}
 
+	// have to show every order details which is assign to that guy
+	@Path("/assign")
+	@GET
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response getAssighedOrders(int storeId, String mtfId) {
+
+		Map<String, ArrayList<OrderDetails>> orderList = new DpOperations().getAllAssighedOrders(storeId, mtfId);
+		return Response.ok(orderList, MediaType.TEXT_PLAIN).build();
+
+	}
+
+	// in delivered tab accept button
+	@Path("/accept")
+	@GET
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response acceptOrders(int storeId, String mtfId) {
+
+		Map<String, ArrayList<OrderDetails>> orderList = new DpOperations().acceptedOrders(storeId, mtfId);
+		return Response.ok(orderList, MediaType.TEXT_PLAIN).build();
+
+	}
+//delivered tab
 	@Path("/delivered")
 	@GET
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response deliveredAction(String storeId, String mtfId) {
+	public Response deliveredTabAction(int storeId, String mtfId) {
 
-		ArrayList<String> orderList = new DpOperations().deliveredActionDisplay(storeId, mtfId);
+		Map<String, ArrayList<OrderDetails>> orderList = new DpOperations().getAllDeliveredOrders(storeId, mtfId);
 		return Response.ok(orderList, MediaType.TEXT_PLAIN).build();
 
 	}

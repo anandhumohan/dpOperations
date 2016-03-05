@@ -6,6 +6,7 @@ import java.util.List;
 public class OrderDetails {
 	private int orderId;
 	private String storeName;
+	private String DeliveredBy;
 	private AddressInfo customerDetails;
 	private ArrayList<ItemsDetails> orderDetails;
 	private PaymentDetails paymentDetails;
@@ -25,6 +26,14 @@ public class OrderDetails {
 
 	public void setStoreName(String storeName) {
 		this.storeName = storeName;
+	}
+
+	public String getDeliveredBy() {
+		return DeliveredBy;
+	}
+
+	public void setDeliveredBy(String deliveredBy) {
+		DeliveredBy = deliveredBy;
 	}
 
 	public AddressInfo getCustomerDetails() {

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.chaipoint.constants.Constants;
+import com.chaipoint.deliverypartner.DpOperations;
 import com.chaipoint.hibernatehelper.HibernateTemplate;
 
 public class LoginHelper {
@@ -54,6 +55,8 @@ public class LoginHelper {
 		if (roleId == constants.role_dp && token != null)
 
 		{
+			
+			String status = new DpOperations().initialOperations(storeId.get(0), mtfId);
 			// API call to super visor default screen
 
 		} else

@@ -8,7 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "cp_retail_customer")
+@Table(name = "cp_retial_customer")
 public class CpRetailCustomer {
 	@Id
 	@Column(name = "id")
@@ -44,7 +44,7 @@ public class CpRetailCustomer {
 	@Column(name = "landline")
 	private String landline;
 
-	@Column(name = "store-id")
+	@Column(name = "store_id")
 	private int storeId;
 
 	@Column(name = "active")
@@ -68,8 +68,8 @@ public class CpRetailCustomer {
 	@Column(name = "sublocality")
 	private String subLocality;
 
-	@Column(name = "bilding")
-	private String bilding;
+	@Column(name = "building")
+	private String building;
 
 	@Column(name = "floor")
 	private String floor;
@@ -229,12 +229,14 @@ public class CpRetailCustomer {
 		this.subLocality = subLocality;
 	}
 
-	public String getBilding() {
-		return bilding;
+	
+
+	public String getBuilding() {
+		return building;
 	}
 
-	public void setBilding(String bilding) {
-		this.bilding = bilding;
+	public void setBuilding(String building) {
+		this.building = building;
 	}
 
 	public String getFloor() {

@@ -8,7 +8,9 @@ import java.util.Queue;
 
 import com.chaipoint.constants.Constants;
 import com.chaipoint.helperclasses.DpStatus;
+import com.chaipoint.helperclasses.OrderDetails;
 import com.chaipoint.helperclasses.OrderStatus;
+import com.chaipoint.ninja.NinjaOperations;
 
 public class DpOperations {
 
@@ -49,11 +51,6 @@ public class DpOperations {
 		return DPId;
 	}
 
-	public String orderReadyState() {
-
-		return null;
-	}
-
 	public String DpAvailbleAtStore(String mtfId, String storeId) {
 
 		String DPId = mtfId;
@@ -67,13 +64,35 @@ public class DpOperations {
 		return Constants.success;
 	}
 
+	// get all Order details of dispatched items of the store
+	public Map<String, ArrayList<OrderDetails>> getAllDispatchedOrder(int storeId) {
+
+		Map<String, ArrayList<OrderDetails>> orderDetails = new NinjaOperations().getOrderDetails(storeId,
+				Constants.Order_Status_dispatched);
+		return orderDetails;
+	}
+
+	public Map<String, ArrayList<OrderDetails>> getAllDeliveredOrders(int storeId, String mtfId) {
+		Map<String, ArrayList<OrderDetails>> orderDetails = new NinjaOperations().getOrderDetails(storeId,
+				Constants.Order_Status_dispatched);
+		for (ArrayList<OrderDetails> details : orderDetails.values()) {
+			for (OrderDetails order : details) {
+				if (!order.getDeliveredBy().equals(mtfId)) {
+					details.remove(order);
+				}
+			}
+
+		}
+		return orderDetails;
+	}
+
 	public String DpOutForDelivery(String mtfId, String storeId) {
 
 		String status = "";
 		String DPId = mtfId;
-	//	status = dpStatus.get(DPId);
-	//	status.setStatus(Constants.dp_Status_available);
-	//	dpStatus.put(DPId, status);
+		// status = dpStatus.get(DPId);
+		// status.setStatus(Constants.dp_Status_available);
+		// dpStatus.put(DPId, status);
 
 		// orderStatus = state;
 		// send order status for tracking
@@ -103,24 +122,6 @@ public class DpOperations {
 		return null;
 	}
 
-	public ArrayList<String> readyActionDisplay(String storeId) {
-
-		ArrayList<String> orderList = new ArrayList<String>();
-		return orderList;
-	}
-
-	public ArrayList<String> readyActionDisplay(String storeId, String mtfId) {
-
-		// get allorders that are assighed to this dp
-		return null;
-	}
-
-	public ArrayList<String> deliveredActionDisplay(String storeId, String mtfId) {
-
-		// get all orders that he has delivered today.
-		return null;
-	}
-
 	// for flushing the values after closing
 	public String forceFlush() {
 		DPQueues.clear();
@@ -128,4 +129,20 @@ public class DpOperations {
 		return "success";
 	}
 
+	public Map<String, ArrayList<OrderDetails>> getAllAssighedOrders(int storeId, String mtfId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Map<String, ArrayList<OrderDetails>> acceptedOrders(int storeId, String mtfId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Map<String, ArrayList<OrderDetails>> deliveredOrders(int storeId, String mtfId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	
 }

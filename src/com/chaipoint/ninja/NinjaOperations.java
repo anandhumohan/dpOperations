@@ -26,7 +26,6 @@ import com.chaipoint.helperclasses.OrderStatus;
 import com.chaipoint.helperclasses.PaymentDetails;
 import com.chaipoint.helperclasses.Pricing;
 import com.chaipoint.hibernatehelper.HibernateOperations;
-import com.chaipoint.hibernatehelper.HibernateTemplate;
 
 public class NinjaOperations {
 
@@ -73,7 +72,7 @@ public class NinjaOperations {
 			paymentDetails.setChannel(orders.getChannel());
 			paymentDetails.setPaymentType(orders.getPaymentMethod());
 			orderDetails.setPaymentDetails(paymentDetails);
-
+orderDetails.setDeliveredBy(orders.getDeliveryBoy());
 			Pricing pricing = new Pricing();
 			pricing.setCouponApplied(orders.getCouponCode());
 			pricing.setDiscountAmount(orders.getDiscount());
@@ -81,7 +80,7 @@ public class NinjaOperations {
 			pricing.setFinalPayableCost(orders.getTotalAmount());
 			pricing.setDeliveryCharges(orders.getDeliveryCharge());
 			orderDetails.setPricing(pricing);
-
+			// finished till here working properly
 			// orderDetails.setCustomerDetails(orderDetailsDaoImpl.getAddressdetails(orderList));
 			// orderDetails.setCustomerDetails(orderDetailsDaoImpl.getAddressdetailsFromId(orders.getCustomerId()));
 			CpOrderAddress orderAddress = orderDetailsDaoImpl.getAddressdetails(orderList);
@@ -89,7 +88,9 @@ public class NinjaOperations {
 			addressInfo.setName(orderAddress.getName());
 			addressInfo.setAddress_line_first(orderAddress.getAddress());
 			addressInfo.setLandmark(orderAddress.getLandmark());
+
 			addressInfo.setPhone(orderDetailsDaoImpl.getPhoneNumber(orderAddress.getId()));
+			orderDetails.setCustomerDetails(addressInfo);
 			orderDetailsList.add(orderDetails);
 
 		}

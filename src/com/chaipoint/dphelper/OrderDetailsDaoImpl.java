@@ -116,8 +116,8 @@ public class OrderDetailsDaoImpl implements OrderDetailsDAO {
 
 	public CpOrderAddress getAddressdetails(int orderList) {
 
-		Criteria criteria = template.getSession().createCriteria(CpOrderAddress.class);
-		criteria.add(Restrictions.eq("id", orderList));
+		Criteria criteria = getTemplate().getSession().createCriteria(CpOrderAddress.class);
+		criteria.add(Restrictions.eq("orderId", orderList));
 		ArrayList<CpOrderAddress> address = (ArrayList<CpOrderAddress>) getTemplate().get(criteria);
 
 		return address.get(0);
@@ -165,12 +165,12 @@ public class OrderDetailsDaoImpl implements OrderDetailsDAO {
 	}
 
 	public String getPhoneNumber(int id) {
-		Criteria criteria = template.getSession().createCriteria(CpRetailCustomer.class);
+		Criteria criteria = getTemplate().getSession().createCriteria(CpRetailCustomer.class);
 		criteria.add(Restrictions.eq("id", id));
 		criteria.setProjection(Projections.property("phone"));
-		ArrayList<String> address = (ArrayList<String>) getTemplate().get(criteria);
+		ArrayList<String> phone = (ArrayList<String>) getTemplate().get(criteria);
 
-		return address.get(0);
+		return phone .get(0);
 
 	}
 

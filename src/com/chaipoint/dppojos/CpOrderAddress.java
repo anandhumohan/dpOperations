@@ -10,46 +10,46 @@ import javax.persistence.Table;
 public class CpOrderAddress {
 
 	@Id
-	@Column(name = "ID")
+	@Column(name = "id")
 	private int id;
 
-	@Column(name = "ORDER_ID")
+	@Column(name = "order_id")
 	private int orderId;
 
-	@Column(name = "NAME")
+	@Column(name = "name")
 	private String name;
 
-	@Column(name = "EMAIL")
+	@Column(name = "email")
 	private String email;
 
-	@Column(name = "ADDRESS")
+	@Column(name = "address")
 	private String address;
 
-	@Column(name = "STREET")
+	@Column(name = "street")
 	private String street;
 
-	@Column(name = "LANDMARK")
+	@Column(name = "landmark")
 	private String landmark;
 
-	@Column(name = "CITY")
+	@Column(name = "city")
 	private String city;
 
-	@Column(name = "PPC_NO")
+	@Column(name = "ppc_no")
 	private String ppc_no;
 
-	@Column(name = "LOCALITY")
+	@Column(name = "locality")
 	private String locality;
 
-	@Column(name = "SUB_LOCALITY")
+	@Column(name = "sublocality")
 	private String subLocality;
 
-	@Column(name = "BUILDING")
+	@Column(name = "building")
 	private String building;
 
-	@Column(name = "FLOOR")
+	@Column(name = "floor")
 	private String floor;
 
-	@Column(name = "FLAT")
+	@Column(name = "flat")
 	private String flat;
 
 	public int getId() {

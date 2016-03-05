@@ -57,5 +57,7 @@ public class NinjaAPI {
 		return Response.ok(code, MediaType.TEXT_PLAIN_TYPE).build();
 
 	}
+	
+	
 
 }
