@@ -1,8 +1,6 @@
 package com.chaipoint.helperclasses;
 
-import java.util.Comparator;
-
-public class StoreLocation {
+public class Stores {
 
 	private int id;
 	private String name;
