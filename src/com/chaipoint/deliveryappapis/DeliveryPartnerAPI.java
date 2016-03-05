@@ -60,8 +60,20 @@ public class DeliveryPartnerAPI {
 		return Response.ok(orderList, MediaType.TEXT_PLAIN).build();
 
 	}
-//delivered tab
+	
 	@Path("/delivered")
+	@GET
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response deliverOrders(int storeId, String mtfId) {
+
+		Map<String, ArrayList<OrderDetails>> orderList = new DpOperations().deliveredOrders(storeId, mtfId);
+		return Response.ok(orderList, MediaType.TEXT_PLAIN).build();
+
+	}
+
+
+	// delivered tab
+	@Path("/deliveredtab")
 	@GET
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response deliveredTabAction(int storeId, String mtfId) {
