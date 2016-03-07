@@ -1,7 +1,8 @@
 package com.chaipoint.dppojos;
 
-import java.sql.Date;
+//import java.sql.Date;
 import java.sql.Time;
+import java.util.Date;
 
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
@@ -72,6 +73,9 @@ public class CpOrders {
 
 	@Column(name = "delivery_date")
 	public Date deliveryDate;
+	
+	@Column(name = "created_date")
+	public Date createdDate;
 
 	@Column(name = "sms_flag")
 	public String smsFlag;
@@ -219,6 +223,15 @@ public class CpOrders {
 
 	public void setDeliveryDate(Date deliveryDate) {
 		this.deliveryDate = deliveryDate;
+	}
+
+	
+	public Date getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(Date createdDate) {
+		this.createdDate = createdDate;
 	}
 
 	public String getSmsFlag() {

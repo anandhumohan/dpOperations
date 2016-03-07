@@ -5,12 +5,18 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
+import java.util.concurrent.TimeUnit;
 
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Conjunction;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
@@ -120,18 +126,47 @@ public class NinjaOperations {
 	}
 
 	// count of each status of current date
-	public Map<String, Integer> getAllCounts() {
+	public Map<String, Long> getAllCounts(int storeId) {
 
 		ArrayList<String> statusList = getAllStatus();
-		Map<String, Integer> stateCount = new HashMap<String, Integer>();
+		// Map<String, Integer> stateCount = new HashMap<String, Integer>();
+		Map<String, Long> stateCount = new HashMap<String, Long>();
 		for (String status : statusList) {
 
 			Criteria criteria = getHibernatetemplate().getSession().createCriteria(CpOrders.class);
 			criteria.add(Restrictions.eq("status", status));
-			criteria.setProjection(Projections.property("id"));
-			ArrayList<Integer> count = (ArrayList<Integer>) getHibernatetemplate().get(criteria);
+			criteria.add(Restrictions.eq("storeId", storeId));
+			// criteria.setProjection(Projections.property("id"));
+			criteria.setProjection(Projections.rowCount());
 
-			stateCount.put(status, count.size());
+			// DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd
+			// hh:mm:ss");
+			// Date date = new Date();
+			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+			Date date = new Date();
+			System.out.println("ennathe date" + date);
+
+			Date minDate = null;
+			try {
+				minDate = formatter.parse(formatter.format(date));
+			} catch (ParseException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+
+			Date maxDate = new Date(minDate.getTime() + TimeUnit.DAYS.toMillis(1));
+
+			System.out.println("minimum date" + minDate);
+			System.out.println("minimum date" + maxDate);
+
+			criteria.add(Restrictions.ge("createdDate", minDate));
+
+			criteria.add(Restrictions.lt("createdDate", maxDate));
+
+			ArrayList<Long> count = (ArrayList<Long>) getHibernatetemplate().get(criteria);
+
+			// stateCount.put(status, count.size());
+			stateCount.put(status, count.get(0));
 		}
 		return stateCount;
 
@@ -181,6 +216,7 @@ public class NinjaOperations {
 		ArrayList<CpOrders> count = (ArrayList<CpOrders>) getHibernatetemplate().get(criteria);
 		cpOrders = count.get(0);
 		cpOrders.setCancelReason(reason);
+		// cancel date update if needed
 
 		if (Constants.success.equals(getHibernatetemplate().update(cpOrders))) {
 			code = Constants.success;
@@ -192,19 +228,47 @@ public class NinjaOperations {
 
 	// change the status of the order new to confirmed in db
 	public String updateOrderStatus(int OrderId, String status) {
-		String code = "";
+		String msg = "";
 		CpOrders cpOrders = new CpOrders();
 		Criteria criteria = getHibernatetemplate().getSession().createCriteria(CpOrders.class);
-		criteria.add(Restrictions.eq("id", OrderId));
-		ArrayList<CpOrders> count = (ArrayList<CpOrders>) getHibernatetemplate().get(criteria);
-		cpOrders = count.get(0);
-		cpOrders.setStatus(status);
 
-		if (Constants.success.equals(getHibernatetemplate().update(cpOrders))) {
-			code = Constants.success;
+		if (status.equals(Constants.Order_Status_confirmed)) {
+			criteria.add(Restrictions.eq("id", OrderId));
+			ArrayList<CpOrders> count = (ArrayList<CpOrders>) getHibernatetemplate().get(criteria);
+			cpOrders = count.get(0);
+			cpOrders.setStatus(status);
+			cpOrders.setConfirmTime(new Date());
+
+			if (Constants.success.equals(getHibernatetemplate().update(cpOrders))) {
+				msg = Constants.success;
+			}
+		}
+		// This condition only works after cpos ready change
+		if (status.equals(Constants.Order_Status_ready)) {
+			criteria.add(Restrictions.eq("id", OrderId));
+			ArrayList<CpOrders> count = (ArrayList<CpOrders>) getHibernatetemplate().get(criteria);
+			cpOrders = count.get(0);
+			cpOrders.setStatus(status);
+			// cpOrders.setConfirmTime(new Date());
+
+			if (Constants.success.equals(getHibernatetemplate().update(cpOrders))) {
+				msg = Constants.success;
+			}
 		}
 
-		return code;
+		if (status.equals(Constants.Order_Status_dispatched)) {
+			criteria.add(Restrictions.eq("id", OrderId));
+			ArrayList<CpOrders> count = (ArrayList<CpOrders>) getHibernatetemplate().get(criteria);
+			cpOrders = count.get(0);
+			cpOrders.setStatus(status);
+			cpOrders.setDispatchTime(new Date());
+
+			if (Constants.success.equals(getHibernatetemplate().update(cpOrders))) {
+				msg = Constants.success;
+			}
+		}
+
+		return msg;
 	}
 
 	public HibernateOperations getHibernatetemplate() {
