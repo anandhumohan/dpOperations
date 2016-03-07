@@ -77,9 +77,11 @@ public class DpOperations {
 				Constants.Order_Status_dispatched);
 		for (ArrayList<OrderDetails> details : orderDetails.values()) {
 			for (OrderDetails order : details) {
+				/*
 				if (!order.getDeliveredBy().equals(mtfId)) {
 					details.remove(order);
 				}
+				*/
 			}
 
 		}

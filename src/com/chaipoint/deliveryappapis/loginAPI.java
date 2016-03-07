@@ -28,6 +28,7 @@ public class loginAPI {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response getAllRegions() {
 		System.out.println("reached here");
+
 		RootRegions rootregions = new RootRegions();
 		ArrayList<Regions> regionToRegionId = new RegionHelper().getRegions();
 		rootregions.setRegions(regionToRegionId);
@@ -36,7 +37,6 @@ public class loginAPI {
 
 	}
 
-	
 	@Path("/getallstores")
 	@GET
 	@Consumes(MediaType.APPLICATION_JSON)

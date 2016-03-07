@@ -1,102 +1,89 @@
 package com.chaipoint.dppojos;
 
-import java.util.Date;
+import java.sql.Date;
+import java.sql.Time;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 @Entity
 @Table(name = "cp_orders")
+@Cacheable
+@Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
 public class CpOrders {
 
 	@Id
-	@GeneratedValue
-	@Column(name = "ID")
-	private int id;
+	@Column(name = "id")
+	public int id;
 
-	@Column(name = "STATUS")
-	private String status;
+	@Column(name = "status")
+	public String status;
 
-	@Column(name = "CANCEL_REASON")
-	private String cancelReason;
+	@Column(name = "cancel_reason")
+	public String cancelReason;
 
-	@Column(name = "CUSTOMER_ID")
-	private String customerId;
+	@Column(name = "customer_id")
+	public int customerId;
 
-	@Column(name = "STORE_ID")
-	private int storeId;
+	@Column(name = "store_id")
+	public int storeId;
 
-	@Column(name = "CHANNEL")
-	private int channel;
+	@Column(name = "channel")
+	public int channel;
 
-	@Column(name = "PRODUCTS")
-	private String products;
+	// @Column(name = "products")
+	// public String products;
 
-	@Column(name = "TOTAL_AMOUNT")
-	private double totalAmount;
+	@Column(name = "total_amount")
+	public double totalAmount;
 
-	@Column(name = "DISCOUNT")
-	private double discount;
+	@Column(name = "discount")
+	public double discount;
 
-	@Column(name = "DELIVERY_CHARGE")
-	private double deliveryCharge;
+	@Column(name = "delivery_charge")
+	public double deliveryChange;
 
-	@Column(name = "SERVICE_CHARGE")
-	private double serviceCharge;
+	@Column(name = "service_charge")
+	public double serviceCharge;
 
-	@Column(name = "VAT")
-	private double vat;
+	@Column(name = "vat")
+	public double vat;
 
-	@Column(name = "NET_AMOUNT")
-	private double netAmount;
+	@Column(name = "net_amount")
+	public double netAmount;
 
-	@Column(name = "PAYMENT_METHOD")
-	private String paymentMethod;
+	@Column(name = "payment_method")
+	public String paymentMethod;
 
-	@Column(name = "COMMENT")
-	private String comment;
+	@Column(name = "confirm_time")
+	public Date confirmTime;
 
-	@Column(name = "CONFIRM_NAME")
-	private Date confirmDate;
+	@Column(name = "dispatch_time")
+	public Date dispatchTime;
 
-	@Column(name = "DISPATCH_DATE")
-	private Date dispatchDate;
+	@Column(name = "cancel_time")
+	public Date cancelTime;
 
-	@Column(name = "CANCEL_DATE")
-	private Date cancelDate;
+	@Column(name = "delivery_date")
+	public Date deliveryDate;
 
-	@Column(name = "DELIVERY_DATE")
-	private Date deliveryDate;
+	@Column(name = "sms_flag")
+	public String smsFlag;
 
-	@Column(name = "FINAL_DELIVERY_DATE")
-	private Date finalDeliveryDate;
+	@Column(name = "delivery_boy")
+	public int deliveryBoy;
 
-	@Column(name = "CREATED_BY")
-	private int createdBy;
+	@Column(name = "coupon_code")
+	public String couponCode;
 
-	@Column(name = "CREATED_DATE")
-	private String createdDate;
-
-	@Column(name = "UPDATED_BY")
-	private int updatedBy;
-
-	@Column(name = "UPDATED_DATE")
-	private String updatedDate;
-
-	@Column(name = "SMS_FLAG")
-	private String smsFlag;
-
-	@Column(name = "DELIVERY_BOY")
-	private String deliveryBoy;
-
-	@Column(name = "COUPON_CODE")
-	private String couponCode;
-
-	@Column(name = "DP_STATUS")
-	private String dpStatus;
+	@Column(name = "dp_status")
+	public String dpStatus;
 
 	public int getId() {
 		return id;
@@ -122,14 +109,13 @@ public class CpOrders {
 		this.cancelReason = cancelReason;
 	}
 
-	public String getCustomerId() {
+	public int getCustomerId() {
 		return customerId;
 	}
 
-	public void setCustomerId(String customerId) {
+	public void setCustomerId(int customerId) {
 		this.customerId = customerId;
 	}
-
 
 	public int getStoreId() {
 		return storeId;
@@ -145,14 +131,6 @@ public class CpOrders {
 
 	public void setChannel(int channel) {
 		this.channel = channel;
-	}
-
-	public String getProducts() {
-		return products;
-	}
-
-	public void setProducts(String products) {
-		this.products = products;
 	}
 
 	public double getTotalAmount() {
@@ -171,12 +149,12 @@ public class CpOrders {
 		this.discount = discount;
 	}
 
-	public double getDeliveryCharge() {
-		return deliveryCharge;
+	public double getDeliveryChange() {
+		return deliveryChange;
 	}
 
-	public void setDeliveryCharge(double deliveryCharge) {
-		this.deliveryCharge = deliveryCharge;
+	public void setDeliveryChange(double deliveryChange) {
+		this.deliveryChange = deliveryChange;
 	}
 
 	public double getServiceCharge() {
@@ -211,36 +189,28 @@ public class CpOrders {
 		this.paymentMethod = paymentMethod;
 	}
 
-	public String getComment() {
-		return comment;
+	public Date getConfirmTime() {
+		return confirmTime;
 	}
 
-	public void setComment(String comment) {
-		this.comment = comment;
+	public void setConfirmTime(Date confirmTime) {
+		this.confirmTime = confirmTime;
 	}
 
-	public Date getConfirmDate() {
-		return confirmDate;
+	public Date getDispatchTime() {
+		return dispatchTime;
 	}
 
-	public void setConfirmDate(Date confirmDate) {
-		this.confirmDate = confirmDate;
+	public void setDispatchTime(Date dispatchTime) {
+		this.dispatchTime = dispatchTime;
 	}
 
-	public Date getDispatchDate() {
-		return dispatchDate;
+	public Date getCancelTime() {
+		return cancelTime;
 	}
 
-	public void setDispatchDate(Date dispatchDate) {
-		this.dispatchDate = dispatchDate;
-	}
-
-	public Date getCancelDate() {
-		return cancelDate;
-	}
-
-	public void setCancelDate(Date cancelDate) {
-		this.cancelDate = cancelDate;
+	public void setCancelTime(Date cancelTime) {
+		this.cancelTime = cancelTime;
 	}
 
 	public Date getDeliveryDate() {
@@ -251,46 +221,6 @@ public class CpOrders {
 		this.deliveryDate = deliveryDate;
 	}
 
-	public Date getFinalDeliveryDate() {
-		return finalDeliveryDate;
-	}
-
-	public void setFinalDeliveryDate(Date finalDeliveryDate) {
-		this.finalDeliveryDate = finalDeliveryDate;
-	}
-
-	public int getCreatedBy() {
-		return createdBy;
-	}
-
-	public void setCreatedBy(int createdBy) {
-		this.createdBy = createdBy;
-	}
-
-	public String getCreatedDate() {
-		return createdDate;
-	}
-
-	public void setCreatedDate(String createdDate) {
-		this.createdDate = createdDate;
-	}
-
-	public int getUpdatedBy() {
-		return updatedBy;
-	}
-
-	public void setUpdatedBy(int updatedBy) {
-		this.updatedBy = updatedBy;
-	}
-
-	public String getUpdatedDate() {
-		return updatedDate;
-	}
-
-	public void setUpdatedDate(String updatedDate) {
-		this.updatedDate = updatedDate;
-	}
-
 	public String getSmsFlag() {
 		return smsFlag;
 	}
@@ -299,11 +229,11 @@ public class CpOrders {
 		this.smsFlag = smsFlag;
 	}
 
-	public String getDeliveryBoy() {
+	public int getDeliveryBoy() {
 		return deliveryBoy;
 	}
 
-	public void setDeliveryBoy(String deliveryBoy) {
+	public void setDeliveryBoy(int deliveryBoy) {
 		this.deliveryBoy = deliveryBoy;
 	}
 

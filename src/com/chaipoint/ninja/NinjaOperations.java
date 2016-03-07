@@ -19,7 +19,6 @@ import com.chaipoint.dphelper.OrderDetailsDaoImpl;
 import com.chaipoint.dppojos.CpOrderAddress;
 import com.chaipoint.dppojos.CpOrders;
 import com.chaipoint.helperclasses.AddressInfo;
-import com.chaipoint.helperclasses.CpOrder;
 import com.chaipoint.helperclasses.DpStatus;
 import com.chaipoint.helperclasses.OrderDetails;
 import com.chaipoint.helperclasses.OrderStatus;
@@ -68,17 +67,18 @@ public class NinjaOperations {
 			orderDetails.setOrderDetails(orderDetailsDaoImpl.getOrderDeatils(orderList));
 
 			CpOrders orders = orderDetailsDaoImpl.getOrderdetails(orderList);
+			// orderDetails.setOrderTime(orders.getCreatedDate().getTime());
 			PaymentDetails paymentDetails = new PaymentDetails();
 			paymentDetails.setChannel(orders.getChannel());
 			paymentDetails.setPaymentType(orders.getPaymentMethod());
 			orderDetails.setPaymentDetails(paymentDetails);
-orderDetails.setDeliveredBy(orders.getDeliveryBoy());
+			orderDetails.setDeliveredBy(orders.getDeliveryBoy());
 			Pricing pricing = new Pricing();
 			pricing.setCouponApplied(orders.getCouponCode());
 			pricing.setDiscountAmount(orders.getDiscount());
 			pricing.setTotalPrice(orders.getTotalAmount());
 			pricing.setFinalPayableCost(orders.getTotalAmount());
-			pricing.setDeliveryCharges(orders.getDeliveryCharge());
+			pricing.setDeliveryCharges(orders.getDeliveryChange());
 			orderDetails.setPricing(pricing);
 			// finished till here working properly
 			// orderDetails.setCustomerDetails(orderDetailsDaoImpl.getAddressdetails(orderList));
@@ -86,10 +86,16 @@ orderDetails.setDeliveredBy(orders.getDeliveryBoy());
 			CpOrderAddress orderAddress = orderDetailsDaoImpl.getAddressdetails(orderList);
 			AddressInfo addressInfo = new AddressInfo();
 			addressInfo.setName(orderAddress.getName());
-			addressInfo.setAddress_line_first(orderAddress.getAddress());
+			addressInfo.setAddress(orderAddress.getAddress());
+			addressInfo.setCity(orderAddress.getCity());
 			addressInfo.setLandmark(orderAddress.getLandmark());
+			addressInfo.setBuilding(orderAddress.getBuilding());
+			addressInfo.setFlat(orderAddress.getFlat());
+			addressInfo.setFloor(orderAddress.getFloor());
+			addressInfo.setLatitude("10.10");
+			addressInfo.setLongitude("10.10");
 
-		//	addressInfo.setPhone(orderDetailsDaoImpl.getPhoneNumber(orderAddress.getId()));
+			// addressInfo.setPhone(orderDetailsDaoImpl.getPhoneNumber(orderAddress.getId()));
 			orderDetails.setCustomerDetails(addressInfo);
 			orderDetailsList.add(orderDetails);
 

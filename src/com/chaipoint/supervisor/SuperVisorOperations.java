@@ -58,7 +58,7 @@ private ArrayList<OrderDetails> getOrderList(ArrayList<String> storeIds, String 
 		pricing.setDiscountAmount(orders.getDiscount());
 		pricing.setTotalPrice(orders.getTotalAmount());
 		pricing.setFinalPayableCost(orders.getTotalAmount());
-		pricing.setDeliveryCharges(orders.getDeliveryCharge());
+		pricing.setDeliveryCharges(orders.getDeliveryChange());
 		orderDetails.setPricing(pricing);
 		
 		orderDetailsList.add(orderDetails);

@@ -66,7 +66,7 @@ public class OrderDetailsDaoImpl implements OrderDetailsDAO {
 		Criteria criteria = getTemplate().getSession().createCriteria(CpOrders.class);
 		criteria.add(Restrictions.eq("storeId", storeId));
 		criteria.add(Restrictions.eq("status", status));
-		
+		/*
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 		String cunvertCurrentDate="2016-03-05";
 		Date date = new Date();
@@ -77,7 +77,8 @@ public class OrderDetailsDaoImpl implements OrderDetailsDAO {
 			e.printStackTrace();
 		}
 		criteria.add(Restrictions.eq("deliveryDate",date));
-		/*
+		*/
+		
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		Date date = new Date();
 		//System.out.println(dateFormat.format(date)); //2014/08/06 15:59:48
@@ -88,7 +89,7 @@ public class OrderDetailsDaoImpl implements OrderDetailsDAO {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		*/
+		
 		criteria.setProjection(Projections.property("id"));
 		ArrayList<Integer> orderList = (ArrayList<Integer>) getTemplate().get(criteria);
 		System.out.println(orderList);
@@ -163,9 +164,9 @@ System.out.println(address.get(0));
 	}
 
 	public CpOrders getOrderdetails(int orderList) {
-		orderList = 1;
+	//	orderList = 1;
 
-		Criteria criteria = template.getSession().createCriteria(CpOrders.class);
+		Criteria criteria = getTemplate().getSession().createCriteria(CpOrders.class);
 		criteria.add(Restrictions.eq("id", orderList));
 		ArrayList<CpOrders> address = (ArrayList<CpOrders>) getTemplate().get(criteria);
 System.out.println(address.get(0));

@@ -6,7 +6,8 @@ import java.util.List;
 public class OrderDetails {
 	private int orderId;
 	private String storeName;
-	private String DeliveredBy;
+	private int DeliveredBy;
+	private long orderTime;
 	private AddressInfo customerDetails;
 	private ArrayList<ItemsDetails> orderDetails;
 	private PaymentDetails paymentDetails;
@@ -28,12 +29,24 @@ public class OrderDetails {
 		this.storeName = storeName;
 	}
 
-	public String getDeliveredBy() {
+	
+
+	
+
+	public int getDeliveredBy() {
 		return DeliveredBy;
 	}
 
-	public void setDeliveredBy(String deliveredBy) {
+	public void setDeliveredBy(int deliveredBy) {
 		DeliveredBy = deliveredBy;
+	}
+
+	public long getOrderTime() {
+		return orderTime;
+	}
+
+	public void setOrderTime(long orderTime) {
+		this.orderTime = orderTime;
 	}
 
 	public AddressInfo getCustomerDetails() {
