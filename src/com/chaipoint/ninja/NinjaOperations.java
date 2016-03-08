@@ -21,7 +21,9 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
 import com.chaipoint.constants.Constants;
+import com.chaipoint.deliverypartner.DpOperations;
 import com.chaipoint.dphelper.OrderDetailsDaoImpl;
+import com.chaipoint.dppojos.CancelReasons;
 import com.chaipoint.dppojos.CpOrderAddress;
 import com.chaipoint.dppojos.CpOrders;
 import com.chaipoint.helperclasses.AddressInfo;
@@ -34,11 +36,23 @@ import com.chaipoint.hibernatehelper.HibernateOperations;
 
 public class NinjaOperations {
 
-	public static Map<String, Queue<String>> DPQueues = new HashMap<String, Queue<String>>();
-	public static Map<String, DpStatus> dpStatus = new HashMap<String, DpStatus>();
-
-	public static Map<String, OrderStatus> orderStatus = new HashMap<String, OrderStatus>();
 	public static Map<String, String> storeToNinja = new HashMap<String, String>();
+
+	public static Map<Integer, String> reasonMap = new HashMap<Integer, String>();
+
+	static {
+		HibernateOperations operation = new HibernateOperations();
+		Criteria criteria = operation.getSession().createCriteria(CancelReasons.class);
+		criteria.add(Restrictions.eq("active", 'Y'));
+
+		ArrayList<CancelReasons> list = (ArrayList<CancelReasons>) operation.get(criteria);
+
+		for (CancelReasons reasons : list) {
+			reasonMap.put(reasons.getId(), reasons.getReason());
+		}
+		System.out.println("kazhijy kazhijy");
+
+	}
 
 	DpStatus status = null;
 	Queue<String> queue = null;
@@ -113,10 +127,10 @@ public class NinjaOperations {
 	// getting all available at store dps
 	public ArrayList<String> getAvailableDp(String storeId) {
 
-		ArrayList<String> dps = new ArrayList<>(DPQueues.get(storeId));
+		ArrayList<String> dps = new ArrayList<>(new DpOperations().DPQueues.get(storeId));
 		ArrayList<String> availDp = new ArrayList<>();
 		for (String status : dps) {
-			if (dpStatus.get(status).getStatus() == "AVAILABLE") {
+			if (new DpOperations().dpStatus.get(status).getStatus() == "AVAILABLE") {
 				availDp.add(status);
 
 			}
@@ -208,14 +222,14 @@ public class NinjaOperations {
 	}
 
 	// save the order cancel reason
-	public String saveCancelreason(int orderId, String reason) {
+	public String saveCancelreason(int orderId, int id) {
 		String code = "";
 		CpOrders cpOrders = new CpOrders();
 		Criteria criteria = getHibernatetemplate().getSession().createCriteria(CpOrders.class);
 		criteria.add(Restrictions.eq("id", orderId));
-		ArrayList<CpOrders> count = (ArrayList<CpOrders>) getHibernatetemplate().get(criteria);
-		cpOrders = count.get(0);
-		cpOrders.setCancelReason(reason);
+		ArrayList<CpOrders> list = (ArrayList<CpOrders>) getHibernatetemplate().get(criteria);
+		cpOrders = list.get(0);
+		cpOrders.setCancelReason(reasonMap.get(id));
 		// cancel date update if needed
 
 		if (Constants.success.equals(getHibernatetemplate().update(cpOrders))) {

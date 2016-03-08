@@ -225,6 +225,7 @@ public class HibernateOperations {
 			postAction();
 		} catch (Exception ex) {
 			logger.error("Exception while update with Error : " + ex);
+			System.out.println("Exception while update with Error : " + ex);
 			response = Constants.error;
 		} finally {
 			postSession();

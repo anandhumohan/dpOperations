@@ -33,6 +33,7 @@
 		<mapping class="com.chaipoint.dppojos.StoreMaster" />
 		<mapping class="com.chaipoint.dppojos.ProductMaster" />
 		<mapping class="com.chaipoint.dppojos.CpRetailCustomer" />
+		<mapping class="com.chaipoint.dppojos.CancelReasons" />
 		
 
 

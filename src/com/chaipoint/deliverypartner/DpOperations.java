@@ -14,6 +14,7 @@ import com.chaipoint.ninja.NinjaOperations;
 
 public class DpOperations {
 
+	
 	public static Map<String, Queue<String>> DPQueues = new HashMap<String, Queue<String>>();
 	public static Map<String, DpStatus> dpStatus = new HashMap<String, DpStatus>();
 
