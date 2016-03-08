@@ -17,7 +17,6 @@ import com.chaipoint.dppojos.CpRetailCustomer;
 import com.chaipoint.dppojos.ProductMaster;
 import com.chaipoint.dppojos.StoreMaster;
 import com.chaipoint.helperclasses.AddressInfo;
-import com.chaipoint.helperclasses.ItemMaster;
 import com.chaipoint.helperclasses.ItemsDetails;
 import com.chaipoint.hibernatehelper.HibernateOperations;
 
@@ -66,9 +65,9 @@ public class OrderDetailsDaoImpl implements OrderDetailsDAO {
 		Criteria criteria = getTemplate().getSession().createCriteria(CpOrders.class);
 		criteria.add(Restrictions.eq("storeId", storeId));
 		criteria.add(Restrictions.eq("status", status));
-		/*
+		
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-		String cunvertCurrentDate="2016-03-05";
+		String cunvertCurrentDate="2016-03-07";
 		Date date = new Date();
 		try {
 			date = df.parse(cunvertCurrentDate);
@@ -77,8 +76,8 @@ public class OrderDetailsDaoImpl implements OrderDetailsDAO {
 			e.printStackTrace();
 		}
 		criteria.add(Restrictions.eq("deliveryDate",date));
-		*/
 		
+		/*
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		Date date = new Date();
 		//System.out.println(dateFormat.format(date)); //2014/08/06 15:59:48
@@ -89,7 +88,7 @@ public class OrderDetailsDaoImpl implements OrderDetailsDAO {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+		*/
 		criteria.setProjection(Projections.property("id"));
 		ArrayList<Integer> orderList = (ArrayList<Integer>) getTemplate().get(criteria);
 		System.out.println(orderList);
@@ -116,7 +115,7 @@ public class OrderDetailsDaoImpl implements OrderDetailsDAO {
 		ArrayList<CpOrderProduct> itemList = (ArrayList<CpOrderProduct>) getTemplate().get(criteria);
 		for (CpOrderProduct details : itemList) {
 			ItemsDetails item = new ItemsDetails();
-			item.setSerialNo(i++);
+			item.setSerialNo(++i);
 			item.setItemName(getProductName(details.getProductId()));
 			item.setItemUnitCount(details.getQty());
 			item.setItemUnitPrice(details.getCost());

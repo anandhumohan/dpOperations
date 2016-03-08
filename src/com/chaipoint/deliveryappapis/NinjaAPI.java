@@ -56,7 +56,7 @@ int storeId = 102;
 	}
 	
 	@Path("/cancel")
-	@GET
+	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response cancelReasonUpdate(@QueryParam("orderId") int orderId, @QueryParam("reason") String reason) {
 

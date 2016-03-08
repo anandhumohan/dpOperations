@@ -232,7 +232,7 @@ public class NinjaOperations {
 		CpOrders cpOrders = new CpOrders();
 		Criteria criteria = getHibernatetemplate().getSession().createCriteria(CpOrders.class);
 
-		if (status.equals(Constants.Order_Status_confirmed)) {
+		if (status.equalsIgnoreCase(Constants.Order_Status_confirmed)) {
 			criteria.add(Restrictions.eq("id", OrderId));
 			ArrayList<CpOrders> count = (ArrayList<CpOrders>) getHibernatetemplate().get(criteria);
 			cpOrders = count.get(0);
@@ -244,7 +244,7 @@ public class NinjaOperations {
 			}
 		}
 		// This condition only works after cpos ready change
-		if (status.equals(Constants.Order_Status_ready)) {
+		if (status.equalsIgnoreCase(Constants.Order_Status_ready)) {
 			criteria.add(Restrictions.eq("id", OrderId));
 			ArrayList<CpOrders> count = (ArrayList<CpOrders>) getHibernatetemplate().get(criteria);
 			cpOrders = count.get(0);
@@ -256,7 +256,7 @@ public class NinjaOperations {
 			}
 		}
 
-		if (status.equals(Constants.Order_Status_dispatched)) {
+		if (status.equalsIgnoreCase(Constants.Order_Status_dispatched)) {
 			criteria.add(Restrictions.eq("id", OrderId));
 			ArrayList<CpOrders> count = (ArrayList<CpOrders>) getHibernatetemplate().get(criteria);
 			cpOrders = count.get(0);
