@@ -147,5 +147,16 @@ public class DpOperations {
 		return null;
 	}
 
+	public String getMaxPriorityDpname(int storeId) {
+		
+		
+		return null;
+	}
+
+	public ArrayList<String> getAllDpAtStore(int storeId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	
 }

@@ -15,6 +15,7 @@ import javax.ws.rs.core.Response;
 
 import org.json.simple.JSONObject;
 
+import com.chaipoint.helperclasses.CancelRoot;
 import com.chaipoint.helperclasses.OrderDetails;
 import com.chaipoint.helperclasses.RootOrderList;
 import com.chaipoint.helperclasses.RootUpdate;
@@ -53,15 +54,11 @@ public class NinjaAPI {
 	@Path("/update")
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	// public Response OrderStatusUpdate(@HeaderParam("orderId") int orderId,
-	// @HeaderParam("orderId") String status) {
-	// public Response OrderStatusUpdate(@QueryParam("orderId") int orderId,
-	// @QueryParam("status") String status) {
 	public Response OrderStatusUpdate(String json) {
 		RootUpdate rootUpdate = new Gson().fromJson(json, RootUpdate.class);
-		
+
 		int orderId = rootUpdate.getOrderId();
-		String status =rootUpdate.getStatus();
+		String status = rootUpdate.getStatus();
 		String code = new NinjaOperations().updateOrderStatus(orderId, status);
 		return Response.ok(code, MediaType.TEXT_PLAIN_TYPE).build();
 
@@ -70,11 +67,25 @@ public class NinjaAPI {
 	@Path("/cancel")
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response cancelReasonUpdate(@QueryParam("orderId") int orderId, @QueryParam("id") int reasonId) {
+	public Response cancelReasonUpdate(String cancelJson) {
+
+		CancelRoot cancelRoot = new Gson().fromJson(cancelJson, CancelRoot.class);
+		int orderId = cancelRoot.getOrderId();
+		int reasonId = cancelRoot.getReasonId();
 
 		String code = new NinjaOperations().saveCancelreason(orderId, reasonId);
 		return Response.ok(code, MediaType.TEXT_PLAIN_TYPE).build();
 
 	}
 
+	@Path("/assign")
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response assignDpManually(String json) {
+		int orderId = 0;
+		int storeId = 0;
+		String code = new NinjaOperations().manualAssign(orderId, storeId);
+		return Response.ok(code, MediaType.TEXT_PLAIN_TYPE).build();
+
+	}
 }

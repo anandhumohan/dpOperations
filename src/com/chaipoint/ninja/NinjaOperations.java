@@ -21,6 +21,7 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
 import com.chaipoint.constants.Constants;
+import com.chaipoint.deliveryappapis.PushNotificationAPI;
 import com.chaipoint.deliverypartner.DpOperations;
 import com.chaipoint.dphelper.OrderDetailsDaoImpl;
 import com.chaipoint.dppojos.CancelReasons;
@@ -33,6 +34,8 @@ import com.chaipoint.helperclasses.OrderStatus;
 import com.chaipoint.helperclasses.PaymentDetails;
 import com.chaipoint.helperclasses.Pricing;
 import com.chaipoint.hibernatehelper.HibernateOperations;
+import com.chaipoint.pushnotification.push;
+import com.squareup.okhttp.Response;
 
 public class NinjaOperations {
 
@@ -122,21 +125,6 @@ public class NinjaOperations {
 		}
 
 		return orderDetailsList;
-	}
-
-	// getting all available at store dps
-	public ArrayList<String> getAvailableDp(String storeId) {
-
-		ArrayList<String> dps = new ArrayList<>(new DpOperations().DPQueues.get(storeId));
-		ArrayList<String> availDp = new ArrayList<>();
-		for (String status : dps) {
-			if (new DpOperations().dpStatus.get(status).getStatus() == "AVAILABLE") {
-				availDp.add(status);
-
-			}
-		}
-
-		return availDp;
 	}
 
 	// count of each status of current date
@@ -254,6 +242,7 @@ public class NinjaOperations {
 			cpOrders.setConfirmTime(new Date());
 
 			if (Constants.success.equals(getHibernatetemplate().update(cpOrders))) {
+
 				msg = Constants.success;
 			}
 		}
@@ -267,6 +256,9 @@ public class NinjaOperations {
 
 			if (Constants.success.equals(getHibernatetemplate().update(cpOrders))) {
 				msg = Constants.success;
+				// ArrayList<String> dpNames =
+				// getAllDp(count.get(0).getStoreId());
+				// String res = new push().sendMessage(dpNames);
 			}
 		}
 
@@ -276,13 +268,33 @@ public class NinjaOperations {
 			cpOrders = count.get(0);
 			cpOrders.setStatus(status);
 			cpOrders.setDispatchTime(new Date());
-
+			// String dpName = new
+			// DpOperations().getMaxPriorityDpname(cpOrders.getStoreId());
+			// if(dpName == null){
+			// msg = "NO DPS Available";
+			// }
+			// cpOrders.setDeliveryBoy(10);
 			if (Constants.success.equals(getHibernatetemplate().update(cpOrders))) {
 				msg = Constants.success;
+				// String res = new push().sendMessage(dpNames);
 			}
 		}
 
 		return msg;
+	}
+
+	// getting all available at store dps
+	public ArrayList<String> getAllDp(int storeId) {
+
+		ArrayList<String> dps = new ArrayList<>(new DpOperations().DPQueues.get(storeId));
+		DpOperations operations = new DpOperations();
+		ArrayList<String> names = new ArrayList<String>();
+		for (String dp : dps) {
+			names.add(operations.dpStatus.get(dp).getDpName());
+
+		}
+
+		return names;
 	}
 
 	public HibernateOperations getHibernatetemplate() {
@@ -295,5 +307,19 @@ public class NinjaOperations {
 	 * public HibernateTemplate getHibernatetemplate() { if (template == null) {
 	 * template = new HibernateTemplate(); } return template; }
 	 */
+
+	public String manualAssign(int orderId, int storeId) {
+		ArrayList<String> dpAtstores = new DpOperations().getAllDpAtStore(storeId);
+
+		String status = new push().sendMessage(dpAtstores);
+		CpOrders cpOrders = new CpOrders();
+		Criteria criteria = getHibernatetemplate().getSession().createCriteria(CpOrders.class);
+		criteria.add(Restrictions.eq("id", orderId));
+		ArrayList<CpOrders> count = (ArrayList<CpOrders>) getHibernatetemplate().get(criteria);
+		cpOrders = count.get(0);
+		cpOrders.setStatus("Dispatched");
+		cpOrders.setDispatchTime(new Date());
+		return Constants.success;
+	}
 
 }
