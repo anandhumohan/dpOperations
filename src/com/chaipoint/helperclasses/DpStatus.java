@@ -1,10 +1,17 @@
 package com.chaipoint.helperclasses;
 
+import java.util.ArrayList;
+import java.util.Date;
+
 public class DpStatus {
 	private String dpName;
 	private String storeId;
+	private ArrayList<String> orderAssigned;
+	private ArrayList<OrderDetails> orderDetailsAssigned;
+	private int assignedCount;
 	private String dpId;
 	private String status;
+	private Date lastAtStorePressed;
 
 	public String getStoreId() {
 		return storeId;
@@ -12,6 +19,30 @@ public class DpStatus {
 
 	public void setStoreId(String storeId) {
 		this.storeId = storeId;
+	}
+
+	public int getAssignedCount() {
+		return assignedCount;
+	}
+
+	public void setAssignedCount(int assignedCount) {
+		this.assignedCount = assignedCount;
+	}
+
+	public ArrayList<String> getOrderAssigned() {
+		return orderAssigned;
+	}
+
+	public void setOrderAssigned(ArrayList<String> orderAssigned) {
+		this.orderAssigned = orderAssigned;
+	}
+
+	public ArrayList<OrderDetails> getOrderDetailsAssigned() {
+		return orderDetailsAssigned;
+	}
+
+	public void setOrderDetailsAssigned(ArrayList<OrderDetails> orderDetailsAssigned) {
+		this.orderDetailsAssigned = orderDetailsAssigned;
 	}
 
 	public String getDpName() {
@@ -36,6 +67,14 @@ public class DpStatus {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	public Date getLastAtStorePressed() {
+		return lastAtStorePressed;
+	}
+
+	public void setLastAtStorePressed(Date lastAtStorePressed) {
+		this.lastAtStorePressed = lastAtStorePressed;
 	}
 
 }

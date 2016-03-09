@@ -16,7 +16,7 @@ public class LoginHelper {
 
 	public static Constants constants = new Constants();
 
-	public String login(ArrayList<String> storeId, String mtfId, String password, String roleId) {
+	public String login(ArrayList<Integer> storeId, String mtfId, String password, String roleId) {
 
 		String msg = "";
 
@@ -44,7 +44,7 @@ public class LoginHelper {
 		}
 
 		if (roleId == constants.role_ninja && token != null) {
-			storeNinjaAssign.put(storeId.get(0), true);
+		//storeNinjaAssign.put(storeId.get(0), true);
 			// API call to super visor default screen
 		} else
 

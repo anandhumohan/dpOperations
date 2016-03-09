@@ -67,7 +67,7 @@ public class OrderDetailsDaoImpl implements OrderDetailsDAO {
 		criteria.add(Restrictions.eq("status", status));
 		
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-		String cunvertCurrentDate="2016-03-07";
+		String cunvertCurrentDate="2016-03-08";
 		Date date = new Date();
 		try {
 			date = df.parse(cunvertCurrentDate);

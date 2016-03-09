@@ -34,9 +34,9 @@ public class NinjaAPI {
 		Map<String, ArrayList<OrderDetails>> orderDetais = new NinjaOperations().getOrderDetails(storeId, status);
 
 		rootOrder.setOrderList(orderDetais);
-		// Map<String, Long> count = new
-		// NinjaOperations().getAllCounts(storeId);
-		// rootOrder.setOrderCount(count);
+		 Map<String, Long> count = new
+		 NinjaOperations().getAllCounts(storeId);
+		 rootOrder.setOrderCount(count);
 		return Response.ok(new Gson().toJson(rootOrder), MediaType.TEXT_PLAIN).build();
 
 	}

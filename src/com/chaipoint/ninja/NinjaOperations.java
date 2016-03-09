@@ -77,6 +77,46 @@ public class NinjaOperations {
 		// }
 		return orderDetails;
 	}
+	private OrderDetails getOrderdetailsByOrderId(int orderId, int storeId){
+		OrderDetails orderDetails = new OrderDetails();
+		orderDetails.setOrderId(orderId);
+		orderDetails.setStoreName(orderDetailsDaoImpl.getstoreName(storeId));
+		orderDetails.setOrderDetails(orderDetailsDaoImpl.getOrderDeatils(orderId));
+
+		CpOrders orders = orderDetailsDaoImpl.getOrderdetails(orderId);
+		// orderDetails.setOrderTime(orders.getCreatedDate().getTime());
+		PaymentDetails paymentDetails = new PaymentDetails();
+		paymentDetails.setChannel(orders.getChannel());
+		paymentDetails.setPaymentType(orders.getPaymentMethod());
+		orderDetails.setPaymentDetails(paymentDetails);
+		orderDetails.setDeliveredBy(orders.getDeliveryBoy());
+		Pricing pricing = new Pricing();
+		pricing.setCouponApplied(orders.getCouponCode());
+		pricing.setDiscountAmount(orders.getDiscount());
+		pricing.setTotalPrice(orders.getTotalAmount());
+		pricing.setFinalPayableCost(orders.getTotalAmount());
+		pricing.setDeliveryCharges(orders.getDeliveryChange());
+		orderDetails.setPricing(pricing);
+		// finished till here working properly
+		// orderDetails.setCustomerDetails(orderDetailsDaoImpl.getAddressdetails(orderList));
+		// orderDetails.setCustomerDetails(orderDetailsDaoImpl.getAddressdetailsFromId(orders.getCustomerId()));
+		CpOrderAddress orderAddress = orderDetailsDaoImpl.getAddressdetails(orderId);
+		AddressInfo addressInfo = new AddressInfo();
+		addressInfo.setName(orderAddress.getName());
+		addressInfo.setAddress(orderAddress.getAddress());
+		addressInfo.setCity(orderAddress.getCity());
+		addressInfo.setLandmark(orderAddress.getLandmark());
+		addressInfo.setBuilding(orderAddress.getBuilding());
+		addressInfo.setFlat(orderAddress.getFlat());
+		addressInfo.setFloor(orderAddress.getFloor());
+		addressInfo.setLatitude("10.10");
+		addressInfo.setLongitude("10.10");
+
+		// addressInfo.setPhone(orderDetailsDaoImpl.getPhoneNumber(orderAddress.getId()));
+		orderDetails.setCustomerDetails(addressInfo);
+		return orderDetails;
+		
+	}
 
 	private ArrayList<OrderDetails> getOrderList(int storeId, String status) {
 
@@ -256,9 +296,8 @@ public class NinjaOperations {
 
 			if (Constants.success.equals(getHibernatetemplate().update(cpOrders))) {
 				msg = Constants.success;
-				// ArrayList<String> dpNames =
-				// getAllDp(count.get(0).getStoreId());
-				// String res = new push().sendMessage(dpNames);
+				ArrayList<String> dpNames = getAllDp(count.get(0).getStoreId());
+				String res = new push().sendMessage(dpNames);
 			}
 		}
 
@@ -268,15 +307,18 @@ public class NinjaOperations {
 			cpOrders = count.get(0);
 			cpOrders.setStatus(status);
 			cpOrders.setDispatchTime(new Date());
-			// String dpName = new
-			// DpOperations().getMaxPriorityDpname(cpOrders.getStoreId());
-			// if(dpName == null){
-			// msg = "NO DPS Available";
-			// }
-			// cpOrders.setDeliveryBoy(10);
+			String dpName = new DpOperations().getMaxPriorityDpname(cpOrders.getStoreId());
+			if (dpName == null) {
+				msg = "NO DPS Available";
+			}
+			cpOrders.setDeliveryBoy(10);
 			if (Constants.success.equals(getHibernatetemplate().update(cpOrders))) {
 				msg = Constants.success;
-				// String res = new push().sendMessage(dpNames);
+				String res = new push().sendMessage(new ArrayList<>());
+				OrderDetails details = new NinjaOperations().getOrderdetailsByOrderId(OrderId, cpOrders.getStoreId());
+				boolean stat = new DpOperations().dpStatus.get("mt").getOrderDetailsAssigned().add(details);
+				//set count of order assigned
+			//	boolean stat1 = new DpOperations().dpStatus.get("mt").setAssignedCount(0);
 			}
 		}
 

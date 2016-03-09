@@ -13,17 +13,19 @@ import javax.ws.rs.core.Response;
 
 import com.chaipoint.deliverypartner.DpOperations;
 import com.chaipoint.helperclasses.OrderDetails;
+import com.chaipoint.helperclasses.RootAssign;
+import com.chaipoint.helperclasses.RootCancel;
 import com.google.gson.Gson;
 
-@Path("/dp")
+@Path("/dpscreen")
 public class DeliveryPartnerAPI {
 	// this is for status tab
-	@Path("/atstorebutton")
-	@GET
+	@Path("/atstore")
+	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response dpStatusTab(String storeId, String mtfId) {
-
-		String status = new DpOperations().DpAvailbleAtStore(storeId, mtfId);
+	public Response dpStatusTab(String atStoreJson) {
+		RootCancel rootCancel = new Gson().fromJson(atStoreJson, RootCancel.class);
+		String status = new DpOperations().DpAvailbleAtStore(rootCancel.getStoreId(), rootCancel.getMtfId());
 		return Response.ok(status, MediaType.TEXT_PLAIN).build();
 
 	}
@@ -44,9 +46,10 @@ public class DeliveryPartnerAPI {
 	@GET
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response getAssighedOrders(int storeId, String mtfId) {
-
+		RootAssign assign = new RootAssign();
 		Map<String, ArrayList<OrderDetails>> orderList = new DpOperations().getAllAssighedOrders(storeId, mtfId);
-		return Response.ok(orderList, MediaType.TEXT_PLAIN).build();
+		assign.setOrderDetails(orderList);
+		return Response.ok(assign, MediaType.TEXT_PLAIN).build();
 
 	}
 
@@ -56,11 +59,11 @@ public class DeliveryPartnerAPI {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response acceptOrders(int storeId, String mtfId) {
 
-		Map<String, ArrayList<OrderDetails>> orderList = new DpOperations().acceptedOrders(storeId, mtfId);
-		return Response.ok(orderList, MediaType.TEXT_PLAIN).build();
+		String msg = new DpOperations().acceptedOrders(storeId, mtfId);
+		return Response.ok(msg, MediaType.TEXT_PLAIN).build();
 
 	}
-	
+
 	@Path("/delivered")
 	@GET
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -70,7 +73,6 @@ public class DeliveryPartnerAPI {
 		return Response.ok(orderList, MediaType.TEXT_PLAIN).build();
 
 	}
-
 
 	// delivered tab
 	@Path("/deliveredtab")

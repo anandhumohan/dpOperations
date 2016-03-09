@@ -3,16 +3,16 @@ package com.chaipoint.helperclasses;
 import java.util.ArrayList;
 
 public class LoginCredentials {
-	private ArrayList<String> storeId;
+	private ArrayList<Integer> storeId;
 	private String mtfId;
 	private String password;
 	private String roleid;
 
-	public ArrayList<String> getStoreId() {
+	public ArrayList<Integer> getStoreId() {
 		return storeId;
 	}
 
-	public void setStoreId(ArrayList<String> storeId) {
+	public void setStoreId(ArrayList<Integer> storeId) {
 		this.storeId = storeId;
 	}
 

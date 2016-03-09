@@ -14,11 +14,14 @@ import com.chaipoint.ninja.NinjaOperations;
 
 public class DpOperations {
 
-	
-	public static Map<String, Queue<String>> DPQueues = new HashMap<String, Queue<String>>();
+	public static Map<Integer, Queue<String>> DPQueues = new HashMap<Integer, Queue<String>>();
 	public static Map<String, DpStatus> dpStatus = new HashMap<String, DpStatus>();
+	public static Map<String, ArrayList<String>> storeDpList = new HashMap<String, ArrayList<String>>();
+	// public static Map<String, ArrayList<DpStatus>> stoteDpStatusMap = new
+	// HashMap<String, ArrayList<DpStatus>>();
 
-	public static Map<String, OrderStatus> orderStatus = new HashMap<String, OrderStatus>();
+	// public static Map<String, OrderStatus> orderStatus = new HashMap<String,
+	// OrderStatus>();
 
 	DpStatus status = null;
 	Queue<String> queue = null;
@@ -26,7 +29,7 @@ public class DpOperations {
 	// will call this funtion after succesful login for setting maps
 	// available.
 
-	public String initialOperations(String storeId, String mtfId) {
+	public String initialOperations(int storeId, String mtfId) {
 		String DPId = mtfId;
 		// creating two maps when first guy login
 		if (!DPQueues.containsKey(storeId)) {
@@ -52,9 +55,15 @@ public class DpOperations {
 		return DPId;
 	}
 
-	public String DpAvailbleAtStore(String mtfId, String storeId) {
+	public String DpAvailbleAtStore(int storeId, String DPId) {
 
-		String DPId = mtfId;
+		queue = new LinkedList<String>();
+		queue.add(DPId);
+		DPQueues.put(storeId, queue);
+		status = new DpStatus();
+		status.setDpId(DPId);
+		dpStatus.put(DPId, status);
+
 		queue = DPQueues.get(storeId);
 		queue.add(DPId);
 		status = dpStatus.get(DPId);
@@ -79,10 +88,9 @@ public class DpOperations {
 		for (ArrayList<OrderDetails> details : orderDetails.values()) {
 			for (OrderDetails order : details) {
 				/*
-				if (!order.getDeliveredBy().equals(mtfId)) {
-					details.remove(order);
-				}
-				*/
+				 * if (!order.getDeliveredBy().equals(mtfId)) {
+				 * details.remove(order); }
+				 */
 			}
 
 		}
@@ -133,23 +141,45 @@ public class DpOperations {
 	}
 
 	public Map<String, ArrayList<OrderDetails>> getAllAssighedOrders(int storeId, String mtfId) {
-		// TODO Auto-generated method stub
-		return null;
+
+		Map<String, ArrayList<OrderDetails>> assigned = new HashMap<String, ArrayList<OrderDetails>>();
+		assigned.put("Assigned", dpStatus.get(mtfId).getOrderDetailsAssigned());
+		return assigned;
 	}
 
-	public Map<String, ArrayList<OrderDetails>> acceptedOrders(int storeId, String mtfId) {
-		// TODO Auto-generated method stub
-		return null;
+	public String acceptedOrders(int storeId, String mtfId) {
+		int count = dpStatus.get(mtfId).getAssignedCount();
+		String msg = "";
+		if (count == 1) {
+			dpStatus.get(mtfId).setAssignedCount(0);
+			dpStatus.get(mtfId).setStatus(Constants.dp_Status_out_for_delivery);
+			msg = "Accepted";
+		} else {
+			dpStatus.get(mtfId).setAssignedCount(count - 1);
+			msg = "Add more";
+		}
+		return msg;
 	}
 
 	public Map<String, ArrayList<OrderDetails>> deliveredOrders(int storeId, String mtfId) {
-		// TODO Auto-generated method stub
+		int OrderId = 0;
+		String sg = "";
+		int count = dpStatus.get(mtfId).getOrderDetailsAssigned().size();
+		String status = new NinjaOperations().updateOrderStatus(OrderId, Constants.Order_Status_delivered);
+		if (status.equalsIgnoreCase(Constants.success) && count == 1) {
+			dpStatus.get(mtfId).setAssignedCount(0);
+			dpStatus.get(mtfId).setStatus(Constants.dp_Status_out_for_delivery);
+			msg = "Delivered";
+		} else {
+			dpStatus.get(mtfId).setAssignedCount(count - 1);
+			msg = "Add more";
+		}
+
 		return null;
 	}
 
 	public String getMaxPriorityDpname(int storeId) {
-		
-		
+
 		return null;
 	}
 
@@ -158,5 +188,4 @@ public class DpOperations {
 		return null;
 	}
 
-	
 }
