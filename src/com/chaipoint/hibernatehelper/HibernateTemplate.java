@@ -1,6 +1,7 @@
 package com.chaipoint.hibernatehelper;
 
-import java.sql.SQLException;
+import java.io.Serializable;
+import java.util.ArrayList;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
@@ -8,8 +9,8 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
-import org.hibernate.exception.ConstraintViolationException;
-import org.hibernate.exception.JDBCConnectionException;
+
+import com.chaipoint.constants.Constants;
 
 public class HibernateTemplate {
 	private static final Logger logger = Logger.getLogger(HibernateTemplate.class);
@@ -17,44 +18,32 @@ public class HibernateTemplate {
 	static SessionFactory factory = null;
 	private Session session = null;
 	private Transaction txn = null;
+	
 
 	public Session getSession() {
-		try {
-			if (session == null || !session.isOpen()) {
-				session = factory.openSession();
-				txn = session.beginTransaction();
-			}
-		} catch (JDBCConnectionException e) {
-
-			logger.error("JDBC Connection Exception   " + e.getStackTrace());
-			System.out.println("JDBC Connection Exception   " + e.getStackTrace());
-
-			factory.close();
-			factory = new Configuration().configure().buildSessionFactory();
+		if (session == null || !session.isOpen()) {
 			session = factory.openSession();
 			txn = session.beginTransaction();
-
 		}
+		
 		return session;
 	}
 
 	public HibernateTemplate() {
-		if (factory == null || !factory.isClosed()) {
-			System.out.println("hibernate constructor");
+		if (factory == null || factory.isClosed()) {
 			factory = new Configuration().configure().buildSessionFactory();
 
 		}
-
+		getSession();
 	}
 
 	private void postAction() {
 		txn.commit();
 	}
-
-	private void postSession() {
-		if (session.isOpen())
-			session.close();
-
+	private void postSession(){
+		if(session.isOpen())
+		session.close();
+		
 	}
 
 	public String save(Object obj) throws Exception {
@@ -62,63 +51,100 @@ public class HibernateTemplate {
 		getSession();
 		try {
 			session.save(obj);
-			postAction();
-		} catch (JDBCConnectionException e) {
-			logger.error("JDBC Connection Exception   " + e.getStackTrace());
-			System.out.println("JDBC Connection Exception   " + e.getStackTrace());
-			throw new Exception(e);
-		} catch (ConstraintViolationException e) {
-
-			logger.error("Duplicate Value Exception while saving " + obj + "using Hibernate Template\n" + e);
-			System.out.println("Duplicate Value Exception while saving " + obj + "using Hibernate Template\n" + e);
-			throw new ConstraintViolationException("Duplicate Value Exception while saving", new SQLException(),
-					obj.getClass() + "");
 		} catch (Exception e) {
-
+			// t.rollback();
 			logger.error("Exception while saving " + obj + "using Hibernate Template\n" + e);
 			System.out.println("Exception while saving " + obj + "using Hibernate Template\n" + e);
-
+			// session.clear();
 			throw new Exception(e);
 		} finally {
+			postAction();
 			postSession();
 		}
 
-		return "Success";
+		return Constants.success;
 	}
 
-	public Object get(Criteria cr) {
+	public Object get(Class obj, Serializable param) {
 		Object responseEntity = null;
 		getSession();
 		try {
-			responseEntity = cr.list();
-		} catch (JDBCConnectionException e) {
-			logger.error("JDBC Connection Exception   " + e.getStackTrace());
-			System.out.println("JDBC Connection Exception   " + e.getStackTrace());
-
-		} catch (Exception ex) {
-			logger.error("Exception while fetching data using Hibernate Template " + ex);
-			System.out.println("Exception while fetching data using Hibernate Template " + ex);
-			return "error";
+			responseEntity = session.get(obj, param);
+		} catch (Exception e) {
+			logger.error("Exception while fetching " + obj + "using Hibernate Template\n" + e);
+			System.out.println("Exception while fetching " + obj + "using Hibernate Template");
+			// session.clear();
+			return Constants.error;
 		} finally {
+			//postAction();
+			postSession();
+		}
+		return responseEntity;
+	}
+
+	public Object get(Class obj) {
+		Object responseEntity = null;
+		getSession();
+		try {
+			responseEntity = session.createCriteria(obj).setCacheable(true).list();
+		} catch (Exception ex) {
+			logger.error("Exception while fetching " + obj + "using Hibernate Template");
+			System.out.println("Exception while fetching " + obj + "using Hibernate Template");
+			// session.clear();
+			return Constants.error;
+		} finally {
+			//postAction();
 			postSession();
 		}
 
 		return responseEntity;
 	}
 
-	public String update(Object obj) {
-		String response = "Success";
+	public Object get(Criteria cr) {
+		Object responseEntity = null;
 		getSession();
+		cr.setCacheable(true);
 		try {
-			session.update(obj);
-			postAction();
+			responseEntity = cr.list();
 		} catch (Exception ex) {
-			logger.error("Exception while update with Error : " + ex);
-			response = "Error";
+			logger.error("Exception while fetching data using Hibernate Template " + ex);
+			System.out.println("Exception while fetching data using Hibernate Template " + ex);
+			// session.clear();
+			return Constants.error;
 		} finally {
+			//postAction();
 			postSession();
 		}
-		return response;
+
+		return responseEntity;
+	}
+
+	public String delete(Criteria cr) {
+		ArrayList<Object> responseEntity = null;
+		getSession();
+		try {
+			responseEntity = (ArrayList<Object>) cr.list();
+			for (int i = 0; i < responseEntity.size(); i++) {
+				session.delete(responseEntity.get(i));
+			}
+		} catch (IndexOutOfBoundsException ex) {
+			logger.error("IndexOutOfBoundsException while deleteing Entry from database " + ex);
+			System.out.println("IndexOutOfBoundsException while deleteing Entry from database " + ex);
+
+			// session.clear();
+			return Constants.error;
+		} catch (Exception ex) {
+			logger.error("Exception while deleting data using Hibernate Template " + ex);
+			System.out.println("Exception while deleting data using Hibernate Template " + ex);
+
+			// session.clear();
+			return Constants.error;
+		} finally {
+			postAction();
+			postSession();
+		}
+
+		return Constants.success;
 	}
 
 }

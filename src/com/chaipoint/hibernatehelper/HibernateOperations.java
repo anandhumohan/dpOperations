@@ -1,71 +1,49 @@
 package com.chaipoint.hibernatehelper;
 
 import java.io.Serializable;
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 
 import org.apache.log4j.Logger;
-import org.hibernate.CacheMode;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
-import org.hibernate.exception.ConstraintViolationException;
-import org.hibernate.exception.JDBCConnectionException;
 
 import com.chaipoint.constants.Constants;
-//import com.chaipoint.internalApi.ChaipointInternalApiImpl;
-//import com.chaipoint.internalApi.wrapper.ChaipointInternalApi;
-//import com.chaipoint.utils.GetPropertyValues;
 
 public class HibernateOperations {
-	private static final Logger logger = Logger.getLogger(HibernateTemplate.class);
+	private static final Logger logger = Logger.getLogger(HibernateOperations.class);
 
 	static SessionFactory factory = null;
 	private Session session = null;
 	private Transaction txn = null;
-	private static boolean smsSent = false;
+	
 
 	public Session getSession() {
-		try {
-			if (session == null || !session.isOpen()) {
-				session = factory.openSession();
-				txn = session.beginTransaction();
-			}
-		} catch (JDBCConnectionException e) {
-
-			logger.error("JDBC Connection Exception   " + e.getStackTrace());
-			System.out.println("JDBC Connection Exception   " + e.getStackTrace());
-		//	sendJDBCExceptionAlert("while getSession "+e.getMessage());
-			
-			factory.close();
-			factory = new Configuration().configure().buildSessionFactory();
+		if (session == null || !session.isOpen()) {
 			session = factory.openSession();
 			txn = session.beginTransaction();
-
 		}
+		
 		return session;
 	}
-	
 
 	public HibernateOperations() {
 		if (factory == null || factory.isClosed()) {
 			factory = new Configuration().configure().buildSessionFactory();
 
 		}
-		//getSession();
+		getSession();
 	}
 
 	private void postAction() {
 		txn.commit();
 	}
-
-	private void postSession() {
-		if (session.isOpen())
-			session.close();
-
+	private void postSession(){
+		if(session.isOpen())
+		session.close();
+		
 	}
 
 	public String save(Object obj) throws Exception {
@@ -73,26 +51,14 @@ public class HibernateOperations {
 		getSession();
 		try {
 			session.save(obj);
-			postAction();
-		} catch (JDBCConnectionException e) {
-			logger.error("JDBC Connection Exception   " + e.getStackTrace());
-			System.out.println("JDBC Connection Exception   " + e.getStackTrace());
-		//	sendJDBCExceptionAlert("while save Object "+e.getSQL());
-
-			throw new Exception(e);
-		} catch (ConstraintViolationException e) {
-			// t.rollback();
-			logger.error("Duplicate Value Exception while saving " + obj + "using Hibernate Template\n" + e);
-			System.out.println("Duplicate Value Exception while saving " + obj + "using Hibernate Template\n" + e);
-			// session.clear();
-			throw new ConstraintViolationException("Duplicate Value Exception while saving", new SQLException(), obj.getClass()+"");
-		}catch (Exception e) {
+		} catch (Exception e) {
 			// t.rollback();
 			logger.error("Exception while saving " + obj + "using Hibernate Template\n" + e);
 			System.out.println("Exception while saving " + obj + "using Hibernate Template\n" + e);
 			// session.clear();
 			throw new Exception(e);
 		} finally {
+			postAction();
 			postSession();
 		}
 
@@ -104,19 +70,13 @@ public class HibernateOperations {
 		getSession();
 		try {
 			responseEntity = session.get(obj, param);
-		} catch (JDBCConnectionException e) {
-			logger.error("JDBC Connection Exception   " + e.getStackTrace());
-			System.out.println("JDBC Connection Exception   " + e.getStackTrace());
-		//	sendJDBCExceptionAlert("while get object with param"+e.getSQL());
-
 		} catch (Exception e) {
 			logger.error("Exception while fetching " + obj + "using Hibernate Template\n" + e);
 			System.out.println("Exception while fetching " + obj + "using Hibernate Template");
 			// session.clear();
-			session.getTransaction().rollback();
 			return Constants.error;
 		} finally {
-			// postAction();
+			//postAction();
 			postSession();
 		}
 		return responseEntity;
@@ -126,19 +86,14 @@ public class HibernateOperations {
 		Object responseEntity = null;
 		getSession();
 		try {
-			responseEntity = session.createCriteria(obj).setCacheMode(CacheMode.REFRESH).setCacheable(true).list();
-		} catch (JDBCConnectionException e) {
-			logger.error("JDBC Connection Exception   " + e.getStackTrace());
-			System.out.println("JDBC Connection Exception   " + e.getStackTrace());
-		//	sendJDBCExceptionAlert("while get a class "+e.getSQL());
-
+			responseEntity = session.createCriteria(obj).setCacheable(true).list();
 		} catch (Exception ex) {
 			logger.error("Exception while fetching " + obj + "using Hibernate Template");
 			System.out.println("Exception while fetching " + obj + "using Hibernate Template");
 			// session.clear();
 			return Constants.error;
 		} finally {
-			// postAction();
+			//postAction();
 			postSession();
 		}
 
@@ -148,22 +103,16 @@ public class HibernateOperations {
 	public Object get(Criteria cr) {
 		Object responseEntity = null;
 		getSession();
-	//	cr.setCacheMode(CacheMode.GET);
+		cr.setCacheable(true);
 		try {
 			responseEntity = cr.list();
-			smsSent = false;
-		} catch (JDBCConnectionException e) {
-			logger.error("JDBC Connection Exception   " + e.getStackTrace());
-			System.out.println("JDBC Connection Exception   " + e.getStackTrace());
-		//	sendJDBCExceptionAlert("while getting criteria "+e.getSQL());
-
 		} catch (Exception ex) {
 			logger.error("Exception while fetching data using Hibernate Template " + ex);
 			System.out.println("Exception while fetching data using Hibernate Template " + ex);
 			// session.clear();
 			return Constants.error;
 		} finally {
-			// postAction();
+			//postAction();
 			postSession();
 		}
 
@@ -178,12 +127,6 @@ public class HibernateOperations {
 			for (int i = 0; i < responseEntity.size(); i++) {
 				session.delete(responseEntity.get(i));
 			}
-			postAction();
-		} catch (JDBCConnectionException e) {
-			logger.error("JDBC Connection Exception   " + e.getStackTrace());
-			System.out.println("JDBC Connection Exception   " + e.getStackTrace());
-		//	sendJDBCExceptionAlert("while delete "+e.getSQL());
-
 		} catch (IndexOutOfBoundsException ex) {
 			logger.error("IndexOutOfBoundsException while deleteing Entry from database " + ex);
 			System.out.println("IndexOutOfBoundsException while deleteing Entry from database " + ex);
@@ -197,26 +140,13 @@ public class HibernateOperations {
 			// session.clear();
 			return Constants.error;
 		} finally {
+			postAction();
 			postSession();
 		}
 
 		return Constants.success;
 	}
-/*
-	public static void sendJDBCExceptionAlert(String cause) {
-
-		if (!smsSent) {
-			ChaipointInternalApi api = new ChaipointInternalApiImpl();
-			GetPropertyValues prop=new GetPropertyValues();
-			String MSG = "JDBC Connection Error - Chaipoint "+prop.getPropValues("server")+" Server @ " +new Date() + "  Cause : "+cause;
-			api.handleGetApi("http://boancomm.net/boansms/boansmsinterface.aspx?mobileno=918050132710&smsmsg=" + MSG
-					+ "&uname=chaipoint&pwd=chaipoint14sms&pid=540");
-			api.handleGetApi("http://boancomm.net/boansms/boansmsinterface.aspx?mobileno=919019748268&smsmsg=" + MSG
-					+ "&uname=chaipoint&pwd=chaipoint14sms&pid=540");
-			smsSent = true;
-		}
-	}
-	*/
+	
 	public String update(Object obj) {
 		String response = Constants.success;
 		getSession();
@@ -233,8 +163,4 @@ public class HibernateOperations {
 		return response;
 	}
 
-
-	
-	
-	
 }

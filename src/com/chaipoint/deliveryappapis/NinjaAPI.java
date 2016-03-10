@@ -32,13 +32,14 @@ public class NinjaAPI {
 		// String status = "New";
 		RootOrderList rootOrder = new RootOrderList();
 		Map<String, ArrayList<OrderDetails>> orderDetais = new NinjaOperations().getOrderDetails(storeId, status);
-
-		rootOrder.setOrderList(orderDetais);
-		 Map<String, Long> count = new
-		 NinjaOperations().getAllCounts(storeId);
-		 rootOrder.setOrderCount(count);
-		return Response.ok(new Gson().toJson(rootOrder), MediaType.TEXT_PLAIN).build();
-
+		if (orderDetais.values() == null) {
+			return Response.ok("NO OREDERS", MediaType.TEXT_PLAIN).build();
+		} else {
+			rootOrder.setOrderList(orderDetais);
+			Map<String, Long> count = new NinjaOperations().getAllCounts(storeId);
+			rootOrder.setOrderCount(count);
+			return Response.ok(new Gson().toJson(rootOrder), MediaType.TEXT_PLAIN).build();
+		}
 	}
 
 	@Path("/count")

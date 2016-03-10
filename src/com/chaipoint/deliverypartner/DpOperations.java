@@ -163,7 +163,7 @@ public class DpOperations {
 
 	public Map<String, ArrayList<OrderDetails>> deliveredOrders(int storeId, String mtfId) {
 		int OrderId = 0;
-		String sg = "";
+		String msg = "";
 		int count = dpStatus.get(mtfId).getOrderDetailsAssigned().size();
 		String status = new NinjaOperations().updateOrderStatus(OrderId, Constants.Order_Status_delivered);
 		if (status.equalsIgnoreCase(Constants.success) && count == 1) {
