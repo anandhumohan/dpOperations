@@ -22,8 +22,8 @@ public class Constants {
 	// Role
 
 	public static String role_ninja = "NINJA";
-	public static String role_dp = "DP";
-	public static String role_super_visor = "SUPER VISOR";
+	public static String role_dp = "DELIVERY PARTNER";
+	public static String role_super_visor = "SUPERVISOR";
 
 	//
 

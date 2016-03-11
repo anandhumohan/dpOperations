@@ -2,7 +2,8 @@ package com.chaipoint.helperclasses;
 
 public class PaymentDetails {
 	private String paymentType;
-	private int channel;
+//	private int channel;
+	private String channel;
 
 	public String getPaymentType() {
 		return paymentType;
@@ -11,7 +12,7 @@ public class PaymentDetails {
 	public void setPaymentType(String paymentType) {
 		this.paymentType = paymentType;
 	}
-
+/*
 	public int getChannel() {
 		return channel;
 	}
@@ -20,5 +21,15 @@ public class PaymentDetails {
 		this.channel = channel;
 	}
 
+*/
 
+	public String getChannel() {
+		return channel;
+	}
+
+	public void setChannel(String channel) {
+		this.channel = channel;
+	}
+	
+	
 }

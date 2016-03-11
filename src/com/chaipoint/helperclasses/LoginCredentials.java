@@ -3,17 +3,29 @@ package com.chaipoint.helperclasses;
 import java.util.ArrayList;
 
 public class LoginCredentials {
-	private ArrayList<Integer> storeId;
+	private ArrayList<Integer> storeIds;
 	private String mtfId;
 	private String password;
-	private String roleid;
+	private String role;
+	private String deviceId;
+	
 
-	public ArrayList<Integer> getStoreId() {
-		return storeId;
+	public String getDeviceId() {
+		return deviceId;
 	}
 
-	public void setStoreId(ArrayList<Integer> storeId) {
-		this.storeId = storeId;
+	public void setDeviceId(String deviceId) {
+		this.deviceId = deviceId;
+	}
+
+	
+
+	public ArrayList<Integer> getStoreIds() {
+		return storeIds;
+	}
+
+	public void setStoreIds(ArrayList<Integer> storeIds) {
+		this.storeIds = storeIds;
 	}
 
 	public String getMtfId() {
@@ -32,12 +44,12 @@ public class LoginCredentials {
 		this.password = password;
 	}
 
-	public String getRoleid() {
-		return roleid;
+	public String getRole() {
+		return role;
 	}
 
-	public void setRoleid(String roleid) {
-		this.roleid = roleid;
+	public void setRole(String role) {
+		this.role = role;
 	}
 
 }

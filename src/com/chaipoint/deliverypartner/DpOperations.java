@@ -16,7 +16,7 @@ public class DpOperations {
 
 	public static Map<Integer, Queue<String>> DPQueues = new HashMap<Integer, Queue<String>>();
 	public static Map<String, DpStatus> dpStatus = new HashMap<String, DpStatus>();
-	public static Map<String, ArrayList<String>> storeDpList = new HashMap<String, ArrayList<String>>();
+	public static Map<Integer, ArrayList<String>> storeDpList = new HashMap<Integer, ArrayList<String>>();
 	// public static Map<String, ArrayList<DpStatus>> stoteDpStatusMap = new
 	// HashMap<String, ArrayList<DpStatus>>();
 
@@ -25,6 +25,7 @@ public class DpOperations {
 
 	DpStatus status = null;
 	Queue<String> queue = null;
+	ArrayList<String> dpStores = null;
 
 	// will call this funtion after succesful login for setting maps
 	// available.
@@ -36,11 +37,20 @@ public class DpOperations {
 			queue = new LinkedList<String>();
 			queue.add(DPId);
 			DPQueues.put(storeId, queue);
+			
+			dpStores = new ArrayList<String>();
+			dpStores.add(DPId);
+			storeDpList.put(storeId, dpStores);
+			
+			
 			status = new DpStatus();
+			status.setStatus(Constants.dp_Status_returning_to_store);
 			status.setDpId(DPId);
 
 			dpStatus.put(DPId, status);
-		} else {
+		}
+		/*
+		else {
 			if (dpStatus.containsKey(DPId)) {
 				queue = DPQueues.get(storeId);
 				queue.add(DPId);
@@ -50,8 +60,9 @@ public class DpOperations {
 				DPQueues.put(storeId, queue);
 
 			}
+			
 		}
-
+*/
 		return DPId;
 	}
 

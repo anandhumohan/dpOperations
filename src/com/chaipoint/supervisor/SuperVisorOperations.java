@@ -49,7 +49,7 @@ private ArrayList<OrderDetails> getOrderList(ArrayList<String> storeIds, String 
 		CpOrders orders = orderDetailsDaoImpl.getOrderdetails(orderList);
 		orderDetails.setStoreName(orderDetailsDaoImpl.getstoreName(orders.getStoreId()));
 		PaymentDetails paymentDetails = new PaymentDetails();
-		paymentDetails.setChannel(orders.getChannel());
+	//	paymentDetails.setChannel(orders.getChannel());
 		paymentDetails.setPaymentType(orders.getPaymentMethod());
 		orderDetails.setPaymentDetails(paymentDetails);
 		

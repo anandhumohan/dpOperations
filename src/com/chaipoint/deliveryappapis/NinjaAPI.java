@@ -37,9 +37,24 @@ public class NinjaAPI {
 		} else {
 			rootOrder.setOrderList(orderDetais);
 			Map<String, Long> count = new NinjaOperations().getAllCounts(storeId);
-			rootOrder.setOrderCount(count);
+		//	rootOrder.setOrderCount(count);
 			return Response.ok(new Gson().toJson(rootOrder), MediaType.TEXT_PLAIN).build();
 		}
+	}
+
+	@Path("/orderdetailstest")
+	@GET
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response newStateTest(@QueryParam("storeId") int storeId, @QueryParam("status") String status) {
+		// String status = "New";
+		RootOrderList rootOrder = new RootOrderList();
+		Map<String, ArrayList<OrderDetails>> orderDetais = new NinjaOperations().getOrderDetailsTest(storeId, status);
+
+		rootOrder.setOrderList(orderDetais);
+	//	Map<String, Long> count = new NinjaOperations().getAllCounts(storeId);
+	//	rootOrder.setOrderCount(count);
+		return Response.ok(new Gson().toJson(rootOrder), MediaType.TEXT_PLAIN).build();
+
 	}
 
 	@Path("/count")
