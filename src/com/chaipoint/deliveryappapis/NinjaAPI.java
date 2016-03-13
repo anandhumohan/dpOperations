@@ -15,6 +15,7 @@ import javax.ws.rs.core.Response;
 
 import org.json.simple.JSONObject;
 
+import com.chaipoint.constants.Constants;
 import com.chaipoint.helperclasses.CancelRoot;
 import com.chaipoint.helperclasses.OrderDetails;
 import com.chaipoint.helperclasses.RootOrderList;
@@ -49,6 +50,44 @@ public class NinjaAPI {
 		// String status = "New";
 		RootOrderList rootOrder = new RootOrderList();
 		Map<String, ArrayList<OrderDetails>> orderDetais = new NinjaOperations().getOrderDetailsTest(storeId, status);
+
+		rootOrder.setOrderList(orderDetais);
+	//	Map<String, Long> count = new NinjaOperations().getAllCounts(storeId);
+	//	rootOrder.setOrderCount(count);
+		if(orderDetais.get(status).isEmpty()){
+			rootOrder.setMessage("No orders");
+		}
+		else{
+			rootOrder.setMessage(Constants.success);
+		}
+		return Response.ok(new Gson().toJson(rootOrder), MediaType.TEXT_PLAIN).build();
+
+	}
+	
+	@Path("/orderdetailstestopt")
+	@GET
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response newStateTestopt(@QueryParam("storeId") int storeId, @QueryParam("status") String status) {
+		// String status = "New";
+		RootOrderList rootOrder = new RootOrderList();
+		Map<String, ArrayList<OrderDetails>> orderDetais = new NinjaOperations().getOrderDetailsTestopt(storeId, status);
+
+		rootOrder.setOrderList(orderDetais);
+	//	Map<String, Long> count = new NinjaOperations().getAllCounts(storeId);
+	//	rootOrder.setOrderCount(count);
+		return Response.ok(new Gson().toJson(rootOrder), MediaType.TEXT_PLAIN).build();
+
+	}
+	
+	
+	
+	@Path("/orderdetailstesting")
+	@GET
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response newStateTesting(@QueryParam("storeId") int storeId, @QueryParam("status") String status) {
+		// String status = "New";
+		RootOrderList rootOrder = new RootOrderList();
+		Map<String, ArrayList<OrderDetails>> orderDetais = new NinjaOperations().getOrderDetailsTesting(storeId, status);
 
 		rootOrder.setOrderList(orderDetais);
 	//	Map<String, Long> count = new NinjaOperations().getAllCounts(storeId);

@@ -1,14 +1,11 @@
 package com.chaipoint.dppojos;
 
-import java.io.Serializable;
-import java.util.Date;
-
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
+import javax.persistence.Embeddable;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.IdClass;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Cache;
@@ -18,7 +15,10 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Table(name = "coc_order_view")
 @Cacheable
 @Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
-public class CoCOrderDetails {
+public class CoCOrderDetailsTest {
+
+	@EmbeddedId
+	private MyJoinClassKey key;
 
 	@Column(name = "coupon_code")
 	private String couponCode;
@@ -28,19 +28,11 @@ public class CoCOrderDetails {
 
 	@Column(name = "delivery_charge")
 	private double deliveryCharge;
-	
-	@Column(name = "order_id")
-	private int orderId;
-	@Id
-	@Column(name = "product_id")
-	private int productId;
-
-	// @Column(name = "comment")
-	// private String comment;
-
-	// @Id
-	// private MyJoinClassKey key;
-
+	/*
+	 * @Column(name = "order_id") private int orderId;
+	 * 
+	 * @Column(name = "product_id") private int productId;
+	 */
 	@Column(name = "store_id")
 	private int storeId;
 
@@ -110,6 +102,15 @@ public class CoCOrderDetails {
 	@Column(name = "payment_id")
 	private int paymentId;
 
+	@Id
+	public MyJoinClassKey getKey() {
+		return key;
+	}
+
+	public void setKey(MyJoinClassKey key) {
+		this.key = key;
+	}
+
 	public String getCouponCode() {
 		return couponCode;
 	}
@@ -134,22 +135,15 @@ public class CoCOrderDetails {
 		this.deliveryCharge = deliveryCharge;
 	}
 
-	public int getOrderId() {
-		return orderId;
-	}
-
-	public void setOrderId(int orderId) {
-		this.orderId = orderId;
-	}
-
-	public int getProductId() {
-		return productId;
-	}
-
-	public void setProductId(int productId) {
-		this.productId = productId;
-	}
-
+	/*
+	 * public int getOrderId() { return orderId; }
+	 * 
+	 * public void setOrderId(int orderId) { this.orderId = orderId; }
+	 * 
+	 * public int getProductId() { return productId; }
+	 * 
+	 * public void setProductId(int productId) { this.productId = productId; }
+	 */
 	public int getStoreId() {
 		return storeId;
 	}

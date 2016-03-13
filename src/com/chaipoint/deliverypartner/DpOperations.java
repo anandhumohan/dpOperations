@@ -33,53 +33,34 @@ public class DpOperations {
 	public String initialOperations(int storeId, String mtfId) {
 		String DPId = mtfId;
 		// creating two maps when first guy login
-		if (!DPQueues.containsKey(storeId)) {
-			queue = new LinkedList<String>();
-			queue.add(DPId);
-			DPQueues.put(storeId, queue);
-			
-			dpStores = new ArrayList<String>();
-			dpStores.add(DPId);
-			storeDpList.put(storeId, dpStores);
-			
-			
+		if (!dpStatus.containsKey(mtfId)) {
+
 			status = new DpStatus();
 			status.setStatus(Constants.dp_Status_returning_to_store);
 			status.setDpId(DPId);
-
 			dpStatus.put(DPId, status);
-		}
-		/*
-		else {
-			if (dpStatus.containsKey(DPId)) {
-				queue = DPQueues.get(storeId);
-				queue.add(DPId);
-				status = dpStatus.get(DPId);
 
-				dpStatus.put(DPId, status);
-				DPQueues.put(storeId, queue);
+			queue = new LinkedList<String>();
+			DPQueues.put(storeId, queue);
 
-			}
-			
+			dpStores = new ArrayList<String>();
+			dpStores.add(DPId);
+			storeDpList.put(storeId, dpStores);
+
 		}
-*/
-		return DPId;
+
+		return Constants.success;
 	}
 
 	public String DpAvailbleAtStore(int storeId, String DPId) {
 
-		queue = new LinkedList<String>();
-		queue.add(DPId);
-		DPQueues.put(storeId, queue);
-		status = new DpStatus();
-		status.setDpId(DPId);
-		dpStatus.put(DPId, status);
-
-		queue = DPQueues.get(storeId);
-		queue.add(DPId);
 		status = dpStatus.get(DPId);
 		status.setStatus(Constants.dp_Status_available);
 		dpStatus.put(DPId, status);
+		// check for null check
+		
+		queue = DPQueues.get(storeId);
+		queue.add(DPId);
 		DPQueues.put(storeId, queue);
 
 		return Constants.success;

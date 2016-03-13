@@ -26,6 +26,7 @@ import com.chaipoint.deliverypartner.DpOperations;
 import com.chaipoint.dphelper.OrderDetailsDaoImpl;
 import com.chaipoint.dppojos.CancelReasons;
 import com.chaipoint.dppojos.CoCOrderDetails;
+import com.chaipoint.dppojos.CoCOrderDetailsTest;
 import com.chaipoint.dppojos.CpOrderAddress;
 import com.chaipoint.dppojos.CpOrders;
 import com.chaipoint.dppojos.MyJoinClassKey;
@@ -262,6 +263,7 @@ public class NinjaOperations {
 		ArrayList<CpOrders> list = (ArrayList<CpOrders>) getHibernatetemplate().get(criteria);
 		cpOrders = list.get(0);
 		cpOrders.setCancelReason(reasonMap.get(id));
+		cpOrders.setStatus(Constants.Order_Status_cancelled);
 		// cancel date update if needed
 
 		if (Constants.success.equals(getHibernatetemplate().update(cpOrders))) {
@@ -300,8 +302,8 @@ public class NinjaOperations {
 
 			if (Constants.success.equals(getHibernatetemplate().update(cpOrders))) {
 				msg = Constants.success;
-				ArrayList<String> dpNames = getAllDp(count.get(0).getStoreId());
-				String res = new push().sendMessage(dpNames);
+			//	ArrayList<String> dpNames = getAllDp(count.get(0).getStoreId());
+			//	String res = new push().sendMessage(dpNames);
 			}
 		}
 
@@ -374,7 +376,7 @@ public class NinjaOperations {
 		Criteria criteria = getHibernatetemplate().getSession().createCriteria(CoCOrderDetails.class);
 		// criteria.add(Restrictions.eq("orderId", 182032));
 
-		criteria.add(Restrictions.eq("status", "New"));
+		criteria.add(Restrictions.eq("status", status2));
 
 		ArrayList<CoCOrderDetails> orderDet = (ArrayList<CoCOrderDetails>) getHibernatetemplate().get(criteria);
 		ArrayList<OrderDetails> listOfOrderdeatails = new ArrayList<OrderDetails>();
@@ -456,9 +458,114 @@ public class NinjaOperations {
 
 		}
 
-		finalMap.put("New", listOfOrderdeatails);
+		finalMap.put(status2, listOfOrderdeatails);
 
 		return finalMap;
+	}
+
+	public Map<String, ArrayList<OrderDetails>> getOrderDetailsTestopt(int storeId, String state) {
+		
+		ArrayList<Integer> orderIdList = orderDetailsDaoImpl.getAllOrderId(storeId, state);
+		Map<String, ArrayList<OrderDetails>> finalMap = new HashMap<String, ArrayList<OrderDetails>>();
+		ArrayList<OrderDetails> listOfOrderdeatails = new ArrayList<OrderDetails>();
+		Map<Integer, OrderDetails> orderDetails = new HashMap<Integer, OrderDetails>();
+		
+		
+		for(Integer orderId : orderIdList){
+			Criteria criteria = getHibernatetemplate().getSession().createCriteria(CoCOrderDetails.class);
+			 criteria.add(Restrictions.eq("orderId", orderId));
+
+		//	criteria.add(Restrictions.eq("status", "New"));
+
+			ArrayList<CoCOrderDetails> orderDet = (ArrayList<CoCOrderDetails>) getHibernatetemplate().get(criteria);
+			//CoCOrderDetails details = orderDet.get(0);
+			OrderDetails orderDetailsObject = null;
+			for (CoCOrderDetails details : orderDet) {
+if (!orderDetails.containsKey(details.getOrderId())) {
+				
+				orderDetailsObject = new OrderDetails();
+				orderDetailsObject.setStoreName("JNC");
+				orderDetailsObject.setOrderId(details.getOrderId());
+				// orderDetailsObject.setStoreName(details.setStoreName);
+
+				AddressInfo addressInfo = new AddressInfo();
+
+				addressInfo.setFlat(details.getFlat());
+				addressInfo.setFloor(details.getFloor());
+				addressInfo.setLandmark(details.getLandmark());
+				addressInfo.setBuilding(details.getBuilding());
+				addressInfo.setPhone(details.getPhone());
+				addressInfo.setName(details.getName());
+				orderDetailsObject.setCustomerDetails(addressInfo);
+
+				ArrayList<ItemsDetails> demo = new ArrayList<ItemsDetails>();
+				ItemsDetails itemsDetails = new ItemsDetails();
+				itemsDetails.setSerialNo(1);
+				itemsDetails.setItemName(details.getProductName());
+				itemsDetails.setItemUnitCount(details.getQty());
+				itemsDetails.setItemUnitPrice(details.getCost());
+				itemsDetails.setItemTotalPrice(details.getTotalProductCost());
+				demo.add(itemsDetails);
+				orderDetailsObject.setOrderDetails(demo);
+
+				Pricing pricing = new Pricing();
+				pricing.setCouponApplied(details.getCouponCode());
+				pricing.setDeliveryCharges(details.getDeliveryCharge());
+				// pricing.setDiscountAmount(details.getdiscountAmount);
+				pricing.setFinalPayableCost(details.getNetAmount());
+				pricing.setTotalPrice(details.getTotalAmount());
+				orderDetailsObject.setPricing(pricing);
+
+				PaymentDetails paymentDetails = new PaymentDetails();
+				paymentDetails.setChannel(details.getChannelName());
+				paymentDetails.setPaymentType(details.getPaymentMethod());
+				orderDetailsObject.setPaymentDetails(paymentDetails);
+
+				listOfOrderdeatails.add(orderDetailsObject);
+				orderDetails.put(details.getOrderId(), orderDetailsObject);
+
+				
+
+			}
+
+			else {
+
+			
+				ItemsDetails itemsDetails = new ItemsDetails();
+				itemsDetails.setSerialNo(2);
+				itemsDetails.setItemName(details.getProductName());
+				itemsDetails.setItemUnitCount(details.getQty());
+				itemsDetails.setItemUnitPrice(details.getCost());
+				itemsDetails.setItemTotalPrice(details.getTotalProductCost());
+			//	orderDetailsObject.getOrderDetails().add(itemsDetails);
+				orderDetails.get(details.getOrderId()).getOrderDetails().add(itemsDetails);
+			//	orderDetailsObject.get(details.
+
+				// orderDetailsObject.getget(details.getOrderId()).getOrderDetails().add(itemsDetails);
+
+			}
+
+			
+		}
+		
+			finalMap.put("New", listOfOrderdeatails);
+		}
+		
+		
+		
+	
+		
+
+
+	
+
+		return finalMap;
+	
+	}
+
+	public Map<String, ArrayList<OrderDetails>> getOrderDetailsTesting(int storeId, String status2) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
