@@ -43,14 +43,7 @@ public class LoginHelper {
 
 		}
 
-		if (roleId.equalsIgnoreCase(constants.role_ninja)) {
-			loginMsg.setMessage("SUCCESS");
-			loginMsg.setToken("ABCD");
-
-			// API call to super visor default screen
-
-		}
-
+		
 		// validate user and role and will get one token
 
 		if (roleId.equalsIgnoreCase(constants.role_super_visor)) {

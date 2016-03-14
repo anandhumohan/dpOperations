@@ -1,15 +1,26 @@
 package com.chaipoint.deliverypartner;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
+import java.util.concurrent.TimeUnit;
+
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
 
 import com.chaipoint.constants.Constants;
+import com.chaipoint.deliveryappapis.HelperAPI;
+import com.chaipoint.dppojos.CpOrders;
 import com.chaipoint.helperclasses.DpStatus;
 import com.chaipoint.helperclasses.OrderDetails;
 import com.chaipoint.helperclasses.OrderStatus;
+import com.chaipoint.hibernatehelper.HibernateOperations;
 import com.chaipoint.ninja.NinjaOperations;
 
 public class DpOperations {
@@ -22,6 +33,7 @@ public class DpOperations {
 
 	// public static Map<String, OrderStatus> orderStatus = new HashMap<String,
 	// OrderStatus>();
+	HibernateOperations template = null;
 
 	DpStatus status = null;
 	Queue<String> queue = null;
@@ -47,20 +59,20 @@ public class DpOperations {
 			dpStores.add(DPId);
 			storeDpList.put(storeId, dpStores);
 
-		}else{
+		} else {
 			status = new DpStatus();
 			status.setStatus(Constants.dp_Status_returning_to_store);
 			status.setDpId(DPId);
 			dpStatus.put(DPId, status);
-			
-		//	queue = DPQueues.get(storeId);
-		//	queue.add(mtfId);
-		//	DPQueues.put(storeId, queue);
-			
+
+			// queue = DPQueues.get(storeId);
+			// queue.add(mtfId);
+			// DPQueues.put(storeId, queue);
+
 			dpStores = storeDpList.get(storeId);
 			dpStores.add(DPId);
 			storeDpList.put(storeId, dpStores);
-			
+
 		}
 
 		return Constants.success;
@@ -72,7 +84,7 @@ public class DpOperations {
 		status.setStatus(Constants.dp_Status_available);
 		dpStatus.put(DPId, status);
 		// check for null check
-		
+
 		queue = DPQueues.get(storeId);
 		queue.add(DPId);
 		DPQueues.put(storeId, queue);
@@ -195,10 +207,78 @@ public class DpOperations {
 		return null;
 	}
 
-	public Map<String, ArrayList<OrderDetails>> getAllDpCounts(int storeId, String mtfId) {
+	public Map<String, Long> getAllDpCounts(int storeId, String mtfId) {
+		String status = new HelperAPI().getAllIdAndNames();
+		Map<String, Long> dpScreenCount = new HashMap<String, Long>();
+
+		
+		// get orders assighed to him
+
+		Criteria criteria = getTemplate().getSession().createCriteria(CpOrders.class);
+		criteria.add(Restrictions.eq("status", "Dispatched"));
+		criteria.add(Restrictions.eq("storeId", storeId));
+		// criteria.setProjection(Projections.property("id"));
+		criteria.setProjection(Projections.rowCount());
+
+		// DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd
+		// hh:mm:ss");
+		// Date date = new Date();
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+		Date date = new Date();
+		System.out.println("ennathe date" + date);
+
+		Date minDate = null;
+		try {
+			minDate = formatter.parse(formatter.format(date));
+		} catch (ParseException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
+		Date maxDate = new Date(minDate.getTime() + TimeUnit.DAYS.toMillis(1));
+
+		System.out.println("minimum date" + minDate);
+		System.out.println("minimum date" + maxDate);
+
+		criteria.add(Restrictions.ge("createdDate", minDate));
+
+		criteria.add(Restrictions.lt("createdDate", maxDate));
+
+		ArrayList<Long> count = (ArrayList<Long>) getTemplate().get(criteria);
+		
+		dpScreenCount.put(Constants.Order_Status_dispatched, count.get(0));
+		
+	//	if(dpStatus.get(mtfId).getOrderDetailsAssigned() == null){
+			dpScreenCount.put("Assigned", (long) 0);
+	//	}
+	//	else{
+	//		dpScreenCount.put("Assigned", (long)dpStatus.get(mtfId).getOrderDetailsAssigned().size());
+	//	}
+		
+	//	if(dpStatus.get(mtfId).getDeliveredorders() == null){
+			dpScreenCount.put("Delivered", (long) 0);
+	//	}
+	//	else{
+	//		dpScreenCount.put("Assigned", (long)dpStatus.get(mtfId).getDeliveredorders().size());
+	//	}
 		
 		
-		return null;
+		
+		
+		
+		
+		
+		
+
+		return dpScreenCount;
+	}
+
+	private HibernateOperations getTemplate() {
+
+		if (template == null) {
+			template = new HibernateOperations();
+		}
+		return template;
 	}
 
 }

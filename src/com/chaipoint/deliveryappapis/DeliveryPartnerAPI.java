@@ -8,6 +8,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -89,10 +90,10 @@ public class DeliveryPartnerAPI {
 	@Path("/dpcount")
 	@GET
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response dpTabsCount(int storeId, String mtfId) {
+	public Response dpTabsCount(@QueryParam("storeId") int storeId, @QueryParam("mtfId") String mtfId) {
 
-		Map<String, ArrayList<OrderDetails>> orderList = new DpOperations().getAllDpCounts(storeId, mtfId);
-		return Response.ok(orderList, MediaType.TEXT_PLAIN).build();
+		Map<String, Long> orderList = new DpOperations().getAllDpCounts(storeId, mtfId);
+		return Response.ok(new Gson().toJson(orderList), MediaType.TEXT_PLAIN).build();
 
 	}
 

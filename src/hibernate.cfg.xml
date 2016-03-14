@@ -37,6 +37,7 @@
 		<mapping class="com.chaipoint.dppojos.CpRetailCustomer" />
 		<mapping class="com.chaipoint.dppojos.CancelReasons" />
 		<mapping class="com.chaipoint.dppojos.CoCOrderDetails" />
+		<mapping class="com.chaipoint.dppojos.StaffMaster" />
 		
 		
 
