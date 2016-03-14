@@ -9,6 +9,7 @@ public class DpStatus {
 	private ArrayList<String> orderAssigned;
 	private ArrayList<OrderDetails> orderDetailsAssigned;
 	private int assignedCount;
+	private ArrayList<OrderDetails> deliveredorders;
 	private String dpId;
 	private String status;
 	private Date lastAtStorePressed;
@@ -35,6 +36,14 @@ public class DpStatus {
 
 	public void setOrderAssigned(ArrayList<String> orderAssigned) {
 		this.orderAssigned = orderAssigned;
+	}
+
+	public ArrayList<OrderDetails> getDeliveredorders() {
+		return deliveredorders;
+	}
+
+	public void setDeliveredorders(ArrayList<OrderDetails> deliveredorders) {
+		this.deliveredorders = deliveredorders;
 	}
 
 	public ArrayList<OrderDetails> getOrderDetailsAssigned() {

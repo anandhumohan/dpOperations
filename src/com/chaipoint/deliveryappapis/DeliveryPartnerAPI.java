@@ -85,8 +85,20 @@ public class DeliveryPartnerAPI {
 
 	}
 
+	
+	@Path("/dpcount")
+	@GET
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response dpTabsCount(int storeId, String mtfId) {
+
+		Map<String, ArrayList<OrderDetails>> orderList = new DpOperations().getAllDpCounts(storeId, mtfId);
+		return Response.ok(orderList, MediaType.TEXT_PLAIN).build();
+
+	}
+
+	
 	@Path("/flush")
-	@POST
+	@GET
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response dpFlush() {
 		String result = new DpOperations().forceFlush();

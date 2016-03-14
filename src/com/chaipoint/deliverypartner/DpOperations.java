@@ -33,7 +33,7 @@ public class DpOperations {
 	public String initialOperations(int storeId, String mtfId) {
 		String DPId = mtfId;
 		// creating two maps when first guy login
-		if (!dpStatus.containsKey(mtfId)) {
+		if (!storeDpList.containsKey(storeId)) {
 
 			status = new DpStatus();
 			status.setStatus(Constants.dp_Status_returning_to_store);
@@ -47,6 +47,20 @@ public class DpOperations {
 			dpStores.add(DPId);
 			storeDpList.put(storeId, dpStores);
 
+		}else{
+			status = new DpStatus();
+			status.setStatus(Constants.dp_Status_returning_to_store);
+			status.setDpId(DPId);
+			dpStatus.put(DPId, status);
+			
+		//	queue = DPQueues.get(storeId);
+		//	queue.add(mtfId);
+		//	DPQueues.put(storeId, queue);
+			
+			dpStores = storeDpList.get(storeId);
+			dpStores.add(DPId);
+			storeDpList.put(storeId, dpStores);
+			
 		}
 
 		return Constants.success;
@@ -129,6 +143,7 @@ public class DpOperations {
 	public String forceFlush() {
 		DPQueues.clear();
 		dpStatus.clear();
+		storeDpList.clear();
 		return "success";
 	}
 
@@ -177,6 +192,12 @@ public class DpOperations {
 
 	public ArrayList<String> getAllDpAtStore(int storeId) {
 		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Map<String, ArrayList<OrderDetails>> getAllDpCounts(int storeId, String mtfId) {
+		
+		
 		return null;
 	}
 

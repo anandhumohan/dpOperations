@@ -13,16 +13,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Table(name = "coc_order_view")
 @Cacheable
 @Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
-public class CoCOrderDetails {
-
-//	@EmbeddedId
-//	private MyJoinClassKey key;
-	@Id
-	@Column(name = "product_id")
-	private int productId;
-	
-	@Column(name = "order_id")
-	private int orderId;
+public class CoCOrderDetailstesting {
 
 	@Column(name = "coupon_code")
 	private String couponCode;
@@ -32,6 +23,20 @@ public class CoCOrderDetails {
 
 	@Column(name = "delivery_charge")
 	private double deliveryCharge;
+	
+	
+	@Column(name = "order_id")
+	private int orderId;
+	
+	
+	@Column(name = "product_id")
+	private int productId;
+
+	// @Column(name = "comment")
+	// private String comment;
+
+	// @Id
+	// private MyJoinClassKey key;
 
 	@Column(name = "store_id")
 	private int storeId;
@@ -126,21 +131,20 @@ public class CoCOrderDetails {
 		this.deliveryCharge = deliveryCharge;
 	}
 
-	
-	public int getProductId() {
-		return productId;
-	}
-
-	public void setProductId(int productId) {
-		this.productId = productId;
-	}
-
 	public int getOrderId() {
 		return orderId;
 	}
 
 	public void setOrderId(int orderId) {
 		this.orderId = orderId;
+	}
+
+	public int getProductId() {
+		return productId;
+	}
+
+	public void setProductId(int productId) {
+		this.productId = productId;
 	}
 
 	public int getStoreId() {

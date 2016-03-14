@@ -79,15 +79,13 @@ public class NinjaAPI {
 
 	}
 	
-	
-	
-	@Path("/orderdetailstesting")
+	@Path("/orderdetailsfinal")
 	@GET
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response newStateTesting(@QueryParam("storeId") int storeId, @QueryParam("status") String status) {
+	public Response newStateTestfinal(@QueryParam("storeId") int storeId, @QueryParam("status") String status) {
 		// String status = "New";
 		RootOrderList rootOrder = new RootOrderList();
-		Map<String, ArrayList<OrderDetails>> orderDetais = new NinjaOperations().getOrderDetailsTesting(storeId, status);
+		Map<String, ArrayList<OrderDetails>> orderDetais = new NinjaOperations().getOrderDetailsFinal(storeId, status);
 
 		rootOrder.setOrderList(orderDetais);
 	//	Map<String, Long> count = new NinjaOperations().getAllCounts(storeId);
@@ -95,6 +93,7 @@ public class NinjaAPI {
 		return Response.ok(new Gson().toJson(rootOrder), MediaType.TEXT_PLAIN).build();
 
 	}
+	
 
 	@Path("/count")
 	@GET
