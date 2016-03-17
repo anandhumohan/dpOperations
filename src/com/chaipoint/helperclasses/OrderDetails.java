@@ -1,5 +1,6 @@
 package com.chaipoint.helperclasses;
 
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,7 +8,9 @@ public class OrderDetails {
 	private int orderId;
 	private String storeName;
 	private int DeliveredBy;
-	private long orderTime;
+	private String orderTime;
+	private String status;
+	private String orderStatus;
 	private AddressInfo customerDetails;
 	private ArrayList<ItemsDetails> orderDetails;
 	private PaymentDetails paymentDetails;
@@ -29,9 +32,13 @@ public class OrderDetails {
 		this.storeName = storeName;
 	}
 
-	
+	public String getStatus() {
+		return status;
+	}
 
-	
+	public void setStatus(String status) {
+		this.status = status;
+	}
 
 	public int getDeliveredBy() {
 		return DeliveredBy;
@@ -41,12 +48,20 @@ public class OrderDetails {
 		DeliveredBy = deliveredBy;
 	}
 
-	public long getOrderTime() {
+	public String getOrderTime() {
 		return orderTime;
 	}
 
-	public void setOrderTime(long orderTime) {
+	public void setOrderTime(String orderTime) {
 		this.orderTime = orderTime;
+	}
+
+	public String getOrderStatus() {
+		return orderStatus;
+	}
+
+	public void setOrderStatus(String orderStatus) {
+		this.orderStatus = orderStatus;
 	}
 
 	public AddressInfo getCustomerDetails() {

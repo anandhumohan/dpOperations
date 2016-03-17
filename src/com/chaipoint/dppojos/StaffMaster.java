@@ -21,6 +21,9 @@ public class StaffMaster {
 	@Column(name = "id")
 	private int id;
 
+	@Column(name = "username")
+	private String username;
+
 	@Column(name = "code")
 	private String staffCode;
 
@@ -29,6 +32,14 @@ public class StaffMaster {
 
 	@Column(name = "active")
 	private char active;
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
 
 	public int getId() {
 		return id;

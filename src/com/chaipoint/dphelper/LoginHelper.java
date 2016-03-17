@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.chaipoint.constants.Constants;
+import com.chaipoint.deliveryappapis.HelperAPI;
 import com.chaipoint.deliverypartner.DpOperations;
 import com.chaipoint.helperclasses.LoginMsg;
 import com.chaipoint.hibernatehelper.HibernateTemplate;
@@ -20,6 +21,8 @@ public class LoginHelper {
 	public LoginMsg login(ArrayList<Integer> storeId, String mtfId, String password, String roleId) {
 
 		LoginMsg loginMsg = new LoginMsg();
+		loginMsg.setName(HelperAPI.mtfIdNames.get(mtfId));
+		
 		/*
 		 * if (roleId.equalsIgnoreCase(Constants.role_ninja)) {
 		 * 

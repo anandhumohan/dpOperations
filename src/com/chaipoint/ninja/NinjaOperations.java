@@ -14,8 +14,10 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.TimeUnit;
@@ -290,7 +292,7 @@ public class NinjaOperations {
 	}
 
 	// change the status of the order new to confirmed in db
-	public String updateOrderStatus(int OrderId, String status) {
+	public String updateOrderStatus(int OrderId, String status, int storeId) {
 		String msg = "";
 		CpOrders cpOrders = new CpOrders();
 		Criteria criteria = getHibernatetemplate().getSession().createCriteria(CpOrders.class);
@@ -322,23 +324,38 @@ public class NinjaOperations {
 				// String res = new push().sendMessage(dpNames);
 			}
 		}
-
-		if (status.equalsIgnoreCase(Constants.Order_Status_dispatched)) {
+		if (status.equalsIgnoreCase(Constants.Order_Status_delivered)) {
 			criteria.add(Restrictions.eq("id", OrderId));
 			ArrayList<CpOrders> count = (ArrayList<CpOrders>) getHibernatetemplate().get(criteria);
 			cpOrders = count.get(0);
 			cpOrders.setStatus(status);
-			cpOrders.setDispatchTime(new Date());
-			String dpName = new DpOperations().getMaxPriorityDpname(cpOrders.getStoreId());
-			if (dpName == null) {
-				msg = "NO DPS Available";
-			}
-			cpOrders.setDeliveryBoy(10);
+			// cpOrders.setConfirmTime(new Date());
+
 			if (Constants.success.equals(getHibernatetemplate().update(cpOrders))) {
 				msg = Constants.success;
-				String res = new push().sendMessage(new ArrayList<>());
-				OrderDetails details = new NinjaOperations().getOrderdetailsByOrderId(OrderId, cpOrders.getStoreId());
-				boolean stat = new DpOperations().dpStatus.get("mt").getOrderDetailsAssigned().add(details);
+				// ArrayList<String> dpNames =
+				// getAllDp(count.get(0).getStoreId());
+				// String res = new push().sendMessage(dpNames);
+			}
+		}
+
+		if (status.equalsIgnoreCase(Constants.Order_Status_dispatched)) {
+			
+			String dpMtfId = new DpOperations().getMaxPriorityDpname(storeId);
+			if (dpMtfId.equalsIgnoreCase("No dp")) {
+				msg = "NO DPS Available";
+				return msg;
+			}
+			else {
+				//send push notification in dpName
+				//String res = new push().sendMessage(new ArrayList<>());
+				System.out.println("push notification");
+				//get order details using orderId
+				Map<String, ArrayList<OrderDetails>> details = new NinjaOperations().getOrderDetailsById(OrderId);
+				details.get("Ready").get(0).setOrderStatus("Assigned");
+				System.out.println("push notification");
+				msg = new DpOperations().assignOrderToDp(details.get("Ready").get(0), dpMtfId, storeId);
+		
 				// set count of order assigned
 				// boolean stat1 = new
 				// DpOperations().dpStatus.get("mt").setAssignedCount(0);
@@ -373,18 +390,16 @@ public class NinjaOperations {
 	 * template = new HibernateTemplate(); } return template; }
 	 */
 
-	public String manualAssign(int orderId, int storeId) {
-		ArrayList<String> dpAtstores = new DpOperations().getAllDpAtStore(storeId);
+	public Map<String, String> manualAssign(int storeId) {
+		
+		Map<String, String> nameMtf  = new DpOperations().getAllDps(storeId);
+ 		
+		
+	
+		
 
-		String status = new push().sendMessage(dpAtstores);
-		CpOrders cpOrders = new CpOrders();
-		Criteria criteria = getHibernatetemplate().getSession().createCriteria(CpOrders.class);
-		criteria.add(Restrictions.eq("id", orderId));
-		ArrayList<CpOrders> count = (ArrayList<CpOrders>) getHibernatetemplate().get(criteria);
-		cpOrders = count.get(0);
-		cpOrders.setStatus("Dispatched");
-		cpOrders.setDispatchTime(new Date());
-		return Constants.success;
+	
+		return nameMtf;
 	}
 
 	public Map<String, ArrayList<OrderDetails>> getOrderDetailsTest(int storeId, String status2) {
@@ -487,6 +502,7 @@ public class NinjaOperations {
 
 			// criteria.add(Restrictions.eq("status", "New"));
 
+			@SuppressWarnings("unchecked")
 			ArrayList<CoCOrderDetails> orderDet = (ArrayList<CoCOrderDetails>) getHibernatetemplate().get(criteria);
 			// CoCOrderDetails details = orderDet.get(0);
 			OrderDetails orderDetailsObject = null;
@@ -580,7 +596,7 @@ public class NinjaOperations {
 			System.out.println("Creating statement...");
 			stmt = conn.createStatement();
 
-			String sql = "SELECT order_id, store_id, order_time, name, phone, floor, building, flat, landmark, product_name, qty, cost, total_product_cost, payment_method, channel_name, total_amount, delivery_charge, net_amount,coupon_code  FROM coc_order_view WHERE status = '"
+			String sql = "SELECT order_id, store_id, order_time, delivery_coordinates, name, phone, floor, building, flat, landmark, product_name, qty, cost, total_product_cost, payment_method, channel_name, total_amount, delivery_charge, net_amount,coupon_code  FROM coc_order_view WHERE status = '"
 					+ status2 + "'and store_id =" + storeId + ";";
 			ResultSet rs = stmt.executeQuery(sql);
 			// STEP 5: Extract data from result set
@@ -593,8 +609,9 @@ public class NinjaOperations {
 				if (!orderDetails.containsKey(rs.getInt("order_id"))) {
 
 					orderDetailsObject = new OrderDetails();
-				//	orderDetailsObject.setStoreName(rs.getInt("storeName"));
+					orderDetailsObject.setStoreName("JNC");
 					orderDetailsObject.setOrderId(rs.getInt("order_id"));
+					orderDetailsObject.setOrderTime(rs.getString("order_time"));
 					// orderDetailsObject.setStoreName(details.setStoreName);
 
 					AddressInfo addressInfo = new AddressInfo();
@@ -605,6 +622,18 @@ public class NinjaOperations {
 					addressInfo.setBuilding(rs.getString("building"));
 					addressInfo.setPhone(rs.getString("phone"));
 					addressInfo.setName(rs.getString("name"));
+					/*
+					if(rs.getString("delivery_coordinates") == null){
+						addressInfo.setLatitude("0.0");
+						addressInfo.setLongitude("0.0");
+						
+					}else{
+						String cordinates = rs.getString("delivery_coordinates");
+					List<String> elementList =  Arrays.asList(cordinates.split(","));
+					addressInfo.setLatitude(elementList.get(0));
+					addressInfo.setLongitude(elementList.get(1));
+					}
+					*/
 					orderDetailsObject.setCustomerDetails(addressInfo);
 
 					ArrayList<ItemsDetails> demo = new ArrayList<ItemsDetails>();
@@ -621,8 +650,9 @@ public class NinjaOperations {
 					pricing.setCouponApplied(rs.getString("coupon_code"));
 					pricing.setDeliveryCharges(rs.getDouble("delivery_charge"));
 					// pricing.setDiscountAmount(details.getdiscountAmount);
-					pricing.setFinalPayableCost(rs.getDouble("total_amount"));
-					pricing.setTotalPrice(rs.getDouble("net_amount"));
+					pricing.setFinalPayableCost(rs.getDouble("net_amount"));
+					pricing.setTotalPrice(rs.getDouble("total_amount"));
+					pricing.setTotalTax(rs.getDouble("net_amount")-rs.getDouble("total_amount"));
 					orderDetailsObject.setPricing(pricing);
 
 					PaymentDetails paymentDetails = new PaymentDetails();
@@ -653,7 +683,7 @@ public class NinjaOperations {
 
 
 			}
-			finalMap.put("New", listOfOrderdeatails);
+			finalMap.put(status2, listOfOrderdeatails);
 			rs.close();
 		} catch (SQLException se) {
 			// Handle errors for JDBC
@@ -679,4 +709,137 @@ public class NinjaOperations {
 
 		return finalMap;
 	}
+
+	public Map<String, ArrayList<OrderDetails>> getOrderDetailsById(int orderId) {
+
+		Map<String, ArrayList<OrderDetails>> finalMap = new HashMap<String, ArrayList<OrderDetails>>();
+		ArrayList<OrderDetails> listOfOrderdeatails = new ArrayList<OrderDetails>();
+		Map<Integer, OrderDetails> orderDetails = new HashMap<Integer, OrderDetails>();
+		Connection conn = null;
+		Statement stmt = null;
+		try {
+			// STEP 2: Register JDBC driver
+			Class.forName("com.mysql.jdbc.Driver");
+
+			// STEP 3: Open a connection
+			System.out.println("Connecting to a selected database...");
+			conn = DriverManager.getConnection(DB_URL, USER, PASS);
+			System.out.println("Connected database successfully...");
+
+			// STEP 4: Execute a query
+			System.out.println("Creating statement...");
+			stmt = conn.createStatement();
+
+			String sql = "SELECT order_id, store_id, order_time, name, phone, floor, building, flat, landmark, product_name, qty, cost, total_product_cost, payment_method, channel_name, total_amount, delivery_charge, net_amount,coupon_code  FROM coc_order_view WHERE order_id =" + orderId + ";";
+			ResultSet rs = stmt.executeQuery(sql);
+			// STEP 5: Extract data from result set
+			System.out.println("got result");
+		//	ArrayList<CoCOrderDetails> orderDet = (ArrayList<CoCOrderDetails>) getHibernatetemplate().get(criteria);
+			// CoCOrderDetails details = orderDet.get(0);
+			OrderDetails orderDetailsObject = null;
+			while (rs.next()) {
+
+				if (!orderDetails.containsKey(rs.getInt("order_id"))) {
+
+					orderDetailsObject = new OrderDetails();
+					orderDetailsObject.setStoreName("JNC");
+					orderDetailsObject.setOrderId(rs.getInt("order_id"));
+					orderDetailsObject.setOrderTime(rs.getString("order_time"));
+					// orderDetailsObject.setStoreName(details.setStoreName);
+
+					AddressInfo addressInfo = new AddressInfo();
+
+					addressInfo.setFlat(rs.getString("flat"));
+					addressInfo.setFloor(rs.getString("floor"));
+					addressInfo.setLandmark(rs.getString("landmark"));
+					addressInfo.setBuilding(rs.getString("building"));
+					addressInfo.setPhone(rs.getString("phone"));
+					addressInfo.setName(rs.getString("name"));
+					orderDetailsObject.setCustomerDetails(addressInfo);
+
+					ArrayList<ItemsDetails> demo = new ArrayList<ItemsDetails>();
+					ItemsDetails itemsDetails = new ItemsDetails();
+					itemsDetails.setSerialNo(1);
+					itemsDetails.setItemName(rs.getString("product_name"));
+					itemsDetails.setItemUnitCount(rs.getInt("qty"));
+					itemsDetails.setItemUnitPrice(rs.getDouble("cost"));
+					itemsDetails.setItemTotalPrice(rs.getDouble("total_product_cost"));
+					demo.add(itemsDetails);
+					orderDetailsObject.setOrderDetails(demo);
+
+					Pricing pricing = new Pricing();
+					pricing.setCouponApplied(rs.getString("coupon_code"));
+					pricing.setDeliveryCharges(rs.getDouble("delivery_charge"));
+					// pricing.setDiscountAmount(details.getdiscountAmount);
+					pricing.setFinalPayableCost(rs.getDouble("net_amount"));
+					pricing.setTotalPrice(rs.getDouble("total_amount"));
+					pricing.setTotalTax(rs.getDouble("net_amount")-rs.getDouble("total_amount"));
+					orderDetailsObject.setPricing(pricing);
+
+					PaymentDetails paymentDetails = new PaymentDetails();
+					paymentDetails.setChannel(rs.getString("channel_name"));
+					paymentDetails.setPaymentType(rs.getString("payment_method"));
+					orderDetailsObject.setPaymentDetails(paymentDetails);
+
+					listOfOrderdeatails.add(orderDetailsObject);
+					orderDetails.put(rs.getInt("order_id"), orderDetailsObject);
+
+				}
+
+				else {
+
+					ItemsDetails itemsDetails = new ItemsDetails();
+					itemsDetails.setSerialNo(2);
+					itemsDetails.setItemName(rs.getString("product_name"));
+					itemsDetails.setItemUnitCount(rs.getInt("qty"));
+					itemsDetails.setItemUnitPrice(rs.getDouble("cost"));
+					itemsDetails.setItemTotalPrice(rs.getDouble("total_product_cost"));
+					// orderDetailsObject.getOrderDetails().add(itemsDetails);
+					orderDetails.get(rs.getInt("order_id")).getOrderDetails().add(itemsDetails);
+					// orderDetailsObject.get(details.
+
+					// orderDetailsObject.getget(details.getOrderId()).getOrderDetails().add(itemsDetails);
+
+				}
+
+
+			}
+			finalMap.put("Ready", listOfOrderdeatails);
+			rs.close();
+		} catch (SQLException se) {
+			// Handle errors for JDBC
+			se.printStackTrace();
+		} catch (Exception e) {
+			// Handle errors for Class.forName
+			e.printStackTrace();
+		} finally {
+			// finally block used to close resources
+			try {
+				if (stmt != null)
+					conn.close();
+			} catch (SQLException se) {
+			} // do nothing
+			try {
+				if (conn != null)
+					conn.close();
+			} catch (SQLException se) {
+				se.printStackTrace();
+			} // end finally try
+		} // end try
+		System.out.println("Goodbye!");
+
+		return finalMap;
+	
+	}
+
+	public String dplist(String mtfId, int storeId, int OrderId) {
+		String msg = "";
+		Map<String, ArrayList<OrderDetails>> details = new NinjaOperations().getOrderDetailsById(OrderId);
+		System.out.println("push notification");
+		msg = new DpOperations().assignOrderToDp(details.get("Ready").get(0), mtfId, storeId);
+		// TODO Auto-generated method stub
+		return msg;
+	}
+
+	
 }

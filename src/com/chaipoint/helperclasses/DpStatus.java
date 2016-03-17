@@ -2,17 +2,30 @@ package com.chaipoint.helperclasses;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
 
 public class DpStatus {
 	private String dpName;
 	private String storeId;
 	private ArrayList<String> orderAssigned;
-	private ArrayList<OrderDetails> orderDetailsAssigned;
-	private int assignedCount;
-	private ArrayList<OrderDetails> deliveredorders;
+	private LinkedList<OrderDetails> orderDetailsAssigned;
+	private LinkedList<OrderDetails> orderDetailsAccepted;
+	private ArrayList<OrderDetails> dpDelivered;
+	
+	private int assignedCount = 0;
 	private String dpId;
 	private String status;
 	private Date lastAtStorePressed;
+
+	
+	
+	public ArrayList<OrderDetails> getDpDelivered() {
+		return dpDelivered;
+	}
+
+	public void setDpDelivered(ArrayList<OrderDetails> dpDelivered) {
+		this.dpDelivered = dpDelivered;
+	}
 
 	public String getStoreId() {
 		return storeId;
@@ -38,20 +51,20 @@ public class DpStatus {
 		this.orderAssigned = orderAssigned;
 	}
 
-	public ArrayList<OrderDetails> getDeliveredorders() {
-		return deliveredorders;
-	}
-
-	public void setDeliveredorders(ArrayList<OrderDetails> deliveredorders) {
-		this.deliveredorders = deliveredorders;
-	}
-
-	public ArrayList<OrderDetails> getOrderDetailsAssigned() {
+	public LinkedList<OrderDetails> getOrderDetailsAssigned() {
 		return orderDetailsAssigned;
 	}
 
-	public void setOrderDetailsAssigned(ArrayList<OrderDetails> orderDetailsAssigned) {
+	public void setOrderDetailsAssigned(LinkedList<OrderDetails> orderDetailsAssigned) {
 		this.orderDetailsAssigned = orderDetailsAssigned;
+	}
+
+	public LinkedList<OrderDetails> getOrderDetailsAccepted() {
+		return orderDetailsAccepted;
+	}
+
+	public void setOrderDetailsAccepted(LinkedList<OrderDetails> orderDetailsAccepted) {
+		this.orderDetailsAccepted = orderDetailsAccepted;
 	}
 
 	public String getDpName() {

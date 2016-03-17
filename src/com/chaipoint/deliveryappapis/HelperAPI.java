@@ -4,6 +4,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
 import org.hibernate.Criteria;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
@@ -15,7 +21,9 @@ import com.chaipoint.dppojos.StoreMaster;
 import com.chaipoint.helperclasses.Regions;
 import com.chaipoint.helperclasses.StoreLocation;
 import com.chaipoint.hibernatehelper.HibernateOperations;
+import com.google.gson.Gson;
 
+@Path("/helper")
 public class HelperAPI {
 	HibernateOperations template = null;
 
@@ -23,8 +31,10 @@ public class HelperAPI {
 	public static Map<String, String> mtfIdNames = new HashMap<String, String>();
 	public static ArrayList<Regions> regions = new ArrayList<Regions>();
 	public static Map<Integer, ArrayList<StoreLocation>> storeIdLocation = new HashMap<Integer, ArrayList<StoreLocation>>();
-
-	public String getAllIdAndNames() {
+	
+	@Path("/initial")
+	@GET
+	public Response getAllIdAndNames() {
 
 		Criteria criteria = getTemplate().getSession().createCriteria(StaffMaster.class);
 		// criteria.add(Restrictions.eq("locationId", locationId));
@@ -36,7 +46,9 @@ public class HelperAPI {
 		}
 		System.out.println("reached here");
 		getAllStoreIdNames();
-		return "sucsess";
+		getAllregionNames();
+		getAllstoreNames();
+		return Response.ok("Success", MediaType.TEXT_PLAIN).build();
 	}
 
 	public void getAllStoreIdNames() {
@@ -56,7 +68,7 @@ public class HelperAPI {
 		}
 
 		System.out.println("reached here");
-		getAllregionNames();
+		
 
 	}
 
@@ -81,7 +93,7 @@ public class HelperAPI {
 
 		}
 		System.out.println("reached");
-		getAllstoreNames();
+		
 	}
 
 	public void getAllstoreNames() {
@@ -95,7 +107,7 @@ public class HelperAPI {
 			Criteria cr = getTemplate().getSession().createCriteria(StoreMaster.class);
 			cr.add(Restrictions.eq("locationId", list));
 			cr.add(Restrictions.eq("active", 'Y'));
-		//	criteria.addOrder(Order.asc("name"));
+			// criteria.addOrder(Order.asc("name"));
 			// criteria.add(Restrictions.eq("active", true));
 			ProjectionList projectionList1 = Projections.projectionList();
 			projectionList1.add(Projections.property("id"));
@@ -105,7 +117,7 @@ public class HelperAPI {
 			cr.setProjection(projectionList1);
 
 			ArrayList<Object[]> locationList = (ArrayList<Object[]>) getTemplate().get(cr);
-			
+
 			ArrayList<StoreLocation> locations = new ArrayList<StoreLocation>();
 			for (Object[] list1 : locationList) {
 
@@ -114,16 +126,15 @@ public class HelperAPI {
 				location.setName(list1[1].toString());
 				location.setLatitude((double) list1[2]);
 				location.setLongitude((double) list1[3]);
-			//	storeLocations.put((int) list1[0], location);
+				// storeLocations.put((int) list1[0], location);
 				locations.add(location);
 
 			}
 			storeIdLocation.put(list, locations);
-			
+
 		}
-		
-		
-System.out.println("reached");
+
+		System.out.println("reached");
 
 	}
 

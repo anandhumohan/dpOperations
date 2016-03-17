@@ -6,6 +6,18 @@ public class Pricing {
 	private String couponApplied;
 	private double deliveryCharges;
 	private double finalPayableCost;
+	private double totalTax;
+	
+
+	
+
+	public double getTotalTax() {
+		return totalTax;
+	}
+
+	public void setTotalTax(double totalTax) {
+		this.totalTax = totalTax;
+	}
 
 	public double getTotalPrice() {
 		return totalPrice;

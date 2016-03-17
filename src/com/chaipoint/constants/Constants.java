@@ -4,13 +4,13 @@ public class Constants {
 
 	// Order Status
 
-	public static String Order_Status_new = "NEW";
-	public static String Order_Status_confirmed = "CONFIRMED";
-	public static String Order_Status_ready = "READY";
-	public static String Order_Status_dispatched = "DISPATCHED";
-	public static String Order_Status_delivered = "DELIVERED";
-	public static String Order_Status_cancelled = "CANCELLED";
-	public static String Order_Status_transfererred = "TRANSFERRED";
+	public static String Order_Status_new = "New";
+	public static String Order_Status_confirmed = "Confirmed";
+	public static String Order_Status_ready = "Ready";
+	public static String Order_Status_dispatched = "Dispatched";
+	public static String Order_Status_delivered = "Delivered";
+	public static String Order_Status_cancelled = "Cancelled";
+	public static String Order_Status_transfererred = "Transfered";
 
 	// Dp status
 
