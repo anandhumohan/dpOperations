@@ -31,7 +31,7 @@ public class HelperAPI {
 	public static Map<String, String> mtfIdNames = new HashMap<String, String>();
 	public static ArrayList<Regions> regions = new ArrayList<Regions>();
 	public static Map<Integer, ArrayList<StoreLocation>> storeIdLocation = new HashMap<Integer, ArrayList<StoreLocation>>();
-	
+
 	@Path("/initial")
 	@GET
 	public Response getAllIdAndNames() {
@@ -68,7 +68,6 @@ public class HelperAPI {
 		}
 
 		System.out.println("reached here");
-		
 
 	}
 
@@ -93,7 +92,7 @@ public class HelperAPI {
 
 		}
 		System.out.println("reached");
-		
+
 	}
 
 	public void getAllstoreNames() {

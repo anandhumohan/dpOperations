@@ -23,21 +23,6 @@ public class LoginHelper {
 		LoginMsg loginMsg = new LoginMsg();
 		loginMsg.setName(HelperAPI.mtfIdNames.get(mtfId));
 		
-		/*
-		 * if (roleId.equalsIgnoreCase(Constants.role_ninja)) {
-		 * 
-		 * // check already attached any particular
-		 * 
-		 * if (!storeNinjaAssign.get(storeId.get(0)) == true) {
-		 * loginMsg.setMessage("A ninja is attached to the store already");
-		 * 
-		 * } else { storeNinjaAssign.put(storeId.get(0), true); // call to
-		 * authentication loginMsg.setMessage("SUCCESS");
-		 * loginMsg.setToken("ABCD"); }
-		 * 
-		 * }
-		 * 
-		 */
 		if (roleId.equalsIgnoreCase(constants.role_ninja)) {
 			loginMsg.setMessage("SUCCESS");
 			loginMsg.setToken("ABCD");

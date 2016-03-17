@@ -45,7 +45,8 @@ public class loginAPI {
 	public Response regionWiseStores(@QueryParam("regionId") String regionId) {
 		System.out.println("reached here");
 		RootStores rootStores = new RootStores();
-		ArrayList<StoreLocation> storeLocations = new RegionHelper().getStores(regionId);
+		ArrayList<StoreLocation> storeLocations = new ArrayList<StoreLocation>();
+		storeLocations = new RegionHelper().getStores(regionId);
 		rootStores.setStores(storeLocations);
 		String storeJson = new Gson().toJson(rootStores);
 		return Response.ok(storeJson, MediaType.APPLICATION_JSON).build();

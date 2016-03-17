@@ -220,8 +220,8 @@ public class NinjaOperations {
 
 			Date maxDate = new Date(minDate.getTime() + TimeUnit.DAYS.toMillis(1));
 
-			System.out.println("minimum date" + minDate);
-			System.out.println("minimum date" + maxDate);
+		//	System.out.println("minimum date" + minDate);
+		//	System.out.println("minimum date" + maxDate);
 
 			criteria.add(Restrictions.ge("createdDate", minDate));
 
@@ -390,17 +390,6 @@ public class NinjaOperations {
 	 * template = new HibernateTemplate(); } return template; }
 	 */
 
-	public Map<String, String> manualAssign(int storeId) {
-		
-		Map<String, String> nameMtf  = new DpOperations().getAllDps(storeId);
- 		
-		
-	
-		
-
-	
-		return nameMtf;
-	}
 
 	public Map<String, ArrayList<OrderDetails>> getOrderDetailsTest(int storeId, String status2) {
 		Map<String, ArrayList<OrderDetails>> finalMap = new HashMap<String, ArrayList<OrderDetails>>();

@@ -22,6 +22,7 @@ import com.chaipoint.deliveryappapis.HelperAPI;
 import com.chaipoint.dppojos.CpOrders;
 import com.chaipoint.dppojos.StaffMaster;
 import com.chaipoint.helperclasses.DpStatus;
+import com.chaipoint.helperclasses.NameObject;
 import com.chaipoint.helperclasses.OrderDetails;
 import com.chaipoint.helperclasses.OrderStatus;
 import com.chaipoint.hibernatehelper.HibernateOperations;
@@ -335,16 +336,21 @@ public class DpOperations {
 		return getDp;
 	}
 
-	public Map<String, String> getAllDps(int storeId){
-		Map<String, String> namelist = new HashMap<String, String>();
+	public ArrayList<NameObject> getAllDps(int storeId){
+		ArrayList<NameObject> namelist = new ArrayList<NameObject>();
 		
 		if (!DPQueues.containsKey(storeId) || DPQueues.get(storeId) == null || DPQueues.get(storeId).isEmpty()) {
 			return namelist;
 
 		} else {
 			for(String mtf : DPQueues.get(storeId)){
+				NameObject nameObject = new NameObject();
+				nameObject.setMtfId(mtf);
+				HelperAPI api = new HelperAPI();
+				String idName = api.mtfIdNames.get(mtf.toUpperCase());
+				nameObject.setName(idName);
+				namelist.add(nameObject);
 				
-				namelist.put(mtf, HelperAPI.mtfIdNames.get(mtf));
 			}
 			
 		}

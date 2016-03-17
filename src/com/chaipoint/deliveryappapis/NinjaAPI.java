@@ -6,22 +6,18 @@ import java.util.Map;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
-import javax.ws.rs.HEAD;
-import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.xml.ws.soap.MTOMFeature;
-
-import org.json.simple.JSONObject;
 
 import com.chaipoint.constants.Constants;
 import com.chaipoint.deliverypartner.DpOperations;
 import com.chaipoint.helperclasses.CancelRoot;
 import com.chaipoint.helperclasses.DpAtStore;
+import com.chaipoint.helperclasses.DpNames;
+import com.chaipoint.helperclasses.NameObject;
 import com.chaipoint.helperclasses.OrderDetails;
 import com.chaipoint.helperclasses.RootOrderList;
 import com.chaipoint.helperclasses.RootUpdate;
@@ -37,15 +33,14 @@ public class NinjaAPI {
 	@GET
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response OrderDetailsUsingId(@QueryParam("orderId") int orderId) {
-		// String status = "New";
+		
 		RootOrderList rootOrder = new RootOrderList();
 		Map<String, ArrayList<OrderDetails>> orderDetais = new NinjaOperations().getOrderDetailsById(orderId);
 		if (orderDetais.values() == null) {
 			return Response.ok("NO OREDERS", MediaType.TEXT_PLAIN).build();
 		} else {
 			rootOrder.setOrderList(orderDetais);
-		//	Map<String, Long> count = new NinjaOperations().getAllCounts(storeId);
-		//	rootOrder.setOrderCount(count);
+		
 			return Response.ok(new Gson().toJson(rootOrder), MediaType.TEXT_PLAIN).build();
 		}
 	}
@@ -54,7 +49,7 @@ public class NinjaAPI {
 	@GET
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response newState(@QueryParam("storeId") int storeId, @QueryParam("status") String status) {
-		// String status = "New";
+		
 		RootOrderList rootOrder = new RootOrderList();
 		Map<String, ArrayList<OrderDetails>> orderDetais = new NinjaOperations().getOrderDetails(storeId, status);
 		if (orderDetais.values() == null) {
@@ -62,7 +57,7 @@ public class NinjaAPI {
 		} else {
 			rootOrder.setOrderList(orderDetais);
 			Map<String, Long> count = new NinjaOperations().getAllCounts(storeId);
-		//	rootOrder.setOrderCount(count);
+		
 			return Response.ok(new Gson().toJson(rootOrder), MediaType.TEXT_PLAIN).build();
 		}
 	}
@@ -71,13 +66,12 @@ public class NinjaAPI {
 	@GET
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response newStateTest(@QueryParam("storeId") int storeId, @QueryParam("status") String status) {
-		// String status = "New";
+		
 		RootOrderList rootOrder = new RootOrderList();
 		Map<String, ArrayList<OrderDetails>> orderDetais = new NinjaOperations().getOrderDetailsTest(storeId, status);
 
 		rootOrder.setOrderList(orderDetais);
-	//	Map<String, Long> count = new NinjaOperations().getAllCounts(storeId);
-	//	rootOrder.setOrderCount(count);
+
 		if(orderDetais.get(status).isEmpty()){
 			rootOrder.setMessage("No orders");
 		}
@@ -92,13 +86,12 @@ public class NinjaAPI {
 	@GET
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response newStateTestopt(@QueryParam("storeId") int storeId, @QueryParam("status") String status) {
-		// String status = "New";
+		
 		RootOrderList rootOrder = new RootOrderList();
 		Map<String, ArrayList<OrderDetails>> orderDetais = new NinjaOperations().getOrderDetailsTestopt(storeId, status);
 
 		rootOrder.setOrderList(orderDetais);
-	//	Map<String, Long> count = new NinjaOperations().getAllCounts(storeId);
-	//	rootOrder.setOrderCount(count);
+
 		return Response.ok(new Gson().toJson(rootOrder), MediaType.TEXT_PLAIN).build();
 
 	}
@@ -107,7 +100,7 @@ public class NinjaAPI {
 	@GET
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response newStateTestfinal(@QueryParam("storeId") int storeId, @QueryParam("status") String status) {
-		// String status = "New";
+		
 		RootOrderList rootOrder = new RootOrderList();
 		Map<String, ArrayList<OrderDetails>> orderDetais = new NinjaOperations().getOrderDetailsFinal(storeId, status);
 
@@ -118,8 +111,7 @@ public class NinjaAPI {
 		else{
 			rootOrder.setMessage(Constants.success);
 		}
-	//	Map<String, Long> count = new NinjaOperations().getAllCounts(storeId);
-	//	rootOrder.setOrderCount(count);
+	
 		return Response.ok(new Gson().toJson(rootOrder), MediaType.TEXT_PLAIN).build();
 
 	}
@@ -194,8 +186,20 @@ public class NinjaAPI {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response dplist(@QueryParam("storeId") int storeId) {
 	//	RootUpdate rootUpdate = new Gson().fromJson(json, RootUpdate.class);
-		Map<String, String> nameMtfidMap = new NinjaOperations().manualAssign(storeId);
-		return Response.ok(new Gson().toJson(nameMtfidMap), MediaType.TEXT_PLAIN_TYPE).build();
+		DpNames dpnames = new DpNames();
+		
+	//	Map<String, ArrayList<NameObject>> idName = new HashMap<String, ArrayList<NameObject>>();
+		ArrayList<NameObject> nameMtfidMap = new DpOperations().getAllDps(storeId);
+	//	idName.put("Name", nameMtfidMap);
+		if(nameMtfidMap.isEmpty()){
+			dpnames.setMessage("No names");
+		}else{
+			dpnames.setMessage(Constants.success);
+			dpnames.setIdName(nameMtfidMap);
+			
+		}
+		
+		return Response.ok(new Gson().toJson(dpnames), MediaType.TEXT_PLAIN_TYPE).build();
 
 	}
 	
