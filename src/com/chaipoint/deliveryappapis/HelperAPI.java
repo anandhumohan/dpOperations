@@ -46,8 +46,8 @@ public class HelperAPI {
 		}
 		System.out.println("reached here");
 		getAllStoreIdNames();
-		getAllregionNames();
-		getAllstoreNames();
+	//	getAllregionNames();
+	//	getAllstoreNames();
 		return Response.ok("Success", MediaType.TEXT_PLAIN).build();
 	}
 
@@ -70,7 +70,7 @@ public class HelperAPI {
 		System.out.println("reached here");
 
 	}
-
+/*
 	public void getAllregionNames() {
 		Criteria criteria = getTemplate().getSession().createCriteria(LocationMaster.class);
 		ProjectionList projectionList = Projections.projectionList();
@@ -136,7 +136,7 @@ public class HelperAPI {
 		System.out.println("reached");
 
 	}
-
+*/
 	public HibernateOperations getTemplate() {
 		if (template == null) {
 			template = new HibernateOperations();

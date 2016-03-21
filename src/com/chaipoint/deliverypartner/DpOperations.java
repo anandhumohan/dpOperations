@@ -71,7 +71,7 @@ public class DpOperations {
 			status.setStatus(Constants.dp_Status_returning_to_store);
 			status.setDpId(DPId);
 			status.setAssignedCount(0);
-		//	status.setor
+			// status.setor
 
 			status.setOrderDetailsAssigned(new LinkedList<OrderDetails>());
 			status.setOrderDetailsAccepted(new LinkedList<OrderDetails>());
@@ -106,58 +106,13 @@ public class DpOperations {
 		return Constants.success;
 	}
 
-	// get all Order details of dispatched items of the store
-	public Map<String, ArrayList<OrderDetails>> getAllDispatchedOrder(int storeId) {
-
-		Map<String, ArrayList<OrderDetails>> orderDetails = new NinjaOperations().getOrderDetailsTest(storeId,
-				Constants.Order_Status_dispatched);
-		return orderDetails;
-	}
-
 	public Map<String, ArrayList<OrderDetails>> getAllDeliveredOrders(int storeId, String mtfId) {
 		Map<String, ArrayList<OrderDetails>> orderDetails = new HashMap<String, ArrayList<OrderDetails>>();
 		ArrayList<OrderDetails> delivered = dpStatus.get(mtfId).getDpDelivered();
-		
+
 		orderDetails.put(Constants.Order_Status_delivered, delivered);
-		
 
 		return orderDetails;
-	}
-
-	public String DpOutForDelivery(String mtfId, String storeId) {
-
-		String status = "";
-		String DPId = mtfId;
-		// status = dpStatus.get(DPId);
-		// status.setStatus(Constants.dp_Status_available);
-		// dpStatus.put(DPId, status);
-
-		// orderStatus = state;
-		// send order status for tracking
-		return status;
-
-	}
-
-	public String DpReturnToStore(String mtfId, String storeId) {
-		String orderId = "";
-		String state = "";
-		String DPId = mtfId;
-		DpStatus status = dpStatus.get(DPId);
-		status.setStatus(Constants.dp_Status_available);
-		dpStatus.put(DPId, status);
-
-		return null;
-	}
-
-	// Here here here Here have to write changes happen for a particular order.
-	// like new-confirm-ready-dispatch-delivered-cancel
-
-	public ArrayList<String> confirmActionDisplay(String storeId) {
-
-		ArrayList<String> orderList = new ArrayList<String>();
-		// getting all orders in the store
-
-		return null;
 	}
 
 	// for flushing the values after closing
@@ -236,7 +191,7 @@ public class DpOperations {
 		ArrayList<CpOrders> count = (ArrayList<CpOrders>) getTemplate().get(criteria);
 		cpOrders = count.get(0);
 		cpOrders.setStatus(status);
-		 cpOrders.setDispatchTime(new Date());
+		cpOrders.setDispatchTime(new Date());
 
 		if (Constants.success.equals(getTemplate().update(cpOrders))) {
 
@@ -248,19 +203,19 @@ public class DpOperations {
 
 	public String deliveredOrders(int storeId, String mtfId, int orderId) {
 
-		 int count = dpStatus.get(mtfId).getAssignedCount();
-		 dpStatus.get(mtfId).setAssignedCount(--count);
-		 if(count == 0){
-			 dpStatus.get(mtfId).setStatus(Constants.dp_Status_returning_to_store);
-		 }
+		int count = dpStatus.get(mtfId).getAssignedCount();
+		dpStatus.get(mtfId).setAssignedCount(--count);
+		if (count == 0) {
+			dpStatus.get(mtfId).setStatus(Constants.dp_Status_returning_to_store);
+		}
 
 		// remove from accepted
 
 		LinkedList<OrderDetails> orders = dpStatus.get(mtfId).getOrderDetailsAccepted();
-		
+
 		int code = 0;
 		String status = updateTable(code, Constants.Order_Status_delivered, orderId);
-//check for null point exception
+		// check for null point exception
 		// copying
 		for (OrderDetails orderList : orders) {
 			if (orderList.getOrderId() == orderId) {
@@ -270,8 +225,8 @@ public class DpOperations {
 			}
 
 		}
-	//	int code = getCodeFromMtfId(mtfId);
-		
+		// int code = getCodeFromMtfId(mtfId);
+
 		// update in cpos
 
 		return status;
@@ -287,9 +242,8 @@ public class DpOperations {
 			ArrayList<CpOrders> count = (ArrayList<CpOrders>) getOperations().get(criteria);
 			cpOrders = count.get(0);
 			cpOrders.setStatus(status);
-		//	cpOrders.setDeliveryBoy(code);
+			// cpOrders.setDeliveryBoy(code);
 			cpOrders.setFinalDeliveryTime(new Date());
-		
 
 			if (Constants.success.equals(getOperations().update(cpOrders))) {
 
@@ -301,20 +255,20 @@ public class DpOperations {
 	}
 
 	public int getCodeFromMtfId(String username) {
-	//	String username = mtfId.toUpperCase();
-/*
-		Criteria criteria = getTemplate().getSession().createCriteria(StaffMaster.class);
-		// criteria.add(Restrictions.eq("locationId", locationId));
-		criteria.add(Restrictions.eq("code", mft));
-		criteria.setProjection(Projections.property("id"));
-		ArrayList<Integer> names = (ArrayList<Integer>) getTemplate().get(criteria);
-		*/
+		// String username = mtfId.toUpperCase();
+		/*
+		 * Criteria criteria =
+		 * getTemplate().getSession().createCriteria(StaffMaster.class); //
+		 * criteria.add(Restrictions.eq("locationId", locationId));
+		 * criteria.add(Restrictions.eq("code", mft));
+		 * criteria.setProjection(Projections.property("id"));
+		 * ArrayList<Integer> names = (ArrayList<Integer>)
+		 * getTemplate().get(criteria);
+		 */
 		Criteria criteria = getTemplate().getSession().createCriteria(StaffMaster.class);
 		// criteria.add(Restrictions.eq("locationId", locationId));
 		criteria.add(Restrictions.eq("username", username));
 		ArrayList<StaffMaster> names = (ArrayList<StaffMaster>) getTemplate().get(criteria);
-
-	
 
 		return names.get(0).getId();
 
@@ -333,33 +287,29 @@ public class DpOperations {
 		return getDp;
 	}
 
-	public ArrayList<NameObject> getAllDps(int storeId){
+	public ArrayList<NameObject> getAllDps(int storeId) {
 		ArrayList<NameObject> namelist = new ArrayList<NameObject>();
-		
+
 		if (!DPQueues.containsKey(storeId) || DPQueues.get(storeId) == null || DPQueues.get(storeId).isEmpty()) {
 			return namelist;
 
 		} else {
-			for(String mtf : DPQueues.get(storeId)){
+			for (String mtf : DPQueues.get(storeId)) {
 				NameObject nameObject = new NameObject();
 				nameObject.setMtfId(mtf);
 				HelperAPI api = new HelperAPI();
 				String idName = api.mtfIdNames.get(mtf.toUpperCase());
 				nameObject.setName(idName);
 				namelist.add(nameObject);
-				
+
 			}
-			
+
 		}
-		
-		
-		
+
 		return namelist;
-		
-		
+
 	}
-	
-	
+
 	public ArrayList<String> getAllDpAtStore(int storeId) {
 
 		ArrayList<String> dpList = (ArrayList<String>) DPQueues.get(storeId);
@@ -464,12 +414,11 @@ public class DpOperations {
 			assignedDetails.add(details);
 			DPQueues.get(storeId).poll();
 			DPQueues.get(storeId).add(dpMtfId);
-			
 
 			int orderCount = dpStatus.get(dpMtfId).getAssignedCount();
 			dpStatus.get(dpMtfId).setAssignedCount(++orderCount);
 		} else {
-			
+
 			dpStatus.get(dpMtfId).getOrderDetailsAssigned().add(details);
 			DPQueues.get(storeId).poll();
 			DPQueues.get(storeId).add(dpMtfId);
