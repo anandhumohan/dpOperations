@@ -145,6 +145,29 @@ public class NinjaAPI {
 	}
 
 	@Path("/getalldps")
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response dplist(String json) {
+		 RootUpdate rootUpdate = new Gson().fromJson(json, RootUpdate.class);
+		DpNames dpnames = new DpNames();
+
+		// Map<String, ArrayList<NameObject>> idName = new HashMap<String,
+		// ArrayList<NameObject>>();
+		ArrayList<NameObject> nameMtfidMap = new DpOperations().getAllDps(rootUpdate.getStoreId());
+		// idName.put("Name", nameMtfidMap);
+		if (nameMtfidMap.isEmpty()) {
+			dpnames.setMessage("No names");
+		} else {
+			dpnames.setMessage(Constants.success);
+			dpnames.setIdName(nameMtfidMap);
+
+		}
+
+		return Response.ok(new Gson().toJson(dpnames), MediaType.TEXT_PLAIN_TYPE).build();
+
+	}
+	/*
+	@Path("/getalldps")
 	@GET
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response dplist(@QueryParam("storeId") int storeId) {
@@ -166,7 +189,8 @@ public class NinjaAPI {
 		return Response.ok(new Gson().toJson(dpnames), MediaType.TEXT_PLAIN_TYPE).build();
 
 	}
-
+	
+*/
 	@Path("/manualdispatch")
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)

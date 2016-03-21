@@ -44,7 +44,7 @@ public class DeliveryPartnerAPI {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response dispatchedTabAction(@QueryParam("storeId") int storeId, @QueryParam("status") String status) {
 		RootOrderList rootOrder = new RootOrderList();
-		Map<String, ArrayList<OrderDetails>> orderDetais = new NinjaOperations().getOrderDetailsTest(storeId, status);
+		Map<String, ArrayList<OrderDetails>> orderDetais = new NinjaOperations().getOrderDetailsFinal(storeId, status);
 		if (orderDetais.get(status).isEmpty()) {
 			rootOrder.setMessage("No orders");
 		} else {

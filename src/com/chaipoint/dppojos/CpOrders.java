@@ -68,8 +68,8 @@ public class CpOrders {
 	@Column(name = "dispatch_time")
 	public Date dispatchTime;
 
-	@Column(name = "final_delivery_time")
-	public Date finalDeliveryTime;
+//	@Column(name = "final_delivery_time")
+//	public Date finalDeliveryTime;
 
 	@Column(name = "cancel_time")
 	public Date cancelTime;
@@ -99,7 +99,7 @@ public class CpOrders {
 	public void setId(int id) {
 		this.id = id;
 	}
-
+/*
 	public Date getFinalDeliveryTime() {
 		return finalDeliveryTime;
 	}
@@ -107,7 +107,7 @@ public class CpOrders {
 	public void setFinalDeliveryTime(Date finalDeliveryTime) {
 		this.finalDeliveryTime = finalDeliveryTime;
 	}
-
+*/
 	public String getStatus() {
 		return status;
 	}
