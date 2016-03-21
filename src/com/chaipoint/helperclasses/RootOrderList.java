@@ -6,7 +6,6 @@ import java.util.Map;
 public class RootOrderList {
 	private Map<String, ArrayList<OrderDetails>> orderList;
 	private String message;
-	// private Map<String, Long> orderCount;
 
 	public Map<String, ArrayList<OrderDetails>> getOrderList() {
 		return orderList;
@@ -24,10 +23,4 @@ public class RootOrderList {
 		this.message = message;
 	}
 
-	/*
-	 * public Map<String, Long> getOrderCount() { return orderCount; }
-	 * 
-	 * public void setOrderCount(Map<String, Long> orderCount) { this.orderCount
-	 * = orderCount; }
-	 */
 }

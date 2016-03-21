@@ -13,6 +13,7 @@ import com.chaipoint.hibernatehelper.HibernateTemplate;
 public class LoginHelper {
 
 	public static Map<Integer, Boolean> storeNinjaAssign = new HashMap<Integer, Boolean>();
+	public static Map<String, Boolean> dpLogincheck = new HashMap<String, Boolean>();
 
 	HibernateTemplate template = null;
 
@@ -21,7 +22,7 @@ public class LoginHelper {
 	public LoginMsg login(ArrayList<Integer> storeId, String mtfId, String password, String roleId) {
 
 		LoginMsg loginMsg = new LoginMsg();
-		loginMsg.setName(HelperAPI.mtfIdNames.get(mtfId));
+		loginMsg.setName(HelperAPI.mtfIdNames.get(mtfId.toUpperCase()));
 		
 		if (roleId.equalsIgnoreCase(constants.role_ninja)) {
 			loginMsg.setMessage("SUCCESS");

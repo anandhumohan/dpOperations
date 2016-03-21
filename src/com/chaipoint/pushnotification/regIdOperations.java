@@ -30,13 +30,6 @@ public class regIdOperations {
 
 	}
 
-	public HibernateTemplate getTemplate() {
-		if (template == null) {
-			template = new HibernateTemplate();
-		}
-		return template;
-	}
-
 	public String getRegId(String mtfId) {
 
 		Criteria criteria = getTemplate().getSession().createCriteria(GCMRegIds.class);
@@ -45,5 +38,18 @@ public class regIdOperations {
 		ArrayList<String> DPList = (ArrayList<String>) template.get(criteria);
 		return DPList.get(0);
 
+	}
+
+	public String sendmessage(ArrayList<String> mtfIds) {
+		
+		//send message method
+		return null;
+	}
+
+	public HibernateTemplate getTemplate() {
+		if (template == null) {
+			template = new HibernateTemplate();
+		}
+		return template;
 	}
 }

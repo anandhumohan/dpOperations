@@ -6,14 +6,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 import org.hibernate.Criteria;
-import org.hibernate.criterion.Projection;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
@@ -24,7 +21,6 @@ import com.chaipoint.dppojos.StaffMaster;
 import com.chaipoint.helperclasses.DpStatus;
 import com.chaipoint.helperclasses.NameObject;
 import com.chaipoint.helperclasses.OrderDetails;
-import com.chaipoint.helperclasses.OrderStatus;
 import com.chaipoint.hibernatehelper.HibernateOperations;
 import com.chaipoint.ninja.NinjaOperations;
 
@@ -240,7 +236,7 @@ public class DpOperations {
 		ArrayList<CpOrders> count = (ArrayList<CpOrders>) getTemplate().get(criteria);
 		cpOrders = count.get(0);
 		cpOrders.setStatus(status);
-		// cpOrders.setConfirmTime(new Date());
+		 cpOrders.setDispatchTime(new Date());
 
 		if (Constants.success.equals(getTemplate().update(cpOrders))) {
 
@@ -292,7 +288,8 @@ public class DpOperations {
 			cpOrders = count.get(0);
 			cpOrders.setStatus(status);
 		//	cpOrders.setDeliveryBoy(code);
-			// cpOrders.setConfirmTime(new Date());
+			cpOrders.setFinalDeliveryTime(new Date());
+		
 
 			if (Constants.success.equals(getOperations().update(cpOrders))) {
 
@@ -459,6 +456,7 @@ public class DpOperations {
 	}
 
 	public String assignOrderToDp(OrderDetails details, String dpMtfId, int storeId) {
+		details.setOrderStatus("1");
 		System.out.println("reached here");
 		if (!dpStatus.containsKey(dpMtfId) || dpStatus.get(dpMtfId).getOrderDetailsAssigned() == null
 				|| dpStatus.get(dpMtfId).getOrderDetailsAssigned().isEmpty()) {
@@ -468,8 +466,8 @@ public class DpOperations {
 			DPQueues.get(storeId).add(dpMtfId);
 			
 
-		//	int orderCount = dpStatus.get(dpMtfId).getAssignedCount();
-		//	dpStatus.get(dpMtfId).setAssignedCount(++orderCount);
+			int orderCount = dpStatus.get(dpMtfId).getAssignedCount();
+			dpStatus.get(dpMtfId).setAssignedCount(++orderCount);
 		} else {
 			
 			dpStatus.get(dpMtfId).getOrderDetailsAssigned().add(details);

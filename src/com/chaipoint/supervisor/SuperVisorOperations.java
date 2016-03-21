@@ -5,9 +5,14 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Projections;
@@ -22,6 +27,7 @@ import com.chaipoint.helperclasses.OrderDetails;
 import com.chaipoint.helperclasses.PaymentDetails;
 import com.chaipoint.helperclasses.Pricing;
 import com.chaipoint.hibernatehelper.HibernateTemplate;
+import com.chaipoint.ninja.NinjaOperations;
 
 public class SuperVisorOperations {
 
@@ -179,53 +185,64 @@ for(int storeId : idList){
 
 	}
 
-	private ArrayList<OrderDetails> getOrderList(ArrayList<String> storeIds, String status) {
+	
 
-		ArrayList<OrderDetails> orderDetailsList = new ArrayList<OrderDetails>();
-		ArrayList<Integer> orderIdList = orderDetailsDaoImpl.getAllOrderIds(storeIds);
+	public Map<String, Long> getAllOrderStatusCounts(ArrayList<Integer> storeIds) {
 
-		for (int orderList : orderIdList) {
-			OrderDetails orderDetails = new OrderDetails();
-			orderDetails.setOrderId(orderList);
 
-			orderDetails.setOrderDetails(orderDetailsDaoImpl.getOrderDeatils(orderList));
-			// orderDetails.setCustomerDetails(orderDetailsDaoImpl.getAddressdetails(orderList));
-			CpOrders orders = orderDetailsDaoImpl.getOrderdetails(orderList);
-			orderDetails.setStoreName(orderDetailsDaoImpl.getstoreName(orders.getStoreId()));
-			PaymentDetails paymentDetails = new PaymentDetails();
-			// paymentDetails.setChannel(orders.getChannel());
-			paymentDetails.setPaymentType(orders.getPaymentMethod());
-			orderDetails.setPaymentDetails(paymentDetails);
+		ArrayList<String> statusList = new NinjaOperations().getAllStatus();
+		// Map<String, Integer> stateCount = new HashMap<String, Integer>();
+		Map<String, Long> stateCount = new HashMap<String, Long>();
+		for (String status : statusList) {
+			
+		long totalCount = 0;
+			
+				
+			for(Integer storeId : storeIds){
 
-			Pricing pricing = new Pricing();
-			pricing.setCouponApplied(orders.getCouponCode());
-			pricing.setDiscountAmount(orders.getDiscount());
-			pricing.setTotalPrice(orders.getTotalAmount());
-			pricing.setFinalPayableCost(orders.getTotalAmount());
-			pricing.setDeliveryCharges(orders.getDeliveryChange());
-			orderDetails.setPricing(pricing);
+			Criteria criteria = getHibernatetemplate().getSession().createCriteria(CpOrders.class);
+			criteria.add(Restrictions.eq("status", status));
+			criteria.add(Restrictions.eq("storeId", storeId));
+			// criteria.setProjection(Projections.property("id"));
+			criteria.setProjection(Projections.rowCount());
 
-			orderDetailsList.add(orderDetails);
+			// DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd
+			// hh:mm:ss");
+			// Date date = new Date();
+			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+			Date date = new Date();
+			System.out.println("ennathe date" + date);
+
+			Date minDate = null;
+			try {
+				minDate = formatter.parse(formatter.format(date));
+			} catch (ParseException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+
+			Date maxDate = new Date(minDate.getTime() + TimeUnit.DAYS.toMillis(1));
+
+		//	System.out.println("minimum date" + minDate);
+		//	System.out.println("minimum date" + maxDate);
+
+			criteria.add(Restrictions.ge("createdDate", minDate));
+
+			criteria.add(Restrictions.lt("createdDate", maxDate));
+
+			ArrayList<Long> count = (ArrayList<Long>) getHibernatetemplate().get(criteria);
+
+			totalCount = totalCount + count.get(0);
+			}
+			stateCount.put(status, totalCount);
+		}
+			
+		return stateCount;
+
+	
 
 		}
-
-		return orderDetailsList;
-	}
-
-	public ArrayList<String> getOrderCounts(ArrayList<String> storeList, String orderStatus) {
-
-		// change OrderDetails to cpos order class
-		ArrayList<String> orderList = new ArrayList<String>();
-		for (String storeId : storeList) {
-			Criteria criteria = getHibernatetemplate().getSession().createCriteria(OrderDetails.class);
-			criteria.add(Restrictions.eq("status", orderStatus));
-			criteria.add(Restrictions.eq("storeid", storeId));
-			criteria.setProjection(Projections.property("orderId"));
-			ArrayList<String> orderDetails = (ArrayList<String>) getHibernatetemplate().get(criteria);
-			orderList.addAll(orderDetails);
-		}
-		return orderList;
-	}
+	
 
 	public HibernateTemplate getHibernatetemplate() {
 		if (template == null) {

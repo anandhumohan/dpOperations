@@ -10,45 +10,34 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.TimeUnit;
 
 import org.hibernate.Criteria;
-import org.hibernate.criterion.Conjunction;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
 import com.chaipoint.constants.Constants;
-import com.chaipoint.deliveryappapis.PushNotificationAPI;
+import com.chaipoint.deliveryappapis.HelperAPI;
 import com.chaipoint.deliverypartner.DpOperations;
 import com.chaipoint.dphelper.OrderDetailsDaoImpl;
 import com.chaipoint.dppojos.CancelReasons;
 import com.chaipoint.dppojos.CoCOrderDetails;
-import com.chaipoint.dppojos.CoCOrderDetailsTest;
-import com.chaipoint.dppojos.CoCOrderDetailstesting;
 import com.chaipoint.dppojos.CpOrderAddress;
 import com.chaipoint.dppojos.CpOrders;
-import com.chaipoint.dppojos.MyJoinClassKey;
 import com.chaipoint.helperclasses.AddressInfo;
-
 import com.chaipoint.helperclasses.DpStatus;
 import com.chaipoint.helperclasses.ItemsDetails;
 import com.chaipoint.helperclasses.OrderDetails;
-import com.chaipoint.helperclasses.OrderStatus;
 import com.chaipoint.helperclasses.PaymentDetails;
 import com.chaipoint.helperclasses.Pricing;
 import com.chaipoint.hibernatehelper.HibernateOperations;
-import com.chaipoint.pushnotification.push;
-import com.squareup.okhttp.Response;
 
 public class NinjaOperations {
 
@@ -356,9 +345,7 @@ public class NinjaOperations {
 				System.out.println("push notification");
 				msg = new DpOperations().assignOrderToDp(details.get("Ready").get(0), dpMtfId, storeId);
 		
-				// set count of order assigned
-				// boolean stat1 = new
-				// DpOperations().dpStatus.get("mt").setAssignedCount(0);
+				//update mtfId as delivered boy in cpos
 			}
 		}
 
@@ -379,192 +366,11 @@ public class NinjaOperations {
 		return names;
 	}
 
-	public HibernateOperations getHibernatetemplate() {
-		if (template == null) {
-			template = new HibernateOperations();
-		}
-		return template;
-	}
-	/*
-	 * public HibernateTemplate getHibernatetemplate() { if (template == null) {
-	 * template = new HibernateTemplate(); } return template; }
-	 */
+	
 
+	
 
-	public Map<String, ArrayList<OrderDetails>> getOrderDetailsTest(int storeId, String status2) {
-		Map<String, ArrayList<OrderDetails>> finalMap = new HashMap<String, ArrayList<OrderDetails>>();
-		Criteria criteria = getHibernatetemplate().getSession().createCriteria(CoCOrderDetails.class);
-		// criteria.add(Restrictions.eq("orderId", 182032));
-
-		criteria.add(Restrictions.eq("status", status2));
-
-		ArrayList<CoCOrderDetails> orderDet = (ArrayList<CoCOrderDetails>) getHibernatetemplate().get(criteria);
-		ArrayList<OrderDetails> listOfOrderdeatails = new ArrayList<OrderDetails>();
-		Map<Integer, OrderDetails> orderDetails = new HashMap<Integer, OrderDetails>();
-
-		for (CoCOrderDetails test : orderDet) {
-			System.out.println("name " + test.getProductName() + " qnt " + test.getQty());
-
-		}
-		OrderDetails orderDetailsObject = null;
-
-		for (CoCOrderDetails details : orderDet) {
-
-			if (!orderDetails.containsKey(details.getOrderId())) {
-
-				orderDetailsObject = new OrderDetails();
-				orderDetailsObject.setStoreName("JNC");
-				orderDetailsObject.setOrderId(details.getOrderId());
-				// orderDetailsObject.setStoreName(details.setStoreName);
-
-				AddressInfo addressInfo = new AddressInfo();
-
-				addressInfo.setFlat(details.getFlat());
-				addressInfo.setFloor(details.getFloor());
-				addressInfo.setLandmark(details.getLandmark());
-				addressInfo.setBuilding(details.getBuilding());
-				addressInfo.setPhone(details.getPhone());
-				addressInfo.setName(details.getName());
-				orderDetailsObject.setCustomerDetails(addressInfo);
-
-				ArrayList<ItemsDetails> demo = new ArrayList<ItemsDetails>();
-				ItemsDetails itemsDetails = new ItemsDetails();
-				itemsDetails.setSerialNo(1);
-				itemsDetails.setItemName(details.getProductName());
-				itemsDetails.setItemUnitCount(details.getQty());
-				itemsDetails.setItemUnitPrice(details.getCost());
-				itemsDetails.setItemTotalPrice(details.getTotalProductCost());
-				demo.add(itemsDetails);
-				orderDetailsObject.setOrderDetails(demo);
-
-				Pricing pricing = new Pricing();
-				pricing.setCouponApplied(details.getCouponCode());
-				pricing.setDeliveryCharges(details.getDeliveryCharge());
-				// pricing.setDiscountAmount(details.getdiscountAmount);
-				pricing.setFinalPayableCost(details.getNetAmount());
-				pricing.setTotalPrice(details.getTotalAmount());
-				orderDetailsObject.setPricing(pricing);
-
-				PaymentDetails paymentDetails = new PaymentDetails();
-				paymentDetails.setChannel(details.getChannelName());
-				paymentDetails.setPaymentType(details.getPaymentMethod());
-				orderDetailsObject.setPaymentDetails(paymentDetails);
-
-				listOfOrderdeatails.add(orderDetailsObject);
-				orderDetails.put(details.getOrderId(), orderDetailsObject);
-
-			}
-
-			else {
-
-				ItemsDetails itemsDetails = new ItemsDetails();
-				itemsDetails.setSerialNo(2);
-				itemsDetails.setItemName(details.getProductName());
-				itemsDetails.setItemUnitCount(details.getQty());
-				itemsDetails.setItemUnitPrice(details.getCost());
-				itemsDetails.setItemTotalPrice(details.getTotalProductCost());
-				// orderDetailsObject.getOrderDetails().add(itemsDetails);
-				orderDetails.get(details.getOrderId()).getOrderDetails().add(itemsDetails);
-				// orderDetailsObject.get(details.
-
-				// orderDetailsObject.getget(details.getOrderId()).getOrderDetails().add(itemsDetails);
-
-			}
-
-		}
-
-		finalMap.put(status2, listOfOrderdeatails);
-
-		return finalMap;
-	}
-
-	public Map<String, ArrayList<OrderDetails>> getOrderDetailsTestopt(int storeId, String state) {
-
-		ArrayList<Integer> orderIdList = orderDetailsDaoImpl.getAllOrderId(storeId, state);
-		Map<String, ArrayList<OrderDetails>> finalMap = new HashMap<String, ArrayList<OrderDetails>>();
-		ArrayList<OrderDetails> listOfOrderdeatails = new ArrayList<OrderDetails>();
-		Map<Integer, OrderDetails> orderDetails = new HashMap<Integer, OrderDetails>();
-
-		for (Integer orderId : orderIdList) {
-			Criteria criteria = getHibernatetemplate().getSession().createCriteria(CoCOrderDetails.class);
-			criteria.add(Restrictions.eq("orderId", orderId));
-
-			// criteria.add(Restrictions.eq("status", "New"));
-
-			@SuppressWarnings("unchecked")
-			ArrayList<CoCOrderDetails> orderDet = (ArrayList<CoCOrderDetails>) getHibernatetemplate().get(criteria);
-			// CoCOrderDetails details = orderDet.get(0);
-			OrderDetails orderDetailsObject = null;
-			for (CoCOrderDetails details : orderDet) {
-				if (!orderDetails.containsKey(details.getOrderId())) {
-
-					orderDetailsObject = new OrderDetails();
-					orderDetailsObject.setStoreName("JNC");
-					orderDetailsObject.setOrderId(details.getOrderId());
-					// orderDetailsObject.setStoreName(details.setStoreName);
-
-					AddressInfo addressInfo = new AddressInfo();
-
-					addressInfo.setFlat(details.getFlat());
-					addressInfo.setFloor(details.getFloor());
-					addressInfo.setLandmark(details.getLandmark());
-					addressInfo.setBuilding(details.getBuilding());
-					addressInfo.setPhone(details.getPhone());
-					addressInfo.setName(details.getName());
-					orderDetailsObject.setCustomerDetails(addressInfo);
-
-					ArrayList<ItemsDetails> demo = new ArrayList<ItemsDetails>();
-					ItemsDetails itemsDetails = new ItemsDetails();
-					itemsDetails.setSerialNo(1);
-					itemsDetails.setItemName(details.getProductName());
-					itemsDetails.setItemUnitCount(details.getQty());
-					itemsDetails.setItemUnitPrice(details.getCost());
-					itemsDetails.setItemTotalPrice(details.getTotalProductCost());
-					demo.add(itemsDetails);
-					orderDetailsObject.setOrderDetails(demo);
-
-					Pricing pricing = new Pricing();
-					pricing.setCouponApplied(details.getCouponCode());
-					pricing.setDeliveryCharges(details.getDeliveryCharge());
-					// pricing.setDiscountAmount(details.getdiscountAmount);
-					pricing.setFinalPayableCost(details.getNetAmount());
-					pricing.setTotalPrice(details.getTotalAmount());
-					orderDetailsObject.setPricing(pricing);
-
-					PaymentDetails paymentDetails = new PaymentDetails();
-					paymentDetails.setChannel(details.getChannelName());
-					paymentDetails.setPaymentType(details.getPaymentMethod());
-					orderDetailsObject.setPaymentDetails(paymentDetails);
-
-					listOfOrderdeatails.add(orderDetailsObject);
-					orderDetails.put(details.getOrderId(), orderDetailsObject);
-
-				}
-
-				else {
-
-					ItemsDetails itemsDetails = new ItemsDetails();
-					itemsDetails.setSerialNo(2);
-					itemsDetails.setItemName(details.getProductName());
-					itemsDetails.setItemUnitCount(details.getQty());
-					itemsDetails.setItemUnitPrice(details.getCost());
-					itemsDetails.setItemTotalPrice(details.getTotalProductCost());
-					// orderDetailsObject.getOrderDetails().add(itemsDetails);
-					orderDetails.get(details.getOrderId()).getOrderDetails().add(itemsDetails);
-					// orderDetailsObject.get(details.
-
-					// orderDetailsObject.getget(details.getOrderId()).getOrderDetails().add(itemsDetails);
-
-				}
-
-			}
-
-			finalMap.put("New", listOfOrderdeatails);
-		}
-
-		return finalMap;
-
-	}
+	
 
 	public Map<String, ArrayList<OrderDetails>> getOrderDetailsFinal(int storeId, String status2) {
 		Map<String, ArrayList<OrderDetails>> finalMap = new HashMap<String, ArrayList<OrderDetails>>();
@@ -598,7 +404,9 @@ public class NinjaOperations {
 				if (!orderDetails.containsKey(rs.getInt("order_id"))) {
 
 					orderDetailsObject = new OrderDetails();
-					orderDetailsObject.setStoreName("JNC");
+					String store = HelperAPI.storeIdName.get(rs.getInt("store_id"));
+					orderDetailsObject.setStoreName(store);
+				//	orderDetailsObject.setStoreName("JNC");
 					orderDetailsObject.setOrderId(rs.getInt("order_id"));
 					orderDetailsObject.setOrderTime(rs.getString("order_time"));
 					// orderDetailsObject.setStoreName(details.setStoreName);
@@ -826,9 +634,16 @@ public class NinjaOperations {
 		Map<String, ArrayList<OrderDetails>> details = new NinjaOperations().getOrderDetailsById(OrderId);
 		System.out.println("push notification");
 		msg = new DpOperations().assignOrderToDp(details.get("Ready").get(0), mtfId, storeId);
-		// TODO Auto-generated method stub
+		
 		return msg;
 	}
 
+	public HibernateOperations getHibernatetemplate() {
+		if (template == null) {
+			template = new HibernateOperations();
+		}
+		return template;
+	}
+	
 	
 }

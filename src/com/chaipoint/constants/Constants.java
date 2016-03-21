@@ -29,5 +29,7 @@ public class Constants {
 
 	public static String success = "SUCCESS";
 	public static String error = "ERROR";
+	public static String no_dps = "No Dps";
+	public static String no_orders = "No orders";
 
 }
